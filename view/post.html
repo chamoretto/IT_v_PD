@@ -1,0 +1,141 @@
+<div class="grid justify-between max-width-adaptive-xl margin-x-auto margin-y-md">
+    <div class="col-7@md order-1 ">
+
+<!--        пост-->
+        <div>
+            <h2> {{post.title}} </h2>
+            <div class="margin-y-sm">
+                <i class="fas fa-user-alt margin-left-sm"></i> My admin
+                <i class="far fa-clock margin-left-sm"></i> {{nice_time(now_day, post.date)}}
+                <i class="far fa-comment margin-left-sm"></i> 3 коментария
+            </div>
+            <img src="{{post.img}}">
+            <div class="margin-y-md">
+                <p> {{!post.text}} </p>
+            </div>
+        </div>
+
+<!--        социалки-->
+        <div class="margin-bottom-md">
+            <div class="grid justify-end">
+                <div class="col-4@lg">
+                    % for s in socials:
+                    <a class=" margin-x-xxs" style="text-decoration: none;"  href="{{s.link}}" target="_blank" title="{{s.name}}">
+                        <i class="icon icon--md fa fa-{{s.icon}} color-contrast-higher"></i>
+                    </a>
+                    % end
+                </div>
+            </div>
+        </div>
+
+<!--        коментарии-->
+        <div>
+            <h3 class="margin-bottom-xs"> 3 коментария </h3>
+            <hr class="hr-black">
+
+            <div class="grid justify-between margin-y-md"> <!-- Коментарий -->
+                <div class="col-5@md grid">
+                    <div class="col-4"> <img class="round-img" src="/images/blog/post1.jpg" alt="Avatar"> </div> <!-- если не будет картинки в дб, надо будет ставить то, что в фигме-->
+                    <div class="col-8">
+                        <h4 class="margin-bottom-sm"> Артём миронов </h4>
+                        <p> Вот это да!</p>
+                    </div>
+                </div>
+                <div class="col-3@md "> Февраль 25, 2019 в 9:35 </div>
+            </div>
+
+            <div class="grid justify-between margin-y-md"> <!-- Коментарий -->
+                <div class="col-5@md grid">
+                    <div class="col-4"> <img class="round-img" src="/images/blog/post1.jpg" alt="Avatar"> </div> <!-- если не будет картинки в дб, надо будет ставить то, что в фигме-->
+                    <div class="col-8">
+                        <h4 class="margin-bottom-sm"> Артём миронов </h4>
+                        <p> Вот это да!</p>
+                    </div>
+                </div>
+                <div class="col-3@md "> Февраль 25, 2019 в 9:35 </div>
+            </div>
+
+            <div class="grid justify-between margin-y-md"> <!-- Коментарий -->
+                <div class="col-5@md grid">
+                    <div class="col-4"> <img class="round-img" src="/images/blog/post1.jpg" alt="Avatar"> </div> <!-- если не будет картинки в дб, надо будет ставить то, что в фигме-->
+                    <div class="col-8">
+                        <h4 class="margin-bottom-sm"> Артём миронов </h4>
+                        <p> Вот это да!</p>
+                    </div>
+                </div>
+                <div class="col-3@md "> Февраль 25, 2019 в 9:35 </div>
+            </div>
+
+        </div>
+
+<!--        форма-->
+        <div class="margin-top-xl">
+            <h3 class="margin-bottom-sm">  Ваш коментарий </h3>
+            <p class="margin-bottom-md"> Ваш e-mail не будет опубликован. Обязательные поля отмечены * </p>
+            <form>
+              <fieldset class="">
+                  <div class="margin-bottom-md">
+                      <label class="form-label margin-bottom-xxs" for="textarea1"> Коментарий* </label>
+                      <textarea class="form-control width-100%" name="textarea" id="textarea1"></textarea>
+                  </div>
+
+                  <div class="margin-bottom-md">
+                      <label class="form-label margin-bottom-xxs" for="inputName"> Имя* </label>
+                      <input class="form-control width-100%" type="text" name="inputName" id="inputName" required>
+                  </div>
+
+                  <div class="margin-bottom-md">
+                      <label class="form-label margin-bottom-xxs" for="inputEmail">Email*</label>
+                      <input class="form-control width-100%" type="email" name="inputEmail" id="inputEmail" placeholder="email@myemail.com">
+                  </div>
+
+                  <div class="margin-bottom-md">
+                      <label class="form-label margin-bottom-xxs" for="textarea2"> Website </label>
+                      <input class="form-control width-100%" type="text" name="inputName" id="textarea2" >
+                  </div>
+
+              </fieldset>
+
+              <fieldset class="margin-bottom-md">
+                <div class="checkbox-list flex flex-wrap gap-md">
+                  <div>
+                    <input class="checkbox" type="checkbox" id="checkbox1">
+                    <label for="checkbox1">Запомнить меня</label>
+                  </div>
+                </div>
+              </fieldset>
+              <div>
+                <button class="btn btn--primary"> Оставить коментарий </button>
+              </div>
+            </form>
+        </div>
+    </div>
+
+<!--    правая панель-->
+    <div class="col-4@md order-2 ">
+        <div class="search-input search-input--icon-right col-6 margin-x-auto margin-y-lg" >
+          <input class="form-control width-100%" type="search" name="searchInputX" id="searchInputX" placeholder="Search..." aria-label="Search">
+          <button class="search-input__btn">
+            <svg class="icon" viewBox="0 0 24 24"><title>Submit</title><g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" stroke="currentColor" fill="none" stroke-miterlimit="10"><line x1="22" y1="22" x2="15.656" y2="15.656"></line><circle cx="10" cy="10" r="8"></circle></g></svg>
+          </button>
+        </div>
+
+        <div class="margin-bottom-md">
+            <h3> Популярные посты</h3>
+            <p class="margin-top-sm"> <a class="color-contrast-higher" style="text-decoration: none;" href="/"> Старт сезону дан!</a> <hr class="hr-black"> </p>
+            <p class="margin-top-sm"> <a class="color-contrast-higher" style="text-decoration: none;" href="/"> Старт сезону дан!</a> <hr class="hr-black"> </p>
+            <p class="margin-top-sm"> <a class="color-contrast-higher" style="text-decoration: none;" href="/"> Старт сезону дан!</a> <hr class="hr-black"> </p>
+            <p class="margin-top-sm"> <a class="color-contrast-higher" style="text-decoration: none;" href="/"> Старт сезону дан!</a> <hr class="hr-black"> </p>
+            <p class="margin-top-sm"> <a class="color-contrast-higher" style="text-decoration: none;" href="/"> Старт сезону дан!</a> <hr class="hr-black"> </p>
+        </div>
+
+        <div class="margin-bottom-md">
+            <h3> Архивы </h3>
+            <p class="margin-top-sm"> <a class="color-contrast-higher" style="text-decoration: none;" href="/"> Старт сезону дан!</a> <hr class="hr-black"> </p>
+            <p class="margin-top-sm"> <a class="color-contrast-higher" style="text-decoration: none;" href="/"> Старт сезону дан!</a> <hr class="hr-black"> </p>
+            <p class="margin-top-sm"> <a class="color-contrast-higher" style="text-decoration: none;" href="/"> Старт сезону дан!</a> <hr class="hr-black"> </p>
+            <p class="margin-top-sm"> <a class="color-contrast-higher" style="text-decoration: none;" href="/"> Старт сезону дан!</a> <hr class="hr-black"> </p>
+            <p class="margin-top-sm"> <a class="color-contrast-higher" style="text-decoration: none;" href="/"> Старт сезону дан!</a> <hr class="hr-black"> </p>
+        </div>
+    </div>
+</div>

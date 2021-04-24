@@ -1,0 +1,31 @@
+<section class="margin-bottom-md">
+    <div class="container max-width-adaptive-md">
+        <div class="margin-bottom-lg">
+            <h1 class="text-center">События</h1>
+        </div>
+
+        <ol class="text-points  grid grid-gap-lg">
+            % for i in events:
+            <li class="col-4@sm">
+                <div class="card height-100%">
+                    <figure class="card__img">
+                        <img class="width-50%" src="{{i.miniPicture}}" alt="Card preview img">
+                    </figure>
+                    <div class="card__content">
+                        <div class="text-component">
+                            <h4>{{i.name}}</h4>
+                            <p class="text-sm color-contrast-medium">{{i.smalDescription}}</p>
+                        </div>
+                        %if i.link != "#":
+                        <div class="margin-top-md">
+                            <a href="/events/{{i.link[1:] if str(i.link)[0] in ["/", "\\"] else i.link}}" class="btn btn--subtle btn--sm">Подробнее</a>
+                        </div>
+                        %end
+                    </div>
+                </div>
+            </li>
+            % end
+        </ol>
+    </div>
+</section>
+

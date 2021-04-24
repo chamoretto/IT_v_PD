@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="favicon.png" type="image/png">
+
+  <link href="https://fonts.googleapis.com/css?family=Comfortaa&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@13.0.1/dist/lazyload.min.js"></script>
+  <script>
+      var lazyLoadInstance = new LazyLoad ( {
+          elements_selector: "[loading='lazy']"
+          // ... more custom settings?
+      } );
+  </script>
+
+  <script>document.getElementsByTagName ( "html" )[0].className += " js";</script>
+  <link rel="stylesheet" href="/css/style.css">
+  <script>
+      if (!('CSS' in window && CSS.supports ( 'color', 'var(--color-var)' ))) {
+          document.write ( '<link rel="stylesheet" href="/css/style-fallback.css">' );
+      }
+  </script>
+  <noscript>
+    <link rel="stylesheet" href="/css/style-fallback.css">
+  </noscript>
+
+  <title>{{title + " | 1000-LIST-NICK" if get('title') else "1000-LIST-NICK"}}</title>
+</head>
+<body>
+<script src="/js/dark-mode.js"></script>
+
+<header class="header js-header">
+  <div class="header__container container max-width-lg">
+    <div class="header__logo">
+      <a href="/" class="color-primary margin-y-sm no-effect">
+        <img src="/logo.svg" class="text-md font-bold" style="color: var(--color-primary)" width="79" height="90" alt="1000
+            LIST
+            NICK">
+      </a>
+    </div>
+
+    <button class="btn btn--subtle header__trigger js-header__trigger" aria-label="Toggle menu"
+            aria-expanded="false" aria-controls="header-nav">
+      <i class="header__trigger-icon" aria-hidden="true"></i>
+      <span>Меню</span>
+    </button>
+
+    <nav class="header__nav js-header__nav" id="header-nav" role="navigation" aria-label="Main">
+      <div class="header__nav-inner">
+
+        <ul class="f-header__list flex-grow flex-basis-0 justify-center@md">
+        <%
+        _dict = {
+            "about": ("""<li class="f-header__item margin-x-sm"><a href="/about" class="f-header__link">О нас </a></li>""", True),
+            "events": ((f"""<li class="f-header__item margin-x-sm">
+            <a class="f-header__link">
+              События
+              <i class="icon text-center fa fa-caret-down"></i>
+            </a>
+
+            <ul class="f-header__dropdown">
+              {"  ".join([
+              f'''<li><a class="f-header__dropdown-link" {"href=/events" + (event.link if event.link[0] == "/" else "/" + event.link) if event.link not in ["#", "/", "", " "] else ""}>{event.name}</a></li>'''
+              for event in events])}
+            </ul>
+          </li>""" if get("events") and bool(events) else ""), True),
+            "competition": (f"""<li class="f-header__item margin-x-sm">
+                                    <a href="/novatorweb" class="f-header__link">
+                                        {competition["competition_name"] if get('competition') else 'Новатор_WEB'}
+                                    </a></li> """, False),
+            "videostudy": ("""<li class="f-header__item margin-x-sm"><a href="/videostudy" class="f-header__link">VideoStudy</a></li>""", True),
+            "blog": ("""<li class="f-header__item margin-x-sm"><a href="/blog" class="f-header__link">Новости</a></li>""", False),
+            "MO_Novator": ("""<li class="f-header__item margin-x-sm"><a class="f-header__link" href="/MO_nowator">Отряд Новатор</a></li>""", False),
+            "competition_result": ("""<li class="f-header__item margin-x-sm"><a href="/novator_results" class="f-header__link">Результаты новаторВеб</a></li>""", False)
+        }
+        %>
+          %if herder:
+          %for key, val in herder.items():
+              %if val:
+                {{!_dict[key][0]}}
+              %end
+          %end
+          %else:
+          %for key, [val, flag] in _dict.items():
+              %if flag:
+                  {{!val}}
+              %end
+          %end
+          %end
+          <!--
+          %if get("events") and bool(events):
+          <li class="f-header__item margin-x-sm">
+            <a class="f-header__link">
+              События
+              <i class="icon text-center fa fa-caret-down"></i>
+            </a>
+
+            <ul class="f-header__dropdown">
+              %for event in events:
+              <li><a class="f-header__dropdown-link" {{"href=/events" + (event.link if event.link[0] == "/" else "/" + event.link) if event.link not in ["#", "/", "", " "] else ""}}>{{event.name}}</a></li>
+              %end
+            </ul>
+          </li>
+          %end
+          -->
+          <!--
+          <li class="f-header__item margin-x-sm"><a href="/novatorweb" class="f-header__link">
+          {{competition["competition_name"] if get('competition') else 'Новатор_WEB'}}
+          </a></li>
+
+
+          <li class="f-header__item margin-x-sm"><a href="/videostudy" class="f-header__link">VideoStudy</a></li>
+          --><!--
+          <li class="f-header__item margin-x-sm"><a href="/blog" class="f-header__link">Новости</a></li>
+          <li class="f-header__item margin-x-sm"><a class="f-header__link">Отряд Новатор</a></li>
+          -->
+          <li class="margin-right-sm">|</li>
+          <li><a class="icon dark-mode-switchers"></a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script src="https://cdn.ckeditor.com/4.13.1/standard-all/ckeditor.js"></script>
+
+<div class="_content my-4 margin-bottom-lg">
+  % include("view/layout/alert.html", alert=alert)
+  % if is_code:
+  {{!including_page}}
+  % else:
+  % include(including_page, *args, **kwargs)
+  % end
+  %if get("questions") and bool(questions):
+  % include("view/FAQ.html", questions=questions, questions_title=questions_title if get("questions_title") else "Часто задаваемые вопросы")
+  %end
+  <a class="back-to-top js-back-to-top no-effect" href="#" data-offset="100" data-duration="300">
+    <svg class="icon" viewBox="0 0 16 16"><title>Наверх!</title><g stroke-width="1" stroke="currentColor"><polyline fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="15.5,11.5 8,4 0.5,11.5 "></polyline></g></svg>
+  </a>
+</div>
+
+<footer class="main-footer padding-y-lg bg-primary" data-theme="default">
+  <div class="container max-width-lg">
+    <div class="main-footer__content grid justify-between">
+
+      <div class="col-2 margin-left-auto">
+        <a href="/" class="no-effect">
+          <img src="/images/footer_icons/footer-logo.png" alt="1000LISTNICK" class="text-lg font-bold color-black">
+        </a>
+      </div>
+    </div>
+
+    <div class="main-footer__colophon" style="border-top: solid 1px black;">
+      <div class="main-footer__colophon-nav">
+        <span style="color :black;">&copy; 1000-list-nick</span>
+      </div>
+      <div>
+        % for s in socials:
+          <a href="{{s.link}}" title="{{s.name}}" class="no-effect" target="_blank">
+            <i class="fa fa-{{s.icon}}" style="color: black;"></i>
+          </a>
+        % end
+        <a class="icon dark-mode-switchers color-black"></a>
+      </div>
+    </div>
+  </div>
+</footer>
+<script>
+    initButtons();
+    lazyLoadInstance.update();
+</script>
+<script src="/js/scripts.js"></script>
+</body>
+</html>

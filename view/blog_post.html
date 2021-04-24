@@ -1,0 +1,31 @@
+<h3 class="m-4 text-center d-block">{{post.title}}</h3>
+
+% if get('post.img'):
+<img class="img-thumbnail rounded mx-auto d-block" style="max-width: 100%; max-height: 35vh" src="{{img}}" alt="{{title}}">
+% end
+
+{{post.text}}
+<section class="cm">
+  <div id="anycomment-app"></div>
+  <script>
+      AnyComment = window.AnyComment || [];
+      AnyComment.Comments = [];
+      AnyComment.Comments.push({
+          "root": "anycomment-app",
+          "app_id": 690,
+          "track_get_params": true,
+          "language": "ru"
+      })
+  </script>
+  <script type="text/javascript" async src="https://cdn.anycomment.io/assets/js/launcher.js"></script>
+  <script>
+      let iframe = document.getElementById("anycomment-app").firstChild;
+      let css = '' +
+          '<style type="text/css">' +
+          'body{margin:0;padding:0;background-color:red !important;}' +
+          '</style>';
+      iframe.open ();
+      iframe.write ( css );
+      iframe.close ();
+  </script>
+</section>

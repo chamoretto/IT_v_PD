@@ -1,0 +1,75 @@
+<div class="container max-width-adaptive-lg">
+
+<h3 class="margin-bottom-sm">
+  <a href="/admin" class="no-effect" title="На главную в админ-панель"><i class="fa fa-long-arrow-alt-left"></i></a>
+  Направления в NovatorWEB
+  % if directions:
+    <span class="counter">{{len(directions)}}</span>
+  % end
+</h3>
+% if directions:
+<table class="max-width-lg margin-x-auto table js-table table--expanded@sm js-table width-100% margin-bottom-md">
+  <thead class="table__header table__header--sticky">
+    <tr class="table__row">
+      <th class="table__cell text-center" scope="col">Изображение</th>
+      <th class="table__cell text-center" scope="col">Название</th>
+      <th class="table__cell text-center" scope="col">Эксперты</th>
+      <th class="table__cell text-right" scope="col">Работы</th>
+    </tr>
+  </thead>
+  <tbody  class="table__body">
+  % for direction in filter(lambda i: len(i.work_childrens) > 0, directions):
+    <tr class="table__row">
+      <td class="table__cell text-center" role="cell">
+        % if direction.img:
+          <img src="{{direction.img}}" alt="{{direction.name}}" class="square-img-50">
+        % else:
+         —
+        % end
+      </td>
+      <td class="table__cell text-center" role="cell">{{direction.name}}</td>
+      <td class="table__cell text-center" role="cell">{{!'<br><br>'.join([i.name for i in direction.experts])}}</td>
+      <td class="table__cell text-right" role="cell">
+
+        <a href="/admin/novatorweb_works/{{direction.name}}"><span class="counter">{{len(direction.work_childrens)}}</span></a>
+      </td>
+    </tr>
+  % end
+  </tbody>
+</table>
+  %if get("archive") and archive:
+    <div class="container text-center">
+      <img src="/images/novator/pdf-circle.png">
+      <h3> Архив со всеми работами</h3>
+      <h4> Размер файла "x" кб</h4>
+      <div class="margin-y-sm grid text-center">
+        <div> <a class="btn btn--primary margin-xs" href="{{archive.replace("public", "")}}" >Скачать</a> </div>
+        <form id="rewrite_all_archive" method="post" enctype="multipart/form-data">
+          <div>
+            <button class="btn btn--primary" type="submit" name="submit"  onclick="loadingButton(this)">Перезаписать</button>
+          </div>
+        </form>
+                <h4 class="margin-top-sm">Осторожнее с этим! операция может занять некоторое время, в процессе которого сайт может не отвечать</h4>
+      </div>
+    </div>
+  </div>
+  %else:
+  <div class="grid margin-top-lg">
+          <form id="create_all_archive" action="/admin/novatorweb_works" method="post" enctype="multipart/form-data">
+            <div>
+                <button class="btn btn--primary" type="submit" name="submit" id="id_submit" onclick="loadingButton(this)">Создать Архив с работами по всем направлениям</button>
+            </div>
+          </form>
+    <div class="grid margin-top-lg">
+      <h4>Осторожнее с этим!</h4>
+      <h4> Операция может занять некоторое время, в процессе которого сайт может не отвечать</h4>
+    </div>
+    <div class="grid margin-top-lg">
+    </div>
+    </div>
+    %end
+
+% else:
+<h4>Направлений нет:</h4>
+% end
+

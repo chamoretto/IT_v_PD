@@ -1,0 +1,81 @@
+<section class="max-width-adaptive-lg margin-x-auto">
+        <h4 class="margin-bottom-sm">
+        <a href="/admin/novatorweb_works/{{direction.name}}/" class="no-effect" title="В работы">
+            <i class="fa fa-long-arrow-alt-left"></i></a>
+        Работа {{work.name}} на направление {{direction.name}}
+        </h4>
+
+     <div class="grid margin-top-lg">
+
+    %if work.name:
+         <div class="col-2 margin-bottom-sm"><h4> Имя </h4></div>
+         <div class="col-10"> {{work.name}} </div>
+    %end
+
+    %if work.email:
+        <div class="col-2 margin-bottom-md"><h4> Email </h4></div>
+        <div class="col-10"> <a href="{{work.email}}"> {{work.email}} </a> </div>
+    %end
+    %if work.socials:
+        <div class="margin-bottom-sm">
+            <a href="{{work.socials}}" class="btn btn--primary"> Профиль человека в соц. сети</a>
+        </div>
+    %end
+     </div>
+    %if work.work:
+    <div class="container text-center">
+            <img src="/images/novator/pdf-circle.png">
+            <h3> Работа человека</h3>
+            <h4> Размер файла "x" кб</h4>
+            <div class="margin-y-sm grid text-center">
+              <div>
+                <a href="{{work.work}}" class="btn btn--primary">Скачать</a>
+              </div>
+            </div>
+    </div>
+    %end
+
+    %if work.explanatory_note:
+    <div class="container text-center">
+            <img src="/images/novator/pdf-circle.png">
+            <h3> Пояснительная записка</h3>
+            <h4> Размер файла "x" кб</h4>
+            <div class="margin-y-sm grid text-center">
+              <div>
+                <a href="{{work.explanatory_note}}" class="btn btn--primary">Скачать</a>
+              </div>
+            </div>
+    </div>
+    %end
+
+    %if bool(direction.experts):
+    <section class="max-width-adaptive-lg margin-x-auto">
+  <h1 class="text-center margin-top-md  "> Проверяющие работу</h1>
+
+  <div class="grid margin-y-md grid-gap-md justify-center ">
+    %for expert in direction.experts:
+    <div class="col-5 padding-sm margin-top-xxxl" style="border: dashed 4px var(--color-primary); border-radius: 10px;">
+      <div class="text-center height-lg">
+          <img class="col-6" src="{{expert.image}}" style="border-radius: 50%; transform: translate(0,-80%)">
+      </div>
+
+      <h3 class="text-center margin-y-xs">{{expert.name}}</h3>
+      <p class="text-center">{{expert.description}}</p>
+    </div>
+    %end
+  </div>
+</section>
+    %end
+
+    <!--<div class="margin-bottom-sm" style="display: flex;">
+            <div>
+                <h4> Проверено ? </h4>
+            </div>
+            <div class="switch margin-left-sm">
+                <input class="switch__input" type="checkbox" id="switchCheckbox1">
+                <label aria-hidden="true" class="switch__label" for="switchCheckbox1">Проверено</label>
+                <div aria-hidden="true" class="switch__marker"></div>
+            </div>
+        </div>-->
+
+</section>

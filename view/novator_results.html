@@ -1,0 +1,119 @@
+<!-- <section class="max-width-adaptive-lg margin-x-auto">
+
+
+    <h4 class="margin-bottom-sm">
+        <a href="/admin/novatorweb_works/ НАПРАВЛЕНИЕ /" class="no-effect" title="В работы"><i class="fa fa-long-arrow-alt-left"></i></a>
+        Работа "Имя человека" на направление "Направление"
+    </h4>
+    <div class="grid margin-top-lg">
+        <div class="col-2 margin-bottom-sm"><h4> Имя </h4></div>
+        <div class="col-10"> "Имя" </div>
+        <div class="col-2 margin-bottom-md"><h4> Email </h4></div>
+        <div class="col-10"> <a href="mailto:novatorweb@gmail.com"> почта человека </a> </div>
+        <div class="col-6 ">
+
+            <div class="col-6 text-center">
+                <div class="margin-x-auto bg-primary width-xxl height-xxl" style="border-radius: 50%; display:flex; justify-content:center; align-items: center;">
+                    <i class="far fa-file" style="font-size: 2em;"></i>
+                </div>
+                <h4 class="margin-bottom-xs"> Файл проекта </h4>
+                <a href="ссылка на файл" class="btn btn--primary margin-bottom-sm">Скачать</a>
+            </div>
+
+            <div class="col-6 text-center">
+                <div class="margin-x-auto bg-primary width-xxl height-xxl" style="border-radius: 50%; display:flex; justify-content:center; align-items: center;">
+                    <i class="fas fa-cloud" style="font-size: 2em;"></i>
+                </div>
+                <h4 class="margin-bottom-xs"> Сслылка на проект </h4>
+                <a href="ссылка на проект" class="btn btn--primary margin-bottom-sm">Скачать</a>
+            </div>
+
+            <div class="col-6 text-center margin-top-sm">
+                <div class="margin-x-auto bg-primary width-xxl height-xxl" style="border-radius: 50%; display:flex; justify-content:center; align-items: center;">
+                    <i class="far fa-file-alt" style="font-size: 2em;"></i>
+                </div>
+                <h4 class="margin-bottom-xs"> Записка </h4>
+                <a href="ссылка на записку" class="btn btn--primary margin-bottom-sm">Скачать</a>
+            </div>
+        </div>
+        <div class="margin-y-sm"><a href="соцсеть человека" class="btn btn--primary"> Профиль человека в соц. сети</a></div>
+        <div class="margin-bottom-sm" style="display: flex;">
+            <div>
+                <h4> Проверено ? </h4>
+            </div>
+            <div class="switch margin-left-sm">
+                <input class="switch__input" type="checkbox" id="switchCheckbox1">
+                <label aria-hidden="true" class="switch__label" for="switchCheckbox1">Проверено</label>
+                <div aria-hidden="true" class="switch__marker"></div>
+            </div>
+        </div>
+    </div>
+
+</section> -->
+
+
+%sad = ["far fa-sad-tear", "far fa-sad-cry", "far fa-frown", "fas fa-heart-broken"]
+
+
+%img = False
+<h1 class="text-center"> Победители конкурса Новатор_WEB </h1>
+<div class="text-center margin-bottom-md">
+    %for dir in directions:
+        <a href="#{{dir.name}}" class="js-smooth-scroll btn btn--primary margin-xs" data-duration="300"> {{dir.name}} </a>
+    %end
+</div>
+
+
+<!-- победители таблицей -->
+% for dir in directions:
+    %arr = [(work.place, work.id) for work in dir.work_childrens if work.place]
+    %if not bool(arr):
+        <div class="margin-y-md">
+            <h4 class="text-center" id="{{dir.name}}">По направлению {{dir.name}} данных нет <i class="color-primary {{randC(sad)}}"></i> </h4>
+        </div>
+        %continue
+    %end
+    %arr = iter(sorted(arr, key=lambda i: i[0]))
+    <section id="{{dir.name}}" class="">
+        <h3 class="margin-bottom-xxs text-center margin-top-lg"> Победители в категории {{dir.name}} </h3>
+        <table class="max-width-adaptive-lg margin-x-auto table js-table table--expanded@sm js-table width-100% margin-bottom-lg">
+            <thead class="table__header table__header--sticky">
+            <tr class="table__row">
+                <th class="table__cell text-center" scope="col"> Место </th>
+                <th class="table__cell text-center" scope="col"> Фото </th>
+                <th class="table__cell text-center" scope="col"> Имя </th>
+                <th class="table__cell text-center" scope="col"> Работа </th>
+            </tr>
+            </thead>
+
+            <tbody  class="table__body">
+            %for [place, _id] in arr:
+                %work = works.get(id=int(_id))
+
+                <tr class="table__row">
+                    <td class="table__cell text-center" role="cell"> {{place}}
+                        %if place and place == 1:
+                            <i class="fas fa-trophy color-primary"></i>
+                        %elif place and place <= 3:
+                            <i class="fas fa-medal"></i>
+                        %end
+                    </td> <!--место-->
+                    <td class="table__cell text-center" role="cell">
+                    %if work.img:
+                        <img src="{{work.img}}" alt="Фото участника" class="square-img-75">
+                    % else:
+                    —
+                    % end
+                    </td> <!--фото-->
+                    <td class="table__cell text-center" role="cell">
+                        {{work.name if work.name else "тут должно быть имя, но что-то пошло не так"}}
+                    </td> <!--имя-->
+                    <td class="table__cell text-center" role="cell">
+                        {{!f'''<a href="{work.work}"><i class="fas fa-paperclip"></i></a>''' if work.work else ""}}
+                    </td> <!--ссылка на работу-->
+                </tr>
+            %end
+            </tbody>
+        </table>
+    </section>
+% end

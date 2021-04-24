@@ -1,0 +1,125 @@
+<section >
+  <hr class="hr-dashed margin-y-sm">
+  <div class="container max-width-adaptive-lg">
+
+    <div class="">
+        <h1 class="text-center" style="font-size: 7vw;">
+            {{competition_name if get('competition_name') else 'Новатор_WEB'}}
+        </h1>
+        <h3 class="text-center margin-bottom-sm" style="font-size:2em;"> интернет-конкурс</h3>
+    </div>
+
+    <div class="grid grid-gap-sm justify-center items-center">
+      % for i in descriptions:
+          <div class="col-1"> <img class="margin-x-auto " src="{{i.img}}"> </div>
+      % end
+      % if not descriptions:
+        При загрузке направлений произошла какая-то ошибка.....
+      % end
+    </div>
+
+    % if 0 < start_time < 240*60*60 or (start_time < 0 and timer > 0):
+    <div class=" grid justify-center margin-y-md ">
+      <div class="col-6 bg-primary text-center" style="border-radius: 5px;">
+        <h2 class="margin-sm">{{date_nw}}</h2>
+      </div>
+    </div>
+    %end
+
+  </div>
+  <hr class="hr-dashed margin-top-sm margin-bottom-lg">
+</section>
+
+<section class="max-width-adaptive-lg margin-x-auto">
+    <div class="grid margin-bottom-sm grid-gap-sm justify-center">
+      <div class="container" style="display: flex; justify-content: center;">
+          <img class="margin-x-auto" src="/images/novator/stages.png">
+      </div >
+      <div class="col-3 text-center">
+              <h4> Выбери направление</h4>
+              <p> Выбери то направление, которое тебе больше нравится </p>
+        </div>
+      <div class="col-3 text-center">
+            <h4> Оцени задание</h4>
+            <p> Внимательно прочитай задание, ознакомься с порядком участия и оформления конкурсной работы </p>
+      </div>
+      <div class="col-3 text-center">
+            <h4> Приступай! </h4>
+            <p> Выполни задание быстрее и лучше всех. Время побеждать!  </p>
+      </div>
+      <div class="col-3 text-center">
+            <h4>Отправь работу </h4>
+            <p>Время подачи заявок ограничено! Форму для приема работ Вы найдете на сайте </p>
+      </div>
+    </div>
+</section>
+
+<section class="margin-y-md">
+    <h1 class="text-center margin-y-sm"> Выбери направление </h1>
+    <div class="max-width-adaptive-md margin-x-auto">
+        <ol class="grid-auto-md grid-gap-sm items-center text-center">
+            % for i in descriptions:
+                <li>
+                    <div class="">
+                        <a href="novatorweb/{{i.name}}">
+                            <img class="block margin-x-auto" src="{{i.img}}" alt="placeholder">
+                            {{i.name}}
+                        </a>
+                    </div>
+                </li>
+            % end
+            % if not descriptions:
+            при загрузке направлений произошла какая-то ошибка.....
+            % end
+        </ol>
+    </div>
+</section>
+
+<section>
+    % if start_time > 0:
+        <h1 class="text-center margin-y-sm"> Конкурс еще не начался </h1>
+    % elif timer > 0:
+        <h1 class="text-center margin-y-sm"> Конкурс стартовал, удачи! </h1>
+    % else:
+        <h1 class="text-center margin-y-sm"> Приём заявок на конкурс уже закрыт </h1>
+    % end
+    <div class="container text-center">
+        <img src="/images/novator/pdf-circle.png">
+        <h3>Положение о конкурсе</h3>
+    </div>
+
+    <div class="margin-y-sm grid text-center">
+      <div>
+        <a href="{{regulation_NW['name']}}" class="btn btn--primary">Скачать</a>
+      </div>
+    </div>
+</section>
+
+<!--форма
+% if start_time < 0 and timer > 0:
+<section>
+    <h1 class="text-center margin-top-md"> Отправь свою работу </h1>
+    %if bool(novator_web_form):
+        %include(novator_web_form)
+    %elif bool(novator_web_html):
+        {{!novator_web_html}}
+    %else:
+    <h3>Тут должна быть форма для отправки работы на НоваторВеб, но что-то пошло не так . . .  </h3>
+    %end
+</section>
+
+
+% end
+-->
+<section>
+    % if start_time < 240*60*60 and timer > 0:
+        % if 0 < start_time < 240*60*60:
+            <h1 class="text-center margin-y-sm"> До начала конкурса</h1>
+        % elif start_time < 0:
+            <h1 class="text-center margin-y-sm"> До конца конкурса</h1>
+        % end
+    <div class="countdown countdown--grid text-xxl js-countdown justify-center" data-timer="{{(timer if start_time < 0 else start_time)}}" data-labels="Дней , Часов, Минут, Секунд">
+      <p class="countdown__fallback">This project will be launched in one day.</p>
+    </div>
+    % end
+</section>

@@ -1,0 +1,75 @@
+<section class="max-width-adaptive-lg margin-x-auto">
+        <h4 class="margin-bottom-sm">
+        <a href="/admin/questions/{{'FAQ/' + str(name) + '/' if get('name') and name else ''}}" class="no-effect" title="В работы">
+            <i class="fa fa-long-arrow-alt-left"></i></a>
+        Вопросик
+        </h4>
+
+     <form id="questions_form" action="/admin/questions/{{'FAQ/' + name + '/' if get('name') and name else ''}}wath/{{question.id}}"  method="post" enctype="multipart/form-data"> <!---->
+     <div class="grid margin-top-lg">
+
+         <div class="col-2 margin-bottom-sm"><h4> Вопрос: </h4></div>
+         <div class="col-10"> {{question.question}} </div>
+
+
+         <div class="margin-bottom-sm">
+              <label class="form-label margin-bottom-xxs" for="answer">Ответ:
+              </label>
+              <textarea class="form-control width-100% text-sm" name="answer" id="answer"
+              >{{question.answer if question.answer and bool(question.answer) else ""}}</textarea>
+         </div>
+         <script>CKEDITOR.replace("answer");</script>
+
+
+
+         <!--Было просмотрено-->
+         <div class="margin-bottom-sm" style="display: flex;">
+            <div>
+                <h4> Просмотрено? </h4>
+            </div>
+            <div class="switch margin-left-sm">
+                <input class="switch__input" type="checkbox" name="is_wathed" id="is_wathed" {{"checked" if question.is_wathed else ""}}>
+                <label aria-hidden="true" class="switch__label" name="is_wathed" for="is_wathed">Отметить просмотренным</label>
+                <div aria-hidden="true" class="switch__marker"></div>
+            </div>
+        </div>
+
+         <!--Был отправлен ответ -->
+         %if question.emails and bool(question.emails):
+         <div class="margin-bottom-sm" style="display: flex;">
+            <div>
+                <h4> Ответ отправлен? </h4>
+            </div>
+            <div class="switch margin-left-sm">
+                <input class="switch__input" type="checkbox" name="is_send_answer" id="is_send_answer"  {{"checked" if question.is_send_answer else ""}}>
+                <label aria-hidden="true" class="switch__label" name="is_send_answer" for="is_send_answer">
+                    Ответ был отправлен
+                </label>
+                <div aria-hidden="true" class="switch__marker"></div>
+            </div>
+        </div>
+         %end
+
+    %if question.human_names and bool(question.human_names):
+         <h4>Задавшие вопрос:</h4>
+         %for name in question.human_names:
+         <div class="col-2 margin-bottom-sm"><h4> Имя </h4></div>
+         <div class="col-10"> {{name}} </div>
+         %end
+    %end
+
+    %if question.emails and bool(question.emails):
+         <h4>Задавшие вопрос:</h4>
+         %for email in question.emails:
+         <div class="col-2 margin-bottom-sm"><h4> email </h4></div>
+         <div class="col-10"> {{email}} </div>
+         %end
+    %end
+
+           <div class="width-100% text-center margin-bottom-lg">
+             <button type="submit" class="btn btn--primary">Сохранить</button>
+           </div>
+     </div>
+    </form>
+
+</section>

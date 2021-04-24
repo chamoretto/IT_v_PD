@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>{{"Ошибка " + e.status + " | 1000-LIST-NICK"}}</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/skeleton.css">
+  <link rel="stylesheet" href="/css/all.css">
+</head>
+<body class="d-flex flex-column">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand text-gradient nav-brand" href="/">1000-LIST-NICK</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/novatorweb">NovatorWEB</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/blog">Блог</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+  <div class="container mt-4">
+    <h3 class="color-error">Ошибка {{e.status}}</h3>
+    <p class="text-body">{{e.body}}</p>
+    <br>
+    <div class="row">
+      <div class="col-sm-4 my-2">
+        <input type="button" value="Вернуться назад" class="btn btn--primary" onclick="history.back()">
+      </div>
+      <div class="col-sm-4 my-2">
+        <a class="btn btn--primary" href="/">Вернуться на главную</a>
+      </div>
+    </div>
+  </div>
+<footer class="mt-auto py-3 px-5 row align-items-center">
+  <div class="col-6 contacts">
+    <span>Контакты:</span><br>
+    <a href="tel:+78412636780">+7 (8412) 636780</a><br>
+    <a href="tel:+78412636781">+7 (8412) 636781</a><br>
+    <a href="mailto:omip1000@mail.ru">omip1000@mail.ru</a><br>
+  </div>
+  <div class="col-6 media-links text-right align-items-center">
+  <a href="https://www.youtube.com/channel/UC21S9sVTzKc0__CgifzJlow" title="Youtube" target="_blank">
+    <i class="fab fa-youtube fa-lg"></i>
+  </a>
+  <a href="https://vk.com/jag_konon" title="Мой ВК)" target="_blank">
+    <i class="fab fa-vk fa-lg"></i>
+  </a>
+  <a href="https://instagram.com/jag_k_" title="Instagram" target="_blank">
+    <i class="fab fa-instagram fa-lg"></i>
+  </a>
+  <a href="https://github.com/jag-k/novatorWeb" title="GitHub Сайта" target="_blank">
+    <i class="fab fa-github fa-lg"></i>
+  </a>
+  <a href="https://www.facebook.com/1000listnick/" title="Facebook" target="_blank">
+    <i class="fab fa-facebook fa-lg"></i>
+  </a>
+  <a href="https://goo.gl/maps/W6qguK6DfkxEm8Mm7" title="Пенза, Окружная 3б, 231 кб." target="_blank">
+    <i class="fas fa-map-marker-alt fa-lg"></i>
+  </a>
+</div>
+</footer>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery-3.3.1.slim.min.js"></script>
+<script src="/js/popper.min.js"></script>
+<script src="/js/skeleton.js"></script>
+</body>
+</html>

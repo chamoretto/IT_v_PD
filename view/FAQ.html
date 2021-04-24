@@ -1,0 +1,32 @@
+%if get("questions") and bool(questions):
+
+<section class="margin-top-xl">
+  <div class="container max-width-sm">
+    <div class="margin-bottom-lg">
+      <h3 class="text-center">{{questions_title if get("questions_title") else 'Часто задаваемые вопросы'}}</h3>
+    </div>
+
+    <ul class="accordion  js-accordion" data-animation="on" data-multi-items="off">
+        %flag = True
+       %for qu in questions:
+      <li class="accordion__item {{'accordion__item--is-open' if flag else ''}} js-accordion__item">
+        <button class="accordion__header js-tab-focus" type="button">
+           <span class="accordion__header-title">{{qu.question}}</span>
+          <em aria-hidden="true" class="accordion__header-icon"><i></i></em>
+        </button>
+
+        <div class="accordion__panel js-accordion__panel">
+          <div class="accordion__panel-content">
+            <div class="text-component {{'margin-bottom-md' if flag else ''}}"> <!-- margin-bottom-md-->
+                %flag = False
+              {{!qu.answer}}
+
+            </div>
+          </div>
+        </div>
+      </li>
+        %end
+    </ul>
+  </div>
+</section>
+%end

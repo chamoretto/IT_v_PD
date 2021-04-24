@@ -1,0 +1,29 @@
+<section class="feature margin-top-md margin-bottom-lg">
+
+  <div class="container max-width-adaptive-lg">
+    <div class="grid grid-gap-md justify-center">
+      <div class="col-2@lg order-1">
+         <img class="margin-x-auto " src="{{data.img}}">
+      </div>
+
+      <div class="col-4@lg order-2">
+        <div class="text-component margin-top-lg">
+          <h4> обучение по направлению </h4>
+          <h1 style="font-size: 5em;">{{data.name}}</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="margin-bottom-md"><center>
+  %for i in data.video_lessons:
+  <div class="container max-width-adaptive-lg" >
+    <h2 class="margin-bottom-sm"> {{i}} часть </h2>
+    <video width="100%" height="100%" controls="controls"  style="border-radius: 10px;">
+      <!--poster="/images/videostudy/prev1.jpg"-->
+      <source src="{{data.video_lessons[i]}}">
+    </video>
+  </div>
+  %end
+
+</center></section>

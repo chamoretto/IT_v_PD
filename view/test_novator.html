@@ -1,0 +1,7 @@
+    %if bool(novator_web_form):
+        %include(novator_web_form)
+    %elif bool(novator_web_html):
+        {{!novator_web_html}}
+    %else:
+    <h3>Тут должна быть форма для отправки работы на НоваторВеб, но что-то пошло не так . . .  </h3>
+    %end

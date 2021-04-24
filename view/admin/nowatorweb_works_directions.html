@@ -1,0 +1,107 @@
+<div class="container max-width-adaptive-lg">
+
+<h3 class="margin-bottom-sm">
+  <a href="/admin/novatorweb_works" class="no-effect" title="В направления с работами"><i class="fa fa-long-arrow-alt-left"></i></a>
+  Отправленные работы
+  % if direction:
+    <span class="counter">{{len(direction.work_childrens)}}</span>
+  % end
+</h3>
+% if direction and bool(direction):
+  <form id="workchildren_plase" method="post" action="/admin/novatorweb_works/{{direction.name}}/save_plase" enctype="multipart/form-data">
+<table class="max-width-lg margin-x-auto table js-table table--expanded@sm js-table width-100% margin-bottom-md">
+  <thead class="table__header table__header--sticky">
+    <tr class="table__row">
+      <th class="table__cell text-center" scope="col">Место</th>
+      <th class="table__cell text-center" scope="col">Имя</th>
+      <th class="table__cell text-center" scope="col">email</th>
+      <th class="table__cell text-center" scope="col">Ссылка на соц. сеть</th>
+      <th class="table__cell text-right" scope="col">Подробнее...</th>
+    </tr>
+  </thead>
+  <tbody  class="table__body">
+  %_len = len(direction.work_childrens)
+  % for work in direction.work_childrens:
+    <tr class="table__row">
+      <td class="table__cell text-center" role="cell">
+        <label for="plase_{{work.id}}"></label>
+
+        <div class="select inline-block width-100% js-select margin-x-auto" data-trigger-class="btn btn--subtle">
+          <select name="{{work.id}}" id="plase_{{work.id}}" {{'value=' + str(work.place) if work.place else ""}}>
+            %for o in range(1,_len + 1):
+              <option value="{{o}}" {{"selected" if work.place and work.place == o else ""}}>{{o}}</option>
+            %end
+          </select>
+
+          <svg class="icon icon--xs margin-left-xxxs" aria-hidden="true" viewBox="0 0 16 16">
+            <polygon points="3,5 8,11 13,5 "></polygon>
+          </svg>
+
+        </div>
+
+      </td>
+      <td class="table__cell text-center" role="cell">
+        % if work.name:
+          {{work.name}}
+        % else:
+         —
+        % end
+      </td>
+      <td class="table__cell text-center" role="cell">{{work.email}}</td>
+      <td class="table__cell text-center" role="cell">
+        % if work.socials:
+          {{work.socials}}
+        % else:
+         —
+        % end
+      </td>
+      <td class="table__cell text-right" role="cell">
+        <a class=" margin-right-lg no-effect" href="/admin/novatorweb_works/{{direction.name}}/{{work.id}}" title="Перейти">
+         <i class="fas fa-angle-double-right" style="color:var(--color-primary); font-size: 2em;"></i>
+        </a>
+      </td>
+    </tr>
+  % end
+  </tbody>
+</table>
+    <button class="btn btn--primary" type="submit">Сохранить места</button>
+</form>
+    %if get("archive") and archive:
+      <div class="container text-center">
+            <img src="/images/novator/pdf-circle.png">
+            <h3> Архив с работами по направлению {{direction.name}}</h3>
+            <h4> Размер файла "x" кб</h4>
+            <div class="margin-y-sm grid text-center">
+              <div> <a class="btn btn--primary margin-xs" href="{{archive.replace("public", "")}}">Скачать</a> </div>
+              <div>
+                <form id="rewrite_all_archive" method="post" enctype="multipart/form-data">
+                  <div>
+                    <button class="btn btn--primary" type="submit" name="submit"  onclick="loadingButton(this)">Перезаписать</button>
+                  </div>
+                </form>
+                <!--<div class="grid margin-top-lg"> -->
+
+                <h4 class="margin-top-sm">Осторожнее с этим! операция может занять некоторое время, в процессе которого сайт может не отвечать</h4>
+
+              </div>
+            </div>
+    </div>
+  %else:
+  <div class="grid margin-top-lg">
+          <form id="create_all_archive" method="post" enctype="multipart/form-data">
+            <div>
+                <button class="btn btn--primary" type="submit" name="submit" id="id_submit" onclick="loadingButton(this)">
+                  Создать Архив с работами по этому направлению</button>
+            </div>
+        </form>
+    <div class="grid margin-top-lg">
+      <h4>Осторожнее с этим!</h4>
+      <h4> Операция может занять некоторое время, в процессе которого сайт может не отвечать</h4>
+    </div>
+    <div class="grid margin-top-lg">
+    </div>
+    </div>
+    %end
+% else:
+<h4>Работ нет:</h4>
+% end

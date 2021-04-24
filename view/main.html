@@ -1,0 +1,110 @@
+<section class="margin-y-md">
+    <div class="parent grid gap-md justify-between">
+        <div class="col-1 text-center">
+          % for s in socials:
+            <a class="block margin-bottom-sm no-effect" href="{{s.link}}" target="_blank" title="{{s.name}}">
+              <i class="icon icon--md fa fa-{{s.icon}} color-contrast-higher"></i>
+            </a>
+          % end
+        </div>
+        <div class="col-6" >
+          <div class="container max-width-adaptive-lg">
+            <div class="grid items-center">
+                <div class="col-6@lg order-1@md">
+                     <img  src="/images/main_page/main-hero.png">
+                </div>
+                <div class="col-6@lg order-2@md" style="transform: translate(-50px,0);">
+                    <div class="text-component">
+                        <h1 style="font-size: 3em;">Создай</h1>
+                        <h1 style="font-size: 3em;">Своё</h1>
+                        <h1 style="font-size: 3em;">Будущее</h1>
+                        <p> Если ты хочешь заявить о себе - тебе к нам! Здесь ты можешь реализовать свои идеи, раскрыть таланты и найти новых друзей! </p>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-1" style="writing-mode:vertical-lr;"> Твой личный сорт профессионального роста  </div>
+    </div>
+</section>
+
+%include("view/events_file.html")
+
+
+<!--Выпускники -->
+<section class="max-width-adaptive-lg margin-x-auto">
+    <div class="margin-top-xl">
+        <h1 class="text-center">Наши выпускники</h1>
+    </div>
+    <div class="slideshow js-slideshow slideshow--transition-slide" data-swipe="on">
+
+        <ul class="slideshow__content">
+            % for i in graduates:
+                <li class="slideshow__item js-slideshow__item">
+                    <div class='container max-width-sm'>
+                        <div class="text-component">
+                            <p class="text-center">{{i.text}}</p>
+                            
+                            <div class="container max-width-adaptive-sm margin-top-lg">
+                              <div class="grid items-center justify-center">
+                                <div class="col-6@sm margin-left-md order-2@sm">
+                                  <div class="text-component">
+                                    <p>
+                                       {{i.people.name}}<br>
+                                       {{i.people.studied_direction}}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div class=" margin-x-auto col-3 order-1@sm">
+                                  <img class="col-11@sm" src="{{i.people.image}}" alt="Image description">
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            % end
+        </ul>
+
+        <ul>
+            <li class="slideshow__control js-slideshow__control">
+                <button class="reset slideshow__btn js-tab-focus">
+                    <svg class="icon" viewBox="0 0 32 32"><title>Предыдущий</title><path d="M20.768,31.395L10.186,16.581c-0.248-0.348-0.248-0.814,0-1.162L20.768,0.605l1.627,1.162L12.229,16 l10.166,14.232L20.768,31.395z"></path></svg>
+                </button>
+            </li>
+
+            <li class="slideshow__control js-slideshow__control">
+                <button class="reset slideshow__btn js-tab-focus">
+                    <svg class="icon" viewBox="0 0 32 32"><title>Следущий</title><path d="M11.232,31.395l-1.627-1.162L19.771,16L9.605,1.768l1.627-1.162l10.582,14.813 c0.248,0.348,0.248,0.814,0,1.162L11.232,31.395z"></path></svg>
+                </button>
+            </li>
+        </ul>
+    </div>
+</section>
+<!--слайды-->
+
+<!--спонсоры -->
+<section>
+    <div class="container max-width-adaptive-lg margin-top-xl">
+        <div class="margin-bottom-lg">
+            <h1 class="text-center">Организаторы</h1>
+        </div>
+
+        <ol class="text-points  grid grid-gap-sm">
+            % for i in partners:
+            <li class="col-4@lg">
+                <div class="card  height-xxxxl ">
+                    <img class= "block margin-x-auto margin-top-xs margin-bottom-md" style="height: 120px; width:120px; border-radius: 10px;" src="{{i.image}}" alt="Card preview img">
+
+                    <div class="card_content">
+                        <div class="text-component text-center ">
+                            <p class="text-sm color-contrast-medium ">{{i.name}}</p>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            % end
+        </ol>
+    </div>
+</section>

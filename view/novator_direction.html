@@ -1,0 +1,223 @@
+<section class="feature margin-top-md">
+    <div class="container max-width-adaptive-lg">
+        <div class="grid gap-md justify-center">
+
+            <div class="col-2 order-1 margin-x-md">
+                <img class="margin-x-auto " src="{{data.img}}">
+            </div>
+
+            <div class="col-4 order-2">
+                <div class="text-component margin-top-lg">
+                    <h4>Задание на направление </h4>
+                    <h1 style="font-size: 5em;">{{data.name}}</h1>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<div class="overflow-hidden padding-y-xl">
+    <h1 class="text-center margin-top-lg margin-bottom-sm">
+        Для участия в конкурсе необходимо
+    </h1>
+    <div class="container" style="">
+        <div class="v-timeline v-timeline--icons js-v-timeline" data-animation="on">
+
+            <!-- <section class="v-timeline__section js-v-timeline__section"></section> -->
+            <section class="v-timeline__section js-v-timeline__section">
+                <div class="v-timeline__marker bg-primary border border-3 border-bg shadow-xs" aria-hidden="true">
+                    <h4 class="text-center"> 1 </h4>
+                </div>
+
+                <div class="v-timeline__items-group">
+                    <div class="v-timeline__item bg padding-md radius-md shadow-xs bg-contrast-medium">
+                        <div class="v-timeline__date margin-bottom-sm">
+                            <time class="v-timeline__date-value" datetime="2020-03-18T00:00"></time>
+                        </div>
+
+                        <div class="text-component">
+                            <h2> {{data.description_title}} </h2>
+                            % if start_time < 0 and timer > 0:
+                            <p>Файл с заданием можно скачать <a href="#file-z">здесь</a></p>
+                            %end
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- <section class="v-timeline__section js-v-timeline__section"></section> -->
+            <section class="v-timeline__section js-v-timeline__section ">
+                <div class="v-timeline__marker bg-primary border border-3 border-bg shadow-xs" aria-hidden="true">
+                    <h4 class="text-center"> 2 </h4>
+                </div>
+
+                <div class="v-timeline__items-group">
+                    <div class="v-timeline__item bg padding-md radius-md shadow-xs bg-contrast-medium">
+                        <div class="v-timeline__date margin-bottom-sm">
+                            <time class="v-timeline__date-value" datetime="2020-03-26T00:00"></time>
+                        </div>
+
+                        <div class="text-component">
+                            <h2> Выполнить все действия, описанные внутри файла с заданием. </h2>
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- <section class="v-timeline__section js-v-timeline__section"></section> -->
+            <section class="v-timeline__section js-v-timeline__section ">
+                <div class="v-timeline__marker bg-primary border border-3 border-bg shadow-xs" aria-hidden="true">
+                    <h4 class="text-center"> 3 </h4>
+                </div>
+
+                <div class="v-timeline__items-group">
+                    <div class="v-timeline__item bg padding-md radius-md shadow-x bg-contrast-medium">
+                        <div class="v-timeline__date margin-bottom-sm">
+                            <time class="v-timeline__date-value" datetime="2020-04-08T00:00"></time>
+                        </div>
+
+                        <div class="text-component">
+                            <h2> Отправить работу. </h2>
+                            <p>
+                                Для отправки работы необходимо создать папку на Google Диск, вложить в нее
+                                <a {{'href="https://docs.google.com/document/d/1DMOoQ6Dt3sbzPpYtUtDRXwolsjLgRaFhxzHZ96h4tmY/edit?usp=sharing"' if start_time < 0 and timer > 0 else '' }}>пояснительную записку</a> и
+                                выполненную работу. Затем дать <a {{ 'href="https://support.google.com/drive/answer/2494822?co=GENIE.Platform%3DDesktop&hl=ru"' if start_time < 0 and timer > 0 else '' }}>доступ к папке</a>
+                                 и отправить ссылку на эту папку на почту,
+                                указанную ниже.
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+        <p class="text-center margin-y-md">Наша почта: <a href="mailto:novatorweb@biznes-penza.ru">novatorweb@biznes-penza.ru</a>
+        </p>
+    </div>
+</div>
+
+<!-- положение-->
+<section class="">
+    % if start_time > 0:
+    <h1 class="text-center margin-y-md"> Конкурс еще не начался . . . ( </h1>
+    % elif timer > 0:
+    <h1 class="text-center margin-y-md"> Конкурс стартовал, удачи! </h1>
+
+    <div class="container text-center file-z">
+        <img src="/images/novator/pdf-circle.png">
+        <h3> Задание на направление {{data.name}} </h3>
+        <div class="margin-y-sm grid text-center">
+            <div>
+                <a href="{{data.file}}" name="file-z" class="btn btn--primary">Посмотреть</a>
+            </div>
+        </div>
+    </div>
+    % else:
+    <h1 class="text-center margin-y-md"> Приём заявок на конкурс уже закрыт </h1>
+    % end
+
+
+</section>
+
+<!-- эксперты -->
+%if bool(data.experts):
+<section class="max-width-adaptive-lg margin-x-auto">
+    <h1 class="text-center margin-top-md  "> Эксперты направления {{data.name}}</h1>
+
+    <div class="grid margin-y-md grid-gap-md justify-center ">
+        %for expert in data.experts:
+        <div class="col-5 padding-sm margin-top-xxxl"
+             style="border: dashed 4px var(--color-primary); border-radius: 10px;">
+            <div class="text-center height-lg">
+                <img class="col-6" src="{{expert.image}}" style="border-radius: 50%; transform: translate(0,-80%)">
+            </div>
+
+            <h3 class="text-center margin-y-xs">{{expert.name}}</h3>
+            <p class="text-center">{{expert.description}}</p>
+        </div>
+        %end
+        <!--<div class="col-5 padding-sm margin-top-xxxl" style="border: dashed 4px var(--color-primary); border-radius: 10px;">
+        <div class="text-center height-lg">
+            <img src="/images/novator/files/expert2.jpg" style="border-radius: 50%; transform: translate(0,-80%)">
+        </div>
+        <h3 class="text-center margin-y-xs"> Артём Миронов </h3>
+        <p class="text-center">Большой опыт работы с фирменным стилем и брендирования компаний и мероприятий,
+           в число которых входит и программа 1000listnick.
+        </p>
+      </div> -->
+    </div>
+</section>
+%end
+
+
+<!--форма
+% if start_time < 0 and timer > 0:
+<section>
+    <h1 class="text-center margin-top-md"> Отправь свою работу </h1>
+    %if bool(novator_web_form):
+        %include(novator_web_form)
+    %elif bool(novator_web_html):
+        {{!novator_web_html}}
+    %else:
+    <h3>Тут должна быть форма для отправки работы на НоваторВеб, но что-то пошло не так . . .  </h3>
+    %end
+</section>
+-->
+<!--
+<section>
+    <h1 class="text-center margin-top-md"> Отправь свою работу </h1>
+    <form class="container width-60% ">
+      <fieldset class="margin-y-md">
+            <div class="margin-bottom-sm">
+              <label class="form-label margin-bottom-xs" for="inputName">Имя</label>
+              <input class="form-control text-sm width-100%" type="text" name="inputName" id="inputName" required>
+            </div>
+
+            <div class="margin-y-sm">
+              <label class="form-label margin-bottom-xs" for="inputEmail">Email</label>
+              <input class="form-control text-sm width-100%" type="email" name="inputEmail" id="inputEmail" placeholder="email@myemail.dom" required>
+            </div>
+            <div>
+
+              <label class="form-label margin-bottom-xs" for="inputEmail">Направление</label>
+              <input class="form-control text-sm width-100%" type="text" name="inputDirection" id="inputDirection" required>
+            </div>
+
+      </fieldset>
+
+        <fieldset class="file-upload margin-y-sm">
+          <label for="upload1" class="file-upload__label btn btn--subtle">
+            <span class="file-upload__text file-upload__text--has-max-width">Прикрепить файл</span>
+          </label>
+
+          <input type="file" class="file-upload__input" name="upload1" id="upload1">
+        </fieldset>
+
+      <div class="width-100% text-center margin-bottom-lg">
+        <button class="btn btn--primary">Отправить</button>
+      </div>
+    </form>
+</section>
+-->
+% end
+
+<!--таймер-->
+% if start_time < 240*60*60 and timer > 0:
+<section>
+
+    % if 0 < start_time < 240*60*60:
+    <h1 class="text-center margin-top-md"> До начала конкурса</h1>
+    % elif start_time < 0:
+    <h1 class="text-center margin-top-md"> До конца конкурса</h1>
+    % end
+    <div class="countdown countdown--grid text-xxl js-countdown justify-center"
+         data-timer="{{(timer if start_time < 0 else start_time)}}" data-labels="Дней, Часов, Минут, Секунд">
+        <p class="countdown__fallback">This project will be launched in one day.</p>
+    </div>
+
+</section>
+% end

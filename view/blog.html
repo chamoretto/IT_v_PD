@@ -1,0 +1,118 @@
+<div >
+  <img class="width-100%" src="/images/blog/blog-hero.jpg">
+</div>
+%archive = []
+<div class="grid justify-between max-width-adaptive-xl margin-x-auto margin-y-md">
+
+    <div class="col-7@md order-1 " id="is">
+
+<!--      карточка поста-->
+      %if bool(news):
+        %for i in filter(filt, news):  #
+          <div class="margin-y-lg border-grey">
+            <img class="width-100%" style="border-radius: 20px 20px 0 0;" src="{{i.img}}">
+            <div class="padding-sm">
+              <h3 class="margin-y-sm"> {{i.title}} </h3>
+              <hr class="hr-black">
+              <div class="margin-y-sm">
+                <i class="fas fa-user-alt margin-left-sm"></i> My admin
+                <i class="far fa-clock margin-left-sm"></i> {{nice_time(now_day, i.date)}}
+
+                <i class="far fa-comment margin-left-sm"></i> 3 коментария
+              </div>
+              <p> {{i.smallText}}</p>
+              <div class="margin-y-md">
+                <a href="/blog/{{i.link}}" class="btn btn--primary"> Подробнее </a>
+              </div>
+            </div>
+          </div>
+          %year = str(i.date)[:4]
+          %if year not in archive:
+              %archive.append(year)
+          %end
+        %end
+      %end
+      
+      <div id="add">
+        <div class="margin-y-lg border-grey">
+          <img class="width-100%" style="border-radius: 20px 20px 0 0;" src="/images/blog/post1.jpg">
+          <div class="padding-sm">
+            <h3 class="margin-y-sm"> 1000-list-nick на медиафоруме </h3>
+            <hr class="hr-black">
+            <div class="margin-y-sm">
+              <i class="fas fa-user-alt margin-left-sm"></i> My admin
+              <i class="far fa-clock margin-left-sm"></i> 6 дней назад
+              <i class="far fa-comment margin-left-sm"></i> 3 коментария
+            </div>
+            <p> 4-7 сентября в Пензе впервые проходит Всероссийский молодежный медиафорум
+              «mediaАКЦЕНТ». Молодых журналистов региональных СМИ, фотографов, видеографов,
+              специалистов сферы SMM...
+            </p>
+            <div class="margin-y-md">
+              <a href="/blog/mediaforum" class="btn btn--primary"> Подробнее </a>
+            </div>
+          </div>
+       </div>
+      </div>
+    </div>
+
+
+  <script>
+
+    window.addEventListener("scroll", function(){
+
+        var block = document.getElementById('is');
+        var addition = document.getElementById('add').innerHTML
+        var counter = 1;
+
+        var contentHeight = block.offsetHeight;      // 1) высота блока контента вместе с границами
+        var yOffset       = window.pageYOffset;      // 2) текущее положение скролбара
+        var window_height = window.innerHeight;      // 3) высота внутренней области окна документа
+        var y             = yOffset + window_height;
+
+        // если пользователь достиг конца
+        if(y >= contentHeight)
+        {
+            //загружаем новое содержимое в элемент
+            block.innerHTML = block.innerHTML + addition ;
+        }
+    });
+
+  </script>
+
+  <!--  правая панель-->
+    <div class="col-4@md order-2 ">
+        <div class="search-input search-input--icon-right col-6 margin-x-auto margin-y-lg" >
+          <input class="form-control width-100%" type="search" name="searchInputX" id="searchInputX" placeholder="Search..." aria-label="Search">
+          <button class="search-input__btn">
+            <svg class="icon" viewBox="0 0 24 24">
+                <title>Submit</title>
+                <g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" stroke="currentColor" fill="none" stroke-miterlimit="10">
+                    <line x1="22" y1="22" x2="15.656" y2="15.656"></line>
+                    <circle cx="10" cy="10" r="8"></circle>
+                </g>
+            </svg>
+          </button>
+        </div>
+
+        <div class="margin-bottom-md">
+            <h3> Популярные посты</h3>
+            <p class="margin-top-sm"> <a class="color-contrast-higher" style="text-decoration: none;" href="/"> Старт сезону дан!</a> <hr class="hr-black"> </p>
+            <p class="margin-top-sm"> <a class="color-contrast-higher" style="text-decoration: none;" href="/"> Старт сезону дан!</a> <hr class="hr-black"> </p>
+            <p class="margin-top-sm"> <a class="color-contrast-higher" style="text-decoration: none;" href="/"> Старт сезону дан!</a> <hr class="hr-black"> </p>
+            <p class="margin-top-sm"> <a class="color-contrast-higher" style="text-decoration: none;" href="/"> Старт сезону дан!</a> <hr class="hr-black"> </p>
+            <p class="margin-top-sm"> <a class="color-contrast-higher" style="text-decoration: none;" href="/"> Старт сезону дан!</a> <hr class="hr-black"> </p>
+        </div>
+        %if len(archive) > 1:
+        <div class="margin-bottom-md">
+
+            <h3> Архивы </h3>
+            %for i in archive:
+            <p class="margin-top-sm"> <a class="color-contrast-higher" style="text-decoration: none;" href="/blog/archive/{{i}}">{{i}}</a> <hr class="hr-black"> </p>
+            %end
+        </div>
+        %end
+    </div>
+
+</div>
+

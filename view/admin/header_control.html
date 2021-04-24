@@ -1,0 +1,51 @@
+<section class="max-width-adaptive-lg margin-x-auto">
+    <h4 class="margin-bottom-sm">
+        <a href="/admin/" class="no-effect" title="В админку"><i class="fa fa-long-arrow-alt-left"></i></a>
+        Управление ссылками в меню навигации
+    </h4>
+    %if get("header"):
+
+    <div class="grid margin-top-lg">
+        <%
+        _dict = {
+            "about": "О нас",
+            "events": "События",
+            "competition": "Новатор веб",
+            "videostudy": "Videostudy",
+            "blog": "Блог",
+            "MO_Novator": "Отряд Новатор",
+            "competition_result": "Результаты новаторВеб"
+        }
+        %>
+        <form id="name_novator" action="/admin/header_control" method="post" enctype="multipart/form-data">
+             <!--<fieldset class="margin-bottom-md">
+                <legend class="form-legend">Изменение названия конкурса</legend>
+                <div class="margin-bottom-sm">
+                  <label class="form-label margin-bottom-xxs" for="novatir_name">Название</label>
+                  <input class="form-control width-100% text-sm" placeholder="Введите новое название конкурса" type="text" name="novatir_name" id="novatir_name" value="{{website['competition']["competition_name"] if get('website') else ' '}}">
+                </div>
+              </fieldset>-->
+            <div class="grid col-6 grid-gap-sm">
+                %for link, val in header.items():
+                    <div class="col-6@md">
+                        <fieldset class="margin-bottom-md">
+                            <h4 class="text-start margin-bottom-sm"> {{_dict[link]}} </h4>
+                            <div class="margin-bottom-sm" style="display: flex;">
+                                <div class="switch margin-left-sm">
+                                    <input class="switch__input" type="checkbox" name="{{link}}" id="{{link}}" value="{{link}}" {{"checked" if val else ""}}>
+                                    <label form="name_novator" aria-hidden="true" class="switch__label" for="{{link}}">Показать</label>
+                                    <div aria-hidden="true" class="switch__marker"></div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                %end
+            </div>
+
+            <div>
+                <button class="btn btn--primary" type="submit" onclick="loadingButton(this)">Сохранить</button>
+            </div>
+        </form>
+    </div>
+    %end
+</section>
