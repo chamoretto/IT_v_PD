@@ -7,3 +7,5 @@ python-jose[cryptography]
 passlib[bcrypt]
 pip install jinja2
 pip install aiofiles
+pillow
+configparser
