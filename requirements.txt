@@ -1,3 +1,9 @@
 pony
 fastapi[all]
 uvicorn[standard]
+pydantic
+python-multipart
+python-jose[cryptography]
+passlib[bcrypt]
+pip install jinja2
+pip install aiofiles
