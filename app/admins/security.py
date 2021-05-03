@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from fastapi import Depends, HTTPException, status, APIRouter
+from fastapi import Depends, HTTPException, status, APIRouter, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.responses import HTMLResponse, FileResponse
 from jose import jwt
@@ -54,12 +54,7 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@admin.get("/admin")
-async def login_admin():
-    return FileResponse("view/login.html")
+@admin.get("/admin", response_class=HTMLResponse)
+async def login_admin(request: Request):
+    return login_templates.TemplateResponse("login.html", {"request": request, "who": "Админа", "auth_url": token_path})
 
-
-@admin.get("/admin_test_db")
-@db_session
-def login_admin():
-    return {"data": HumanInDB.from_orm(Admin[1])}

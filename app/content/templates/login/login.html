@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Авторизация {{who}}</title>
 </head>
 <body>
-<form action="/admin_token" method="post">
+<h1>Авторизация {{who}}</h1>
+<form action="{{auth_url}}" method="post">
     <input name="username" placeholder="Ваш логин" data-name="username" id="oauth_username">
     <input name="password" placeholder="Ваш пароль" type="password" data-name="password"  id="oauth_password">
     <input type="submit">

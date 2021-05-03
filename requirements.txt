@@ -5,7 +5,7 @@ pydantic
 python-multipart
 python-jose[cryptography]
 passlib[bcrypt]
-pip install jinja2
-pip install aiofiles
+jinja2
+aiofiles
 pillow
 configparser
