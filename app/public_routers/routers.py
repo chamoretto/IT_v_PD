@@ -1,4 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter,Request
+from fastapi.responses import HTMLResponse
+
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -27,3 +29,11 @@ public_router.mount("/stiles", StaticFiles(directory="content/stiles"), name="st
 public_router.mount("/fonts", StaticFiles(directory="content/fonts"), name="fonts")
 public_router.mount("/docs", StaticFiles(directory="content/public/docs"), name="docs")
 public_router.mount("/img", StaticFiles(directory="content/public/images"), name="img")
+
+
+
+@public_router.get('/test_jinja', response_class=HTMLResponse)
+async def start_public_router(request: Request):
+    return login_templates.TemplateResponse(
+        "login.html",
+        {"request": request, "who": "Редактораdffffffffffff", "auth_url": '/' + "token_path"})

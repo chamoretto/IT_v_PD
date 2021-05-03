@@ -80,11 +80,12 @@ def generate_security(entity,
             if entity.exists(username=username):
                 human_db = entity.get(username=username)
                 return HumanInDB.from_orm(human_db)
+            print('---------', username)
 
     def authenticate_human(username: str, password: str):
 
         """ Аунтидификация пользователя"""
-
+        print(username)
         human = getter_human(username)
         if not human:
             return False

@@ -3,13 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <title>Авторизация {{who}}</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<!--    <script defer src="{# {# url_for('scripts', path='/login.js') #}#}"></script>-->
 </head>
 <body>
 <h1>Авторизация {{who}}</h1>
-<form action="{{auth_url}}" method="post">
+<form action="{{auth_url}}" method="post" onsubmit="return false">
     <input name="username" placeholder="Ваш логин" data-name="username" id="oauth_username">
     <input name="password" placeholder="Ваш пароль" type="password" data-name="password"  id="oauth_password">
-    <input type="submit">
+    <input type="submit" id="submit">
+    <script >
+        $('#submit').click((event) => {
+            console.log("авторизация")
+            event.preventDefault();
+            // const login_form = new FormData();
+            // login_form.append('username', $("#username").val());
+            // login_form.append('password', $("#password").val());
+
+            $.ajax({
+                url: '{{auth_url}}',
+                headers: {
+                    "Accept": "application/json, text/plain, */*",
+                    "Authorization": "Basic Og==",
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+                type: 'post',
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                data: $("#oauth_username, #oauth_password").serialize(),
+
+                success: data => {  }
+            });
+        });
+
+        console.log("{{who}}")
+    </script>
 </form>
 </body>
 </html>
