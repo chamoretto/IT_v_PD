@@ -28,7 +28,6 @@ def generate_security(oauth2_scheme, secret_key, entity,
                           detail="Could not validate credentials",
                           headers={"WWW-Authenticate": "Bearer"},
                       )):
-
     """
         Генерирукм функции безопасности для абстрактного уровня доступа
 
