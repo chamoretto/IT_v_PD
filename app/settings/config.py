@@ -31,5 +31,7 @@ MIGRATIONS_DIR = Path(HOME_DIR, cfg.get('paths', "migration_dir"))
 TEST_DB = Path(HOME_DIR, cfg.get('paths', "test_db"), cfg.get('db', "test_db_name"))
 DB_BACKUPS = Path(HOME_DIR, cfg.get('paths', "db_backups"))
 
+print(DB_PATH)
+
 if __name__ == '__main__':
     chdir(HOME_DIR)
