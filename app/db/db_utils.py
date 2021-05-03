@@ -1,4 +1,5 @@
 from pony.orm import db_session, commit
+from datetime import date
 
 from app.db import raw_models as models
 from app.db.raw_models import db
@@ -140,6 +141,43 @@ def connect_with_db(db_path=DB_PATH, deep=0, db_l=db):
                     name="Daniil",
                     surname="D'yachkov",
                     email="rkbcu@mail.ru",
+                )
+                commit()
+            if not models.Developer.exists(username="admin"):
+                models.Developer(
+                    username="admin",
+                    hash_password=get_password_hash("admin"),
+                    name="Daniil",
+                    surname="D'yachkov",
+                    email="rkbcu@mail.ru",
+                )
+                commit()
+            if not models.Smm.exists(username="admin"):
+                models.Smm(
+                    username="admin",
+                    hash_password=get_password_hash("admin"),
+                    name="Daniil",
+                    surname="D'yachkov",
+                    email="rkbcu@mail.ru",
+                )
+                commit()
+            if not models.DirectionExpert.exists(username="admin"):
+                models.DirectionExpert(
+                    username="admin",
+                    hash_password=get_password_hash("admin"),
+                    name="Daniil",
+                    surname="D'yachkov",
+                    email="rkbcu@mail.ru",
+                )
+                commit()
+            if not models.User.exists(username="admin"):
+                models.User(
+                    username="admin",
+                    hash_password=get_password_hash("admin"),
+                    name="Daniil",
+                    surname="D'yachkov",
+                    email="rkbcu@mail.ru",
+                    age=date(2004, 4, 4)
                 )
                 commit()
 

@@ -11,18 +11,18 @@ from app.utils.pydantic_security import *
 from app.settings.config import cfg
 from app.dependencies import *
 from app.db.raw_models import User
-from app.utils.utils_of_security import generate_security
+from app.utils.utils_of_security import generate_security, basic_login
 
 
 SECRET_KEY = cfg.get('keys', "user")
 ACCESS_TOKEN_TIME = int(cfg.get('keys', "user_time"))
 token_path = "user_token"
-user_oauth2_scheme = OAuth2PasswordBearer(tokenUrl=token_path)
+# user_oauth2_scheme = OAuth2PasswordBearer(tokenUrl=token_path)
 [get_user,
  authenticate_user,
  get_current_user,
  create_user_access_token
- ] = generate_security(user_oauth2_scheme, SECRET_KEY, User)
+ ] = generate_security(User)
 
 user = APIRouter(
     tags=["user"],
@@ -34,18 +34,14 @@ user = APIRouter(
 @user.post('/' + token_path, response_model=Token)
 @db_session
 def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authenticate_user(form_data.username, form_data.password)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_TIME)
-    access_token = create_user_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
-    )
-    return {"access_token": access_token, "token_type": "bearer"}
+    if form_data.scopes:
+        form_data.scopes = set(form_data.scopes.append("user"))
+    else:
+        form_data.scopes = ["user"]
+    return basic_login(form_data,
+                       authenticate=authenticate_user,
+                       access_token_time=ACCESS_TOKEN_TIME,
+                       create_access_token=create_user_access_token)
 
 
 @user.get("/user", response_class=HTMLResponse)

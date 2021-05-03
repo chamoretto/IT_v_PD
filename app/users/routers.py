@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Security
 
 from app.dependencies import *
 
@@ -11,11 +11,12 @@ from app.utils.pydantic_security import HumanInDB
 user = APIRouter(
     prefix="/user",
     tags=["user"],
-    dependencies=[Depends(open_db_session), Depends(get_current_user)],
+    dependencies=[Depends(open_db_session),
+                  Security(get_current_user, scopes=["user"])],
     responses={404: {"description": "Not found"}},
 )
 
 
-@user.get('/')
+@user.get('/test')
 async def start_user():
     return {1: 1}

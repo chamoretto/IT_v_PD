@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from app.pydantic_models.standart_methhods_redefinition import BaseModel
 
@@ -10,6 +10,7 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: Optional[str] = None
+    scopes: List[str] = []
 
 
 class Human(BaseModel):

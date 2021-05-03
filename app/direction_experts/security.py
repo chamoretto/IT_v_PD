@@ -11,7 +11,7 @@ from app.utils.pydantic_security import *
 from app.settings.config import cfg
 from app.dependencies import *
 from app.db.raw_models import DirectionExpert
-from app.utils.utils_of_security import generate_security
+from app.utils.utils_of_security import generate_security, basic_login
 
 
 SECRET_KEY = cfg.get('keys', "direction_expert")
@@ -22,7 +22,7 @@ direction_expert_oauth2_scheme = OAuth2PasswordBearer(tokenUrl=token_path)
  authenticate_direction_expert,
  get_current_direction_expert,
  create_direction_expert_access_token
- ] = generate_security(direction_expert_oauth2_scheme, SECRET_KEY, DirectionExpert)
+ ] = generate_security(DirectionExpert)
 
 direction_expert = APIRouter(
     tags=["direction_expert"],
@@ -34,18 +34,14 @@ direction_expert = APIRouter(
 @direction_expert.post("/" + token_path, response_model=Token)
 @db_session
 def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    direction_expert = authenticate_direction_expert(form_data.username, form_data.password)
-    if not direction_expert:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_TIME)
-    access_token = create_direction_expert_access_token(
-        data={"sub": direction_expert.username}, expires_delta=access_token_expires
-    )
-    return {"access_token": access_token, "token_type": "bearer"}
+    if form_data.scopes:
+        form_data.scopes = set(form_data.scopes.append("direction_expert"))
+    else:
+        form_data.scopes = ["direction_expert"]
+    return basic_login(form_data,
+                       authenticate=authenticate_direction_expert,
+                       access_token_time=ACCESS_TOKEN_TIME,
+                       create_access_token=create_direction_expert_access_token)
 
 
 @direction_expert.get("/direction_expert", response_class=HTMLResponse)

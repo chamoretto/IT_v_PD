@@ -18,20 +18,57 @@ class Human(db.Entity):
     description = Optional(str)
 
 
-class Admin(Human):
-    pass
+class Admin(db.Entity):
+    id = PrimaryKey(int, auto=True)
+    username = Required(str, unique=True)  # login
+    hash_password = Required(str, 8192)
+    name = Required(str)
+    surname = Required(str)
+    email = Required(str, unique=True)
+    # contacts = Optional('Contacts')
+    photo = Optional(str)
+    status = Optional(str)
+    description = Optional(str)
 
 
-class User(Human):
+class User(db.Entity):
+    id = PrimaryKey(int, auto=True)
+    username = Required(str, unique=True)  # login
+    hash_password = Required(str, 8192)
+    name = Required(str)
+    surname = Required(str)
+    email = Required(str, unique=True)
+    # contacts = Optional('Contacts')
+    photo = Optional(str)
+    status = Optional(str)
+    description = Optional(str)
     age = Required(date)
 
 
-class Smm(Human):
-    pass
+class Smm(db.Entity):
+    id = PrimaryKey(int, auto=True)
+    username = Required(str, unique=True)  # login
+    hash_password = Required(str, 8192)
+    name = Required(str)
+    surname = Required(str)
+    email = Required(str, unique=True)
+    # contacts = Optional('Contacts')
+    photo = Optional(str)
+    status = Optional(str)
+    description = Optional(str)
 
 
-class Developer(Human):
-    pass
+class Developer(db.Entity):
+    id = PrimaryKey(int, auto=True)
+    username = Required(str, unique=True)  # login
+    hash_password = Required(str, 8192)
+    name = Required(str)
+    surname = Required(str)
+    email = Required(str, unique=True)
+    # contacts = Optional('Contacts')
+    photo = Optional(str)
+    status = Optional(str)
+    description = Optional(str)
 
 
 class Contacts(db.Entity):
@@ -44,8 +81,17 @@ class Contacts(db.Entity):
     telegram = Optional(str)
 
 
-class DirectionExpert(Human):
-    pass
+class DirectionExpert(db.Entity):
+    id = PrimaryKey(int, auto=True)
+    username = Required(str, unique=True)  # login
+    hash_password = Required(str, 8192)
+    name = Required(str)
+    surname = Required(str)
+    email = Required(str, unique=True)
+    # contacts = Optional('Contacts')
+    photo = Optional(str)
+    status = Optional(str)
+    description = Optional(str)
 
 
 # db.generate_mapping()

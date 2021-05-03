@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Security
 
 from app.dependencies import *
 
@@ -11,7 +11,8 @@ from app.utils.pydantic_security import HumanInDB
 direction_expert = APIRouter(
     prefix="/direction_expert",
     tags=["direction_expert"],
-    dependencies=[Depends(open_db_session), Depends(get_current_direction_expert)], #
+    dependencies=[Depends(open_db_session),
+                  Security(get_current_direction_expert, scopes=["direction_expert"])], #
     # responses={404: {"description": "Not found"}},
     # default_response_class=FileResponse
 )
