@@ -99,6 +99,7 @@ def generate_security(entity,
     ):
 
         """ Получение текущего пользователя"""
+        print('&&#$^#*@(')
         if security_scopes.scopes:
             authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
         else:

@@ -36,7 +36,10 @@
                 processData: false,
                 data: $("#oauth_username, #oauth_password").serialize(),
 
-                success: data => {  }
+                success: data => {
+                    console.log(data);
+
+                }
             });
         });
 

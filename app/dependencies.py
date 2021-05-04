@@ -6,3 +6,4 @@ from app.db.db_utils import connect_with_db
 connect_with_db()
 
 login_templates = Jinja2Templates(directory="content/templates/login")
+error_templates = Jinja2Templates(directory="content/templates/errors")
