@@ -1,0 +1,29 @@
+.dark-theme {
+  // color contrasts
+  @include defineColorHSL(--color-bg, 240, 8%, 12%);
+  @include defineColorHSL(--color-contrast-lower, 240, 6%, 15%);
+  @include defineColorHSL(--color-contrast-low, 252, 4%, 25%);
+  @include defineColorHSL(--color-contrast-medium, 240, 1%, 57%);
+  @include defineColorHSL(--color-contrast-high, 0, 0%, 89%);
+  @include defineColorHSL(--color-contrast-higher, 0, 0%, 100%);
+}
+
+.light-theme {
+  @include defineColorHSL(--color-bg, 0, 0%, 100%);
+  @include defineColorHSL(--color-contrast-lower, 0, 0%, 95%);
+  @include defineColorHSL(--color-contrast-low, 240, 1%, 83%);
+  @include defineColorHSL(--color-contrast-medium, 240, 1%, 48%);
+  @include defineColorHSL(--color-contrast-high, 240, 4%, 20%);
+  @include defineColorHSL(--color-contrast-higher, 240, 8%, 12%);
+}
+
+.bg-primary, .btn--primary, .badge-primary, .alert-primary, .select__item--option[aria-selected=true] {
+  &:after {
+    @extend .light-theme
+  }
+  @extend .light-theme;
+  color: var(--color-contrast-high);
+  *, h1, h2, h3, h4 {
+    @extend .light-theme;
+  }
+}

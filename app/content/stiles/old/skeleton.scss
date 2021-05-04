@@ -1,0 +1,81 @@
+@import url(https://fonts.googleapis.com/css?family=Rubik+One&subset=latin,cyrillic);
+:root {
+  --gradient: linear-gradient(45deg, #0B2349 33%, #0D61BC 66%, #8AA9D6);
+}
+
+*:not(.fa, .fab, .fas, .far) {
+    font-family: Comfortaa, serif;
+}
+
+body {
+  min-height: 100vh;
+}
+
+.square-img-50 {
+  width: 50px;
+  height: 50px;
+}
+
+.square-img-100 {
+  width: 100px;
+  height: 100px;
+}
+
+.square-img-200 {
+  width: 200px;
+  height: 200px;
+}
+
+.direction {
+  min-width: 220px;
+  a {
+    color: #212529;
+  }
+  &:hover a {
+    text-decoration: none;
+  }
+}
+
+/*TIMER*/
+.timer{
+    margin-bottom: 15px;
+}
+
+.timer-block{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    font-size: 50px;
+}
+
+.time-block{
+    margin: 0 10px 40px;
+    width: 90px;
+    height: 80px;
+    display: inline-block;
+    align-items: center;
+
+}
+
+.timer-header{
+    text-align: center
+}
+
+.numbers{
+    padding: 5px;
+    text-align: center;
+}
+.sub{
+    font-size: 25px;
+}
+
+.switch-danger.custom-control-input:checked~.custom-control-label::before {
+  border-color: var(--color-error) !important;
+  background-color: var(--color-error) !important;
+}
+
+.cm {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}

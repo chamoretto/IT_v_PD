@@ -1,0 +1,11 @@
+@import 'base';
+@import 'custom-style';
+@import "skeleton.scss";
+@import "components/*.scss";
+
+// Add FontAwesome 5
+@import "components/fontawesome/fontawesome.scss";
+@import "components/fontawesome/regular.scss";
+@import "components/fontawesome/brands.scss";
+@import "components/fontawesome/v4-shims.scss";
+@import "components/fontawesome/solid.scss";
