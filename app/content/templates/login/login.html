@@ -12,6 +12,7 @@
     <input name="username" placeholder="Ваш логин" data-name="username" id="oauth_username">
     <input name="password" placeholder="Ваш пароль" type="password" data-name="password"  id="oauth_password">
     <input type="submit" id="submit">
+    <img src="{{url_for('img', path='/структура.png')}}">
     <script >
         $('#submit').click((event) => {
             console.log("авторизация")

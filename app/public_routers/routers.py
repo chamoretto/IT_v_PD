@@ -22,13 +22,7 @@ async def start_public_router():
 #     file_path = os_join("content", "public", file_path)
 #     return FileResponse(file_path)
 
-public_router.mount("/public", StaticFiles(directory="content/public"), name="public")
-public_router.mount("/static", StaticFiles(directory="content/static"), name="static")
-public_router.mount("/scripts", StaticFiles(directory="content/scripts"), name="scripts")
-public_router.mount("/stiles", StaticFiles(directory="content/stiles"), name="stiles")
-public_router.mount("/fonts", StaticFiles(directory="content/fonts"), name="fonts")
-public_router.mount("/docs", StaticFiles(directory="content/public/docs"), name="docs")
-public_router.mount("/img", StaticFiles(directory="content/public/images"), name="img")
+
 
 
 
