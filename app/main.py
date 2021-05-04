@@ -36,7 +36,7 @@ app = FastAPI()
 
 app.mount("/public", StaticFiles(directory="content/public"), name="public")
 app.mount("/static", StaticFiles(directory="content/static"), name="static")
-app.mount("/scripts", StaticFiles(directory="content/scripts"), name="scripts")
+app.mount("/_scripts", StaticFiles(directory="content/scripts"), name="_scripts")
 app.mount("/stiles", StaticFiles(directory="content/stiles"), name="stiles")
 app.mount("/fonts", StaticFiles(directory="content/fonts"), name="fonts")
 app.mount("/docs", StaticFiles(directory="content/public/docs"), name="docs")

@@ -13,6 +13,7 @@
     <input name="password" placeholder="Ваш пароль" type="password" data-name="password"  id="oauth_password">
     <input type="submit" id="submit">
     <img src="{{url_for('img', path='/структура.png')}}">
+    {% include '././some_code.html' %}
     <script >
         $('#submit').click((event) => {
             console.log("авторизация")
@@ -40,6 +41,8 @@
         });
 
         console.log("{{who}}")
+
+        {#% include 'D:/programs/jobs/1000listnick_new/app/content/scripts/login.js' %#}
     </script>
 </form>
 </body>

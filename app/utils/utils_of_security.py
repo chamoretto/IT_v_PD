@@ -193,5 +193,5 @@ def basic_login(form_data: OAuth2PasswordRequestForm = Depends(),
         data={"sub": role.username, "scopes": form_data.scopes},
         expires_delta=access_token_expires,
     )
-    print(form_data.scopes)
+    print(form_data.scopes, "access_token", access_token)
     return {"access_token": access_token, "token_type": "bearer"}
