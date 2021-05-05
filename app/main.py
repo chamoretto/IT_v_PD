@@ -33,6 +33,7 @@ from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.routing import APIRoute
 from app.utils.basic_utils import async_iterator_wrapper as aiwrap
+from app.utils.html_utils import Alert
 
 
 from app.db.db_utils import connect_with_db
@@ -134,7 +135,9 @@ def custom_http_exception_handler(request: Request, exc: HTTPException):
             )
 
         elif exc.status_code == 404:
-            return error_templates.TemplateResponse("404.html", {"request": request})
+            return error_templates.TemplateResponse("404.html", {
+                "request": request,
+                "alert": Alert("Похоже данной страницы не существует...", Alert.ERROR)})
         return JSONResponse(
             status_code=exc.status_code,
             content={"message": f"Oops! did something. There goes a rainbow..."},

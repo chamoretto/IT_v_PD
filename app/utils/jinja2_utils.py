@@ -90,7 +90,7 @@ class MyJinja2Templates:
         # print(skeleton_template)
         context = dict(
             alert=local_env.get_template("alert.html") if local_context.get('alert') else None,
-            alert_context=local_context.pop('alert', None),
+            alert_context=dict(alert=local_context.pop('alert', None)),
             current_page=template,
             current_page_context=local_context,
             request=local_context['request'],
