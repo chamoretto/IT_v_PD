@@ -6,13 +6,14 @@ from app.pydantic_models.standart_methhods_redefinition import BaseModel
 from app.smmers.security import get_current_smmer
 from app.db.db_utils import open_db_session
 from app.utils.pydantic_security import HumanInDB
-
+from pony.orm import db_session
 
 smm = APIRouter(
     prefix="/smm",
     tags=["smm"],
-    dependencies=[Depends(open_db_session),
-                  Security(get_current_smmer, scopes=["smmer"])],  #
+    dependencies=[
+        # Depends(open_db_session),
+        Security(get_current_smmer, scopes=["smmer"])],  #
     responses={404: {"description": "Not found"}},
 )
 
@@ -20,6 +21,7 @@ smm = APIRouter(
 @smm.get('/some')
 async def start_smmer():
     return {1: 1}
+
 
 @smm.get("/me/", response_model=HumanInDB)
 def read_users_me(current_user: HumanInDB = Security(get_current_smmer, scopes=["smmer"])):

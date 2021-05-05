@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Security
+from pony.orm import db_session
 
 from app.dependencies import *
 
@@ -7,12 +8,12 @@ from app.direction_experts.security import get_current_direction_expert
 from app.db.db_utils import open_db_session
 from app.utils.pydantic_security import HumanInDB
 
-
 direction_expert = APIRouter(
     prefix="/direction_expert",
     tags=["direction_expert"],
-    dependencies=[Depends(open_db_session),
-                  Security(get_current_direction_expert, scopes=["direction_expert"])], #
+    dependencies=[
+        # Depends(open_db_session),
+        Security(get_current_direction_expert, scopes=["direction_expert"])],  #
     # responses={404: {"description": "Not found"}},
     # default_response_class=FileResponse
 )
