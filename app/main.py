@@ -4,8 +4,10 @@
 
 from fastapi import FastAPI
 import uvicorn
+import time
 from fastapi.responses import FileResponse
 from fastapi.responses import HTMLResponse
+from typing import Callable
 
 from fastapi import Depends, FastAPI, Request, HTTPException, Response
 from fastapi.staticfiles import StaticFiles
@@ -25,19 +27,49 @@ from app.admins.security import admin as security_admin
 from app.developers.security import dev as security_dev
 from fastapi.responses import RedirectResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
-
+from starlette.responses import StreamingResponse
 from app.utils.utils_of_security import security
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.routing import APIRoute
+from app.utils.basic_utils import async_iterator_wrapper as aiwrap
+
 
 from app.db.db_utils import connect_with_db
 from app.db.db_utils import db_session
 from app.db.raw_models import Admin
 from app.pydantic_models.standart_methhods_redefinition import BaseModel
 
-app = FastAPI()
+
+
+
+app = FastAPI(
+    # route_class=TimedRoute,
+)
+# app.add_middleware(HTTPSRedirectMiddleware)  # Устанавливаем https
+# app.add_middleware(GZipMiddleware, minimum_size=1000)  # все файлы ответов больше 1000 байт сжимаются
+
+
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    response: StreamingResponse = await call_next(request)
+    print("---==!!", response.headers)
+    if any(["text/html" in val.lower() for key, val in response.headers.items() if key.lower() == "content-type"]):
+        resp_body = [section async for section in response.__dict__['body_iterator']]
+        print(resp_body)
+        # print(hasattr(response, "template"))
+        response.__setattr__('body_iterator', aiwrap(resp_body))
+        return response
+    # content = await response.body_iterator
+    # response.body_iterator = (content)
+    # print(type(response), content)
+    # await response("", receive, send)
+    return response
+
 
 app.mount("/public", StaticFiles(directory="content/public"), name="public")
 app.mount("/static", StaticFiles(directory="content/static"), name="static")
-app.mount("/_scripts", StaticFiles(directory="content/scripts"), name="_scripts")
+app.mount("/scripts", StaticFiles(directory="content/scripts"), name="scripts")
 app.mount("/stiles", StaticFiles(directory="content/stiles"), name="stiles")
 app.mount("/fonts", StaticFiles(directory="content/fonts"), name="fonts")
 app.mount("/docs", StaticFiles(directory="content/public/docs"), name="docs")
@@ -111,7 +143,7 @@ def custom_http_exception_handler(request: Request, exc: HTTPException):
         print("-------------", e)
         return "help me!"
 
-#
+
 # from fastapi import Depends, FastAPI
 # from fastapi.security import HTTPBasic, HTTPBasicCredentials
 # from passlib.context import CryptContext
@@ -200,7 +232,7 @@ def custom_http_exception_handler(request: Request, exc: HTTPException):
 #     except Exception as e:
 #         print("--------------------------", [e])
 #         return {"username": credentials.username, "password": credentials.password}
-#
+
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
