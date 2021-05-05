@@ -1,6 +1,6 @@
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
-from typing import Optional, Callable, Any
+from typing import Optional, Callable, Any, List
 from pydantic import ValidationError
 
 from fastapi import Depends, HTTPException, status, APIRouter
@@ -14,7 +14,7 @@ from fastapi.security import (
 from app.db import raw_models as models
 
 from app.settings.config import cfg
-from app.utils.pydantic_security import TokenData, HumanInDB, Token
+from app.utils.pydantic_security import TokenData, HumanInDB, Token, BaseModel
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 ALGORITHM = cfg.get('db', "hash_algorithm")
@@ -51,6 +51,7 @@ oauth2_scheme = OAuth2PasswordBearer(
         "developer": "Разработчик сайта"
     },
 )
+
 scopes_to_db = {
     "user": models.User,
     "smmer": models.Smm,
@@ -58,6 +59,12 @@ scopes_to_db = {
     "admin": models.Admin,
     "developer": models.Developer
 }
+
+
+class PassScopes(BaseModel):
+    scopes: List[str] = []
+    scope_str: str = ""
+
 
 
 def generate_security(entity,
@@ -94,42 +101,52 @@ def generate_security(entity,
         return human
 
     def get_current_human(
-            security_scopes: SecurityScopes,
+            security_scopes: SecurityScopes = PassScopes(),
             token: str = Depends(oauth2_scheme)
     ):
 
         """ Получение текущего пользователя"""
-        print('&&#$^#*@(')
-        if security_scopes.scopes:
-            authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
-        else:
-            authenticate_value = f"Bearer"
-        credentials_exception = HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials",
-            headers={"WWW-Authenticate": authenticate_value},
-        )
         try:
-            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-            username: str = payload.get("sub")
-            if username is None:
+            print('&&#$^#*@(')
+            if security_scopes.scopes and bool(security_scopes.scopes):
+                authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
+            else:
+                authenticate_value = f"Bearer"
+            credentials_exception = HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate credentials",
+                headers={"WWW-Authenticate": authenticate_value},
+            )
+            try:
+                payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+                username: str = payload.get("sub")
+                if username is None:
+                    raise credentials_exception
+                token_scopes = payload.get("scopes", [])
+                token_data = TokenData(scopes=token_scopes, username=username)
+            except (JWTError, ValidationError):
                 raise credentials_exception
-            token_scopes = payload.get("scopes", [])
-            token_data = TokenData(scopes=token_scopes, username=username)
-        except (JWTError, ValidationError):
-            raise credentials_exception
-        human = getter_human(username=token_data.username)
-        if human is None:
-            raise credentials_exception
-        for scope in security_scopes.scopes:
-            if scope not in token_data.scopes:
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Not enough permissions",
-                    headers={"WWW-Authenticate": authenticate_value},
-                )
-        return human
-
+            human = getter_human(username=token_data.username)
+            if human is None:
+                raise credentials_exception
+            for scope in security_scopes.scopes:
+                if scope not in token_data.scopes:
+                    raise HTTPException(
+                        status_code=status.HTTP_401_UNAUTHORIZED,
+                        detail="Not enough permissions",
+                        headers={"WWW-Authenticate": authenticate_value},
+                    )
+            return human
+        except HTTPException as e:
+            print("---===", [e])
+            raise e
+        except Exception as e:
+            print("Произошла ошибка в текущем пользователе!!!", [e])
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate credentials",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
     return getter_human, authenticate_human, get_current_human, basic_create_access_token
 
 
@@ -166,7 +183,7 @@ def basic_login(form_data: OAuth2PasswordRequestForm = Depends(),
     error = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Incorrect username or password",
-        headers={"WWW-Authenticate": "Bearer"},
+        headers={"WWW-Authenticate": 'Bearer Basic realm="Restricted Area"'},
     )
     if create_access_token is None and authenticate is None:
         print(1)

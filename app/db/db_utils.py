@@ -182,9 +182,11 @@ def connect_with_db(db_path=DB_PATH, deep=0, db_l=db):
                 commit()
 
 
+
+
 def open_db_session():
     try:
-        with db_session:
-            yield ""
+        # with db_session:
+        yield ""
     finally:
         pass
