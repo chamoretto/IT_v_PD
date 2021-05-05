@@ -83,7 +83,7 @@ class MyJinja2Templates:
         if "request" not in local_context:
             raise ValueError('context must include a "request" key')
         template = self.get_template(name)
-        print("template")
+        # print("template")
         # print(template)
         local_env = self.get_env("content/templates/layout")
         skeleton_template = local_env.get_template("skeleton.html")
@@ -105,3 +105,7 @@ class MyJinja2Templates:
             media_type=media_type,
             background=background,
         )
+
+
+login_templates = MyJinja2Templates(directory="content/templates/login")
+error_templates = MyJinja2Templates(directory="content/templates/errors")

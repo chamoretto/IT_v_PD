@@ -1,11 +1,12 @@
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
-from typing import Optional, Callable, Any, List
-from pydantic import ValidationError
+from typing import Optional, Callable, Any, List, Dict, Tuple, Union
+from pydantic import ValidationError, Field
 
 from fastapi import Depends, HTTPException, status, APIRouter
 from jose import JWTError, jwt
 from pony.orm import db_session
+from pony.orm.core import Entity
 from fastapi.security import (
     OAuth2PasswordBearer,
     OAuth2PasswordRequestForm,
@@ -52,12 +53,20 @@ oauth2_scheme = OAuth2PasswordBearer(
     },
 )
 
-scopes_to_db = {
-    "user": models.User,
-    "smmer": models.Smm,
-    "direction_expert": models.DirectionExpert,
-    "admin": models.Admin,
-    "developer": models.Developer
+# scopes_to_db = {
+#     "user": models.User,
+#     "smmer": models.Smm,
+#     "direction_expert": models.DirectionExpert,
+#     "admin": models.Admin,
+#     "developer": models.Developer
+# }
+
+scopes_to_db: Dict[models.db.Entity, List[str]] = {
+    models.User: ["user"],
+    models.Smm: ["smmer"],
+    models.DirectionExpert: ["direction_expert"],
+    models.Admin: ["admin"],
+    models.Developer: ["developer", "user", "direction_expert", "admin", "smmer"]
 }
 
 
@@ -66,10 +75,7 @@ class PassScopes(BaseModel):
     scope_str: str = ""
 
 
-
-def generate_security(entity,
-                      getter_human=None,
-                      ):
+def generate_security(entity, getter_human=None):
     """
         Генерирукм функции безопасности для абстрактного уровня доступа
 
@@ -84,15 +90,14 @@ def generate_security(entity,
     if getter_human is None:
         @db_session
         def getter_human(username: str):
-            if entity.exists(username=username):
-                human_db = entity.get(username=username)
-                return HumanInDB.from_orm(human_db)
-            print('---------', username)
+            if models.Human.exists(username=username):
+                human_db = models.Human.get(username=username)
+                return HumanInDB.from_pony_orm(human_db)
 
     def authenticate_human(username: str, password: str):
 
         """ Аунтидификация пользователя"""
-        print(username)
+
         human = getter_human(username)
         if not human:
             return False
@@ -102,12 +107,12 @@ def generate_security(entity,
 
     def get_current_human(
             security_scopes: SecurityScopes = PassScopes(),
-            token: str = Depends(oauth2_scheme)
-    ):
+            token: str = Depends(oauth2_scheme)):
 
         """ Получение текущего пользователя"""
+
         try:
-            print('&&#$^#*@(')
+            print(security_scopes.scopes)
             if security_scopes.scopes and bool(security_scopes.scopes):
                 authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
             else:
@@ -129,6 +134,8 @@ def generate_security(entity,
             human = getter_human(username=token_data.username)
             if human is None:
                 raise credentials_exception
+            print(security_scopes.scopes)
+            print(token_data.scopes)
             for scope in security_scopes.scopes:
                 if scope not in token_data.scopes:
                     raise HTTPException(
@@ -147,6 +154,7 @@ def generate_security(entity,
                 detail="Could not validate credentials",
                 headers={"WWW-Authenticate": "Bearer"},
             )
+
     return getter_human, authenticate_human, get_current_human, basic_create_access_token
 
 
@@ -156,59 +164,52 @@ security = APIRouter(
 )
 
 
-def check_scopes(username, password, scopes):
-    roles = []
+def check_scopes(username: str, password: str, scopes: List[str]) \
+        -> Tuple[Optional[models.db.Entity], Union[List[str], bool]]:
 
-    print(username, password, "||", scopes)
-    print(scopes_to_db.keys())
-    for scope in scopes:
-        if scope in scopes_to_db:
-            if scopes_to_db[scope].exists(username=username):
-                ent = scopes_to_db[scope].get(username=username)
-                if not verify_password(password, ent.hash_password):
-                    print("error password")
-                    return False
-                roles.append(ent)
-            else:
-                return False
-    return roles
+    if not models.Human.exists(username=username):
+        return None, False
+    ent = models.Human.get(username=username)
+    scopes = [i for i in scopes_to_db[ent.__class__] if i in scopes]
+    if verify_password(password, ent.hash_password):
+        return ent, scopes
+    return None, False
+    # print(username, password, "||", scopes)
+    # print(scopes_to_db.keys())
+    # for scope in scopes:
+    #     if scope in scopes_to_db:
+    #         if scopes_to_db[scope].exists(username=username):
+    #             ent = scopes_to_db[scope].get(username=username)
+    #             if not verify_password(password, ent.hash_password):
+    #                 print("error password")
+    #                 return False
+    #             roles.append(ent)
+    #         else:
+    #             return False
+    # return roles
 
 
 @security.post("/token", response_model=Token)
 @db_session
-def basic_login(form_data: OAuth2PasswordRequestForm = Depends(),
-                                     authenticate: str = None,
-                                     access_token_time=0,
-                                     create_access_token: str = None):
+def basic_login(form_data: OAuth2PasswordRequestForm = Depends(), access_token_time=0):
     error = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Incorrect username or password",
         headers={"WWW-Authenticate": 'Bearer Basic realm="Restricted Area"'},
     )
-    if create_access_token is None and authenticate is None:
-        print(1)
-        role = check_scopes(form_data.username, form_data.password, form_data.scopes)
-        if not role or not bool(role):
-            print(0, role)
-            raise error
-        role = HumanInDB.from_orm(role[-1])
-        create_access_token = basic_create_access_token
+    create_access_token = basic_create_access_token
+    print(form_data.scopes)
+    ent, form_data.scopes = check_scopes(form_data.username, form_data.password, form_data.scopes)
+    print(form_data.scopes)
+    if not ent:
+        print(0, ent)
+        raise error
+    # ent = HumanInDB.from_pony_orm(ent)
+    if access_token_time == 0:
         access_token_time = 30
-    elif authenticate is None:
-        print(2)
-        raise error
-    elif create_access_token is None:
-        print(3)
-        raise error
-    else:
-        print(4)
-        role = authenticate(form_data.username, form_data.password)
-    if not role:
-        print(5)
-        raise error
     access_token_expires = timedelta(minutes=access_token_time)
     access_token = create_access_token(
-        data={"sub": role.username, "scopes": form_data.scopes},
+        data={"sub": ent.username, "scopes": form_data.scopes},
         expires_delta=access_token_expires,
     )
     print(form_data.scopes, "access_token", access_token)

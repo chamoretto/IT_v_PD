@@ -38,10 +38,7 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
         form_data.scopes = set(form_data.scopes.append("user"))
     else:
         form_data.scopes = ["user"]
-    return basic_login(form_data,
-                       authenticate=authenticate_user,
-                       access_token_time=ACCESS_TOKEN_TIME,
-                       create_access_token=create_user_access_token)
+    return basic_login(form_data, access_token_time=ACCESS_TOKEN_TIME)
 
 
 @user.get("/user", response_class=HTMLResponse)

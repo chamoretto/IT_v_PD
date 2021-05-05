@@ -28,8 +28,9 @@
 
                     if (xhr.status === 200) {
                         // вывести результат
-
-                        document.getElementById('html').innerHTML = xhr.responseText
+                        console.log(xhr.responseText);
+                        document.querySelectorAll("html")[0].innerHTML = " " + xhr.responseText;
+                        // document.html = " " + xhr.responseText;
                     } else {
                         // обработать ошибку
                     }

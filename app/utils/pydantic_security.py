@@ -17,6 +17,9 @@ class Human(BaseModel):
     username: str
     email: Optional[str] = None
 
+    class Config:
+        from_orm = True
+
 
 class PdContacts(BaseModel):
     phone: Optional[str] = None
@@ -40,7 +43,6 @@ class HumanInDB(Human):
 
     class Config:
         from_orm = True
-
 
 # class AdminInDB(HumanInDB):
 #

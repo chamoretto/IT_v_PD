@@ -12,6 +12,12 @@ from typing import Callable
 from fastapi import Depends, FastAPI, Request, HTTPException, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
+from fastapi.responses import RedirectResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.responses import StreamingResponse
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.routing import APIRoute
 
 from app.dependencies import *
 from app.public_routers.routers import public_router
@@ -25,20 +31,12 @@ from app.smmers.security import smmer as security_smmer
 from app.direction_experts.security import direction_expert as security_direction_expert
 from app.admins.security import admin as security_admin
 from app.developers.security import dev as security_dev
-from fastapi.responses import RedirectResponse
-from starlette.exceptions import HTTPException as StarletteHTTPException
-from starlette.responses import StreamingResponse
 from app.utils.utils_of_security import security
-from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
-from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.routing import APIRoute
 from app.utils.basic_utils import async_iterator_wrapper as aiwrap
 from app.utils.html_utils import Alert
-
-
 from app.db.db_utils import connect_with_db
 from app.db.db_utils import db_session
-from app.db.raw_models import Admin
+from app.db.raw_models import Admin, Human
 from app.pydantic_models.standart_methhods_redefinition import BaseModel
 
 
@@ -54,10 +52,10 @@ app = FastAPI(
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
     response: StreamingResponse = await call_next(request)
-    print("---==!!", response.headers)
+    # print("---==!!", response.headers)
     if any(["text/html" in val.lower() for key, val in response.headers.items() if key.lower() == "content-type"]):
         resp_body = [section async for section in response.__dict__['body_iterator']]
-        print(resp_body)
+        # print(resp_body)
         # print(hasattr(response, "template"))
         response.__setattr__('body_iterator', aiwrap(resp_body))
         return response
@@ -120,9 +118,9 @@ async def getimg(some_func: str = ""):
 @app.exception_handler(StarletteHTTPException)
 def custom_http_exception_handler(request: Request, exc: HTTPException):
     try:
-        print(request)
-        print(request.url, request.method)
-        print([exc])
+        # print(request)
+        # print(request.url, request.method)
+        # print([exc])
         if exc.status_code == 401:
             return error_templates.TemplateResponse(
                 "401.html",
@@ -238,4 +236,6 @@ def custom_http_exception_handler(request: Request, exc: HTTPException):
 
 
 if __name__ == "__main__":
+    with db_session:
+        print(Human.get(username="developer").__class__)
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)

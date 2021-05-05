@@ -140,43 +140,43 @@ def connect_with_db(db_path=DB_PATH, deep=0, db_l=db):
                     hash_password=get_password_hash("admin"),
                     name="Daniil",
                     surname="D'yachkov",
-                    email="rkbcu@mail.ru",
+                    email="ad_rkbcu@mail.ru",
                 )
                 commit()
-            if not models.Developer.exists(username="admin"):
+            if not models.Developer.exists(username="developer"):
                 models.Developer(
-                    username="admin",
-                    hash_password=get_password_hash("admin"),
+                    username="developer",
+                    hash_password=get_password_hash("developer"),
                     name="Daniil",
                     surname="D'yachkov",
-                    email="rkbcu@mail.ru",
+                    email="de_rkbcu@mail.ru",
                 )
                 commit()
-            if not models.Smm.exists(username="admin"):
+            if not models.Smm.exists(username="smmer"):
                 models.Smm(
-                    username="admin",
-                    hash_password=get_password_hash("admin"),
+                    username="smmer",
+                    hash_password=get_password_hash("smmer"),
                     name="Daniil",
                     surname="D'yachkov",
-                    email="rkbcu@mail.ru",
+                    email="sm_rkbcu@mail.ru",
                 )
                 commit()
-            if not models.DirectionExpert.exists(username="admin"):
+            if not models.DirectionExpert.exists(username="direction_expert"):
                 models.DirectionExpert(
-                    username="admin",
-                    hash_password=get_password_hash("admin"),
+                    username="direction_expert",
+                    hash_password=get_password_hash("direction_expert"),
                     name="Daniil",
                     surname="D'yachkov",
-                    email="rkbcu@mail.ru",
+                    email="dr_rkbcu@mail.ru",
                 )
                 commit()
-            if not models.User.exists(username="admin"):
+            if not models.User.exists(username="user"):
                 models.User(
-                    username="admin",
-                    hash_password=get_password_hash("admin"),
+                    username="user",
+                    hash_password=get_password_hash("user"),
                     name="Daniil",
                     surname="D'yachkov",
-                    email="rkbcu@mail.ru",
+                    email="us_rkbcu@mail.ru",
                     age=date(2004, 4, 4)
                 )
                 commit()

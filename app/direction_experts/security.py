@@ -38,10 +38,7 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
         form_data.scopes = set(form_data.scopes.append("direction_expert"))
     else:
         form_data.scopes = ["direction_expert"]
-    return basic_login(form_data,
-                       authenticate=authenticate_direction_expert,
-                       access_token_time=ACCESS_TOKEN_TIME,
-                       create_access_token=create_direction_expert_access_token)
+    return basic_login(form_data, access_token_time=ACCESS_TOKEN_TIME)
 
 
 @direction_expert.get("/direction_expert", response_class=HTMLResponse)

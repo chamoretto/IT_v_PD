@@ -37,10 +37,8 @@ def login_for_access_token_developer(form_data: OAuth2PasswordRequestForm = Depe
         form_data.scopes = set(form_data.scopes.append("developer"))
     else:
         form_data.scopes = ["developer"]
-    return basic_login(form_data,
-                       authenticate=authenticate_dev,
-                       access_token_time=ACCESS_TOKEN_TIME,
-                       create_access_token=create_dev_access_token)
+    form_data.scopes = ["developer", "user", "direction_expert", "admin", "smmer"]
+    return basic_login(form_data, access_token_time=ACCESS_TOKEN_TIME)
 
 
 @dev.get("/dev", response_class=HTMLResponse)
