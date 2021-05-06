@@ -65,7 +65,7 @@ scopes_to_db: Dict[models.db.Entity, List[str]] = {
     models.User: ["user"],
     models.Smm: ["smmer"],
     models.DirectionExpert: ["direction_expert"],
-    models.Admin: ["admin"],
+    models.Admin: ["admin", "smmer"],
     models.Developer: ["developer", "user", "direction_expert", "admin", "smmer"]
 }
 

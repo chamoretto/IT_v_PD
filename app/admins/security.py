@@ -35,9 +35,9 @@ admin = APIRouter(
 @db_session
 def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     if form_data.scopes:
-        form_data.scopes = set(form_data.scopes.append("admin"))
+        form_data.scopes = set(form_data.scopes.extend(["admin", "smmer"]))
     else:
-        form_data.scopes = ["admin"]
+        form_data.scopes = ["admin", "smmer"]
     return basic_login(form_data, access_token_time=ACCESS_TOKEN_TIME)
 
 

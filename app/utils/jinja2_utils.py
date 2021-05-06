@@ -94,8 +94,8 @@ class MyJinja2Templates:
             current_page=template,
             current_page_context=local_context,
             request=local_context['request'],
-            header=[SitePageMenu(name=i) for i in ["Новатор_WEB", "События", "Новости", "Результы"]]
-
+            header=[SitePageMenu(name=i) for i in ["Новатор_WEB", "События", "Новости", "Результы"]],
+            title=local_context.get('title', None)
         )
         return _MyTemplateResponse(
             skeleton_template,
