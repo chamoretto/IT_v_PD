@@ -26,10 +26,11 @@ EXAMPLE_SETTINGS_FILE = join(HOME_DIR, SETTINGS_DIR, EXAMPLE_SETTINGS_FILE)
 
 cfg = create_cfg(SETTINGS_FILE, EXAMPLE_SETTINGS_FILE)
 
-DB_PATH = Path(HOME_DIR, cfg.get('paths', "db_path"), cfg.get('db', "name"))
-MIGRATIONS_DIR = Path(HOME_DIR, cfg.get('paths', "migration_dir"))
-TEST_DB = Path(HOME_DIR, cfg.get('paths', "test_db"), cfg.get('db', "test_db_name"))
-DB_BACKUPS = Path(HOME_DIR, cfg.get('paths', "db_backups"))
+DB_PATH = str(Path(HOME_DIR, cfg.get('paths', "db_path"), cfg.get('db', "name")))
+MIGRATIONS_DIR = str(Path(HOME_DIR, cfg.get('paths', "migration_dir")))
+TEST_DB = str(Path(HOME_DIR, cfg.get('paths', "test_db"), cfg.get('db', "test_db_name")))
+DB_BACKUPS = str(Path(HOME_DIR, cfg.get('paths', "db_backups")))
+AUTO_PYDANTIC_MODELS = str(Path(HOME_DIR, cfg.get('paths', 'auto_pydantic_models')))
 
 print(DB_PATH)
 

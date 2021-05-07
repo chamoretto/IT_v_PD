@@ -181,6 +181,12 @@ def connect_with_db(db_path=DB_PATH, deep=0, db_l=db):
                 )
                 commit()
 
+            # models.Pam(id=1, id_2="3")
+            # commit()
+            # models.Pampam(id=1, pam=models.Pam[1, "3"])
+            # commit()
+            # print(models.Pampam[1, 1, "3"])
+
 
 
 
