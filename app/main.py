@@ -18,6 +18,7 @@ from starlette.responses import StreamingResponse
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.routing import APIRoute
+from pony.orm.core import TransactionIntegrityError
 
 from app.dependencies import *
 from app.public_routers.routers import public_router
@@ -237,7 +238,10 @@ def custom_http_exception_handler(request: Request, exc: HTTPException):
 
 
 if __name__ == "__main__":
-    create_pages()
+    try:
+        create_pages()
+    except TransactionIntegrityError:
+        pass
     # with db_session:
     #     print(Human.get(username="developer").__class__)
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
