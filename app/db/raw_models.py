@@ -16,7 +16,7 @@ class Human(db.Entity):
     name = Required(str)
     surname = Required(str)
     email = Required(str, unique=True)
-    humancontacts = Optional('HumanContacts')
+    human_contacts = Optional('HumanContacts')
     photo = Optional(str)
     status = Optional(str)
     description = Optional(str)
@@ -34,6 +34,11 @@ class User(Human):
 (если ему еще нет 18)"""
     date_of_birth = Required(date)  # день рождения
     user_works = Set('UserWork')
+    about_program = Optional(str)  # Отзыв о программе
+    direction = Optional(str)  # с каким направлением себя ассоциирует участник
+    visible_about_program_field = Required(bool, default='false')
+    # будет ли отзыв участника о программе
+    # отображаться на главной странице
 
 
 class Smm(Human):
@@ -77,6 +82,7 @@ class Direction(db.Entity):
     name = PrimaryKey(str)
     icon = Required(str)  # картинка направления
     competition_direction = Set('CompetitionDirection')
+    video_lessons = Optional(Json)
 
 
 class CompetitionDirection(db.Entity):
@@ -200,6 +206,7 @@ class News(Page):
     author = Optional(str)
     description = Optional(str)  # краткое описание новости
 
+
 # dict_db = {"Admin": []}
 #
 #
@@ -242,3 +249,6 @@ class News(Page):
 #     surname="D'yachkov",
 #     email="rkbcu@mail.ru",
 # )
+
+
+# print(db.entities)

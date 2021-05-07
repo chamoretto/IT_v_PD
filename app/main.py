@@ -37,6 +37,7 @@ from app.utils.html_utils import Alert
 from app.db.db_utils import connect_with_db
 from app.db.db_utils import db_session
 from app.db.raw_models import Admin, Human
+from app.db.create_db_content import create_pages
 from app.pydantic_models.standart_methhods_redefinition import BaseModel
 
 
@@ -236,6 +237,7 @@ def custom_http_exception_handler(request: Request, exc: HTTPException):
 
 
 if __name__ == "__main__":
-    with db_session:
-        print(Human.get(username="developer").__class__)
+    create_pages()
+    # with db_session:
+    #     print(Human.get(username="developer").__class__)
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
