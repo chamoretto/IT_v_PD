@@ -86,7 +86,7 @@ class Human(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Json] = {}
+	scopes: Optional[Json] = "{}"
 	questions: Set[PkQuestion] = []
 
 	class Config:
@@ -104,7 +104,7 @@ class Admin(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Json] = {}
+	scopes: Optional[Json] = "{}"
 	questions: Set[PkQuestion] = []
 
 	class Config:
@@ -122,7 +122,7 @@ class User(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Json] = {}
+	scopes: Optional[Json] = "{}"
 	questions: Set[PkQuestion] = []
 	date_of_birth: date
 	user_works: Set[PkUserWork] = []
@@ -145,7 +145,7 @@ class Smm(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Json] = {}
+	scopes: Optional[Json] = "{}"
 	questions: Set[PkQuestion] = []
 
 	class Config:
@@ -163,7 +163,7 @@ class Developer(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Json] = {}
+	scopes: Optional[Json] = "{}"
 	questions: Set[PkQuestion] = []
 
 	class Config:
@@ -194,7 +194,7 @@ class DirectionExpert(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Json] = {}
+	scopes: Optional[Json] = "{}"
 	questions: Set[PkQuestion] = []
 	competition_directions: Set[PkCompetitionDirection] = []
 
@@ -218,7 +218,7 @@ class Direction(BaseModel):
 	name: str
 	icon: str
 	competition_direction: Set[PkCompetitionDirection] = []
-	video_lessons: Optional[Json] = {}
+	video_lessons: Optional[Json] = "{}"
 
 	class Config:
 		orm_mode = True
@@ -313,7 +313,7 @@ class Question(BaseModel):
 
 class SimpleEntity(BaseModel):
 	key: str
-	data: Optional[Json] = {}
+	data: Optional[Json] = "{}"
 
 	class Config:
 		orm_mode = True

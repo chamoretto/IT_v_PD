@@ -46,6 +46,8 @@ change_default = {
         lambda i: setattr(i, 'default', ("True" if any(j in i.default.lower() for j in ["1", "true"]) else "False")),
     lambda i: i.default is not None and "lambda" not in i.default and i.param_type in ["int", "float"]:
         lambda i: setattr(i, 'default', reduce(lambda st, i: st.replace(i), ["'", '"'], i.default)),
+    lambda i: i.default is not None and "lambda" not in i.default and i.param_type == "Json":
+        lambda i: setattr(i, 'default', '"' + i.default + '"'),
     lambda i: i.default is None or "lambda" in i.default:
         lambda i: setattr(i, 'default', change_default_rules[i.db_type]),
 }

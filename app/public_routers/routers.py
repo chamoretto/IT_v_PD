@@ -6,7 +6,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.dependencies import *
-
+from app.pydantic_models import db_models as pd
 from app.pydantic_models.standart_methhods_redefinition import BaseModel
 
 
@@ -24,7 +24,9 @@ async def start_public_router():
 #     return FileResponse(file_path)
 
 
-
+@public_router.post('/test_auto_pd_human')
+async def test_pd(pd_model: pd.Human):
+    return pd_model
 
 
 @public_router.get('/test_jinja', response_class=HTMLResponse)
