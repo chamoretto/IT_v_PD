@@ -26,15 +26,22 @@ db_route = APIRouter(
                401: {"description": "Пользователь не был авторизировани"}},
 )
 
+@db_route.get('/')
+@db_session
+def dgsfsdf():
+    return {9: 4}
+
 
 @db_route.get('/{entity}')
-async def start_dev(entity: str, request: Request):
-    if entity not in m.db.entities:
+@db_session
+def start_dev(entity: str, request: Request):
+    print("---ESMg mf k")
+    if entity not in m.db.entities and type(m.db.entities[entity]) == m.db.Entity:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Такая Сущность в базе данных не найдена...",
             headers={"WWW-Authenticate": 'Bearer Basic realm="Restricted Area"'},
         )
+
     return db_templates.TemplateResponse(
-        "show_entity.html",
-        {"request": request})
+        "show_entity.html", {"request": request, "table": m.db.entities[entity].get_entities_html()})

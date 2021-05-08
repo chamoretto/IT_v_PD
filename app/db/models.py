@@ -28,14 +28,11 @@ class Human(db.Entity):
     questions = Set('Question')
 
     @classmethod
-    def important_field_for_print(cls):
-        return []
-
-    @classmethod
     def get_entities_html(cls, *keys):
         try:
+            keys = list(keys)
             if not bool(keys):
-                keys = cls.important_field_for_print()
+                keys = list(cls.important_field_for_print())
             if not bool(keys):
                 keys = None
             data = list(
@@ -48,32 +45,33 @@ class Human(db.Entity):
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
                    f"<tbody></tbody></table>"
-        data = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+        body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
 
-        data = '\n'.join(data)
-        # print(data)
+        body_table = '\n'.join(body_table)
+        print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
-               f"<tbody>{data}</tbody></table>"
+               f"<tbody>{body_table}</tbody></table>"
 
     def get_entity_html(self, keys):
         # language=HTML
         return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
+    def important_field_for_print(cls):
+        return []
 
 
 class Admin(Human):
     pass
 
     @classmethod
-    def important_field_for_print(cls):
-        return []
-
-    @classmethod
     def get_entities_html(cls, *keys):
         try:
+            keys = list(keys)
             if not bool(keys):
-                keys = cls.important_field_for_print()
+                keys = list(cls.important_field_for_print())
             if not bool(keys):
                 keys = None
             data = list(
@@ -86,18 +84,22 @@ class Admin(Human):
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
                    f"<tbody></tbody></table>"
-        data = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+        body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
 
-        data = '\n'.join(data)
-        # print(data)
+        body_table = '\n'.join(body_table)
+        print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
-               f"<tbody>{data}</tbody></table>"
+               f"<tbody>{body_table}</tbody></table>"
 
     def get_entity_html(self, keys):
         # language=HTML
         return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
+    def important_field_for_print(cls):
+        return []
 
 
 class User(Human):
@@ -113,14 +115,11 @@ class User(Human):
     date_of_birth = Required(date)  # день рождения
 
     @classmethod
-    def important_field_for_print(cls):
-        return []
-
-    @classmethod
     def get_entities_html(cls, *keys):
         try:
+            keys = list(keys)
             if not bool(keys):
-                keys = cls.important_field_for_print()
+                keys = list(cls.important_field_for_print())
             if not bool(keys):
                 keys = None
             data = list(
@@ -133,18 +132,22 @@ class User(Human):
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
                    f"<tbody></tbody></table>"
-        data = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+        body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
 
-        data = '\n'.join(data)
-        # print(data)
+        body_table = '\n'.join(body_table)
+        print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
-               f"<tbody>{data}</tbody></table>"
+               f"<tbody>{body_table}</tbody></table>"
 
     def get_entity_html(self, keys):
         # language=HTML
         return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
+    def important_field_for_print(cls):
+        return []
 
 
 class Smm(Human):
@@ -154,14 +157,11 @@ class Smm(Human):
     pass
 
     @classmethod
-    def important_field_for_print(cls):
-        return []
-
-    @classmethod
     def get_entities_html(cls, *keys):
         try:
+            keys = list(keys)
             if not bool(keys):
-                keys = cls.important_field_for_print()
+                keys = list(cls.important_field_for_print())
             if not bool(keys):
                 keys = None
             data = list(
@@ -174,32 +174,33 @@ class Smm(Human):
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
                    f"<tbody></tbody></table>"
-        data = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+        body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
 
-        data = '\n'.join(data)
-        # print(data)
+        body_table = '\n'.join(body_table)
+        print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
-               f"<tbody>{data}</tbody></table>"
+               f"<tbody>{body_table}</tbody></table>"
 
     def get_entity_html(self, keys):
         # language=HTML
         return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
+    def important_field_for_print(cls):
+        return []
 
 
 class Developer(Human):
     pass
 
     @classmethod
-    def important_field_for_print(cls):
-        return []
-
-    @classmethod
     def get_entities_html(cls, *keys):
         try:
+            keys = list(keys)
             if not bool(keys):
-                keys = cls.important_field_for_print()
+                keys = list(cls.important_field_for_print())
             if not bool(keys):
                 keys = None
             data = list(
@@ -212,18 +213,22 @@ class Developer(Human):
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
                    f"<tbody></tbody></table>"
-        data = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+        body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
 
-        data = '\n'.join(data)
-        # print(data)
+        body_table = '\n'.join(body_table)
+        print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
-               f"<tbody>{data}</tbody></table>"
+               f"<tbody>{body_table}</tbody></table>"
 
     def get_entity_html(self, keys):
         # language=HTML
         return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
+    def important_field_for_print(cls):
+        return []
 
 
 class HumanContacts(db.Entity):
@@ -236,14 +241,11 @@ class HumanContacts(db.Entity):
     telegram = Optional(str)
 
     @classmethod
-    def important_field_for_print(cls):
-        return []
-
-    @classmethod
     def get_entities_html(cls, *keys):
         try:
+            keys = list(keys)
             if not bool(keys):
-                keys = cls.important_field_for_print()
+                keys = list(cls.important_field_for_print())
             if not bool(keys):
                 keys = None
             data = list(
@@ -256,18 +258,22 @@ class HumanContacts(db.Entity):
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
                    f"<tbody></tbody></table>"
-        data = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+        body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
 
-        data = '\n'.join(data)
-        # print(data)
+        body_table = '\n'.join(body_table)
+        print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
-               f"<tbody>{data}</tbody></table>"
+               f"<tbody>{body_table}</tbody></table>"
 
     def get_entity_html(self, keys):
         # language=HTML
         return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
+    def important_field_for_print(cls):
+        return []
 
 
 class DirectionExpert(Human):
@@ -275,14 +281,11 @@ class DirectionExpert(Human):
     competition_directions = Set('CompetitionDirection')  # один эксперт может быть экспертом в нескольких направлениях
 
     @classmethod
-    def important_field_for_print(cls):
-        return []
-
-    @classmethod
     def get_entities_html(cls, *keys):
         try:
+            keys = list(keys)
             if not bool(keys):
-                keys = cls.important_field_for_print()
+                keys = list(cls.important_field_for_print())
             if not bool(keys):
                 keys = None
             data = list(
@@ -295,18 +298,22 @@ class DirectionExpert(Human):
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
                    f"<tbody></tbody></table>"
-        data = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+        body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
 
-        data = '\n'.join(data)
-        # print(data)
+        body_table = '\n'.join(body_table)
+        print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
-               f"<tbody>{data}</tbody></table>"
+               f"<tbody>{body_table}</tbody></table>"
 
     def get_entity_html(self, keys):
         # language=HTML
         return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
+    def important_field_for_print(cls):
+        return []
 
 
 class Competition(db.Entity):
@@ -319,14 +326,11 @@ class Competition(db.Entity):
     document = Optional(str)  # ссылка на документ, регламентирующий конкурс
 
     @classmethod
-    def important_field_for_print(cls):
-        return []
-
-    @classmethod
     def get_entities_html(cls, *keys):
         try:
+            keys = list(keys)
             if not bool(keys):
-                keys = cls.important_field_for_print()
+                keys = list(cls.important_field_for_print())
             if not bool(keys):
                 keys = None
             data = list(
@@ -339,18 +343,22 @@ class Competition(db.Entity):
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
                    f"<tbody></tbody></table>"
-        data = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+        body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
 
-        data = '\n'.join(data)
-        # print(data)
+        body_table = '\n'.join(body_table)
+        print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
-               f"<tbody>{data}</tbody></table>"
+               f"<tbody>{body_table}</tbody></table>"
 
     def get_entity_html(self, keys):
         # language=HTML
         return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
+    def important_field_for_print(cls):
+        return []
 
 
 class Direction(db.Entity):
@@ -361,14 +369,11 @@ class Direction(db.Entity):
     video_lessons = Optional(Json)
 
     @classmethod
-    def important_field_for_print(cls):
-        return []
-
-    @classmethod
     def get_entities_html(cls, *keys):
         try:
+            keys = list(keys)
             if not bool(keys):
-                keys = cls.important_field_for_print()
+                keys = list(cls.important_field_for_print())
             if not bool(keys):
                 keys = None
             data = list(
@@ -381,18 +386,22 @@ class Direction(db.Entity):
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
                    f"<tbody></tbody></table>"
-        data = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+        body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
 
-        data = '\n'.join(data)
-        # print(data)
+        body_table = '\n'.join(body_table)
+        print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
-               f"<tbody>{data}</tbody></table>"
+               f"<tbody>{body_table}</tbody></table>"
 
     def get_entity_html(self, keys):
         # language=HTML
         return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
+    def important_field_for_print(cls):
+        return []
 
 
 class CompetitionDirection(db.Entity):
@@ -406,14 +415,11 @@ class CompetitionDirection(db.Entity):
     PrimaryKey(directions, competition)
 
     @classmethod
-    def important_field_for_print(cls):
-        return []
-
-    @classmethod
     def get_entities_html(cls, *keys):
         try:
+            keys = list(keys)
             if not bool(keys):
-                keys = cls.important_field_for_print()
+                keys = list(cls.important_field_for_print())
             if not bool(keys):
                 keys = None
             data = list(
@@ -426,18 +432,22 @@ class CompetitionDirection(db.Entity):
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
                    f"<tbody></tbody></table>"
-        data = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+        body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
 
-        data = '\n'.join(data)
-        # print(data)
+        body_table = '\n'.join(body_table)
+        print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
-               f"<tbody>{data}</tbody></table>"
+               f"<tbody>{body_table}</tbody></table>"
 
     def get_entity_html(self, keys):
         # language=HTML
         return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
+    def important_field_for_print(cls):
+        return []
 
 
 class Task(db.Entity):
@@ -457,14 +467,11 @@ class Task(db.Entity):
     user_works = Set('UserWork')
 
     @classmethod
-    def important_field_for_print(cls):
-        return []
-
-    @classmethod
     def get_entities_html(cls, *keys):
         try:
+            keys = list(keys)
             if not bool(keys):
-                keys = cls.important_field_for_print()
+                keys = list(cls.important_field_for_print())
             if not bool(keys):
                 keys = None
             data = list(
@@ -477,18 +484,22 @@ class Task(db.Entity):
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
                    f"<tbody></tbody></table>"
-        data = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+        body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
 
-        data = '\n'.join(data)
-        # print(data)
+        body_table = '\n'.join(body_table)
+        print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
-               f"<tbody>{data}</tbody></table>"
+               f"<tbody>{body_table}</tbody></table>"
 
     def get_entity_html(self, keys):
         # language=HTML
         return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
+    def important_field_for_print(cls):
+        return []
 
 
 class UserWork(db.Entity):
@@ -505,14 +516,11 @@ class UserWork(db.Entity):
     PrimaryKey(user, task)
 
     @classmethod
-    def important_field_for_print(cls):
-        return []
-
-    @classmethod
     def get_entities_html(cls, *keys):
         try:
+            keys = list(keys)
             if not bool(keys):
-                keys = cls.important_field_for_print()
+                keys = list(cls.important_field_for_print())
             if not bool(keys):
                 keys = None
             data = list(
@@ -525,18 +533,22 @@ class UserWork(db.Entity):
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
                    f"<tbody></tbody></table>"
-        data = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+        body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
 
-        data = '\n'.join(data)
-        # print(data)
+        body_table = '\n'.join(body_table)
+        print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
-               f"<tbody>{data}</tbody></table>"
+               f"<tbody>{body_table}</tbody></table>"
 
     def get_entity_html(self, keys):
         # language=HTML
         return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
+    def important_field_for_print(cls):
+        return []
 
 
 class Criterion(db.Entity):
@@ -550,14 +562,11 @@ class Criterion(db.Entity):
     mark_works = Set('MarkWork')  # Каждый критерий можно применить ко всем работам в направлении конкурса
 
     @classmethod
-    def important_field_for_print(cls):
-        return []
-
-    @classmethod
     def get_entities_html(cls, *keys):
         try:
+            keys = list(keys)
             if not bool(keys):
-                keys = cls.important_field_for_print()
+                keys = list(cls.important_field_for_print())
             if not bool(keys):
                 keys = None
             data = list(
@@ -570,18 +579,22 @@ class Criterion(db.Entity):
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
                    f"<tbody></tbody></table>"
-        data = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+        body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
 
-        data = '\n'.join(data)
-        # print(data)
+        body_table = '\n'.join(body_table)
+        print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
-               f"<tbody>{data}</tbody></table>"
+               f"<tbody>{body_table}</tbody></table>"
 
     def get_entity_html(self, keys):
         # language=HTML
         return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
+    def important_field_for_print(cls):
+        return []
 
 
 class MarkWork(db.Entity):
@@ -595,14 +608,11 @@ class MarkWork(db.Entity):
     PrimaryKey(criterion, user_work)
 
     @classmethod
-    def important_field_for_print(cls):
-        return []
-
-    @classmethod
     def get_entities_html(cls, *keys):
         try:
+            keys = list(keys)
             if not bool(keys):
-                keys = cls.important_field_for_print()
+                keys = list(cls.important_field_for_print())
             if not bool(keys):
                 keys = None
             data = list(
@@ -615,18 +625,22 @@ class MarkWork(db.Entity):
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
                    f"<tbody></tbody></table>"
-        data = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+        body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
 
-        data = '\n'.join(data)
-        # print(data)
+        body_table = '\n'.join(body_table)
+        print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
-               f"<tbody>{data}</tbody></table>"
+               f"<tbody>{body_table}</tbody></table>"
 
     def get_entity_html(self, keys):
         # language=HTML
         return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
+    def important_field_for_print(cls):
+        return []
 
 
 class Page(db.Entity):
@@ -656,14 +670,11 @@ class Page(db.Entity):
     questions = Set('Question')
 
     @classmethod
-    def important_field_for_print(cls):
-        return []
-
-    @classmethod
     def get_entities_html(cls, *keys):
         try:
+            keys = list(keys)
             if not bool(keys):
-                keys = cls.important_field_for_print()
+                keys = list(cls.important_field_for_print())
             if not bool(keys):
                 keys = None
             data = list(
@@ -676,18 +687,22 @@ class Page(db.Entity):
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
                    f"<tbody></tbody></table>"
-        data = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+        body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
 
-        data = '\n'.join(data)
-        # print(data)
+        body_table = '\n'.join(body_table)
+        print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
-               f"<tbody>{data}</tbody></table>"
+               f"<tbody>{body_table}</tbody></table>"
 
     def get_entity_html(self, keys):
         # language=HTML
         return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
+    def important_field_for_print(cls):
+        return []
 
 
 class Question(db.Entity):
@@ -712,14 +727,11 @@ class Question(db.Entity):
     was_answered = Required(bool, default='false')  # ответ на вопрос отправлен?
 
     @classmethod
-    def important_field_for_print(cls):
-        return []
-
-    @classmethod
     def get_entities_html(cls, *keys):
         try:
+            keys = list(keys)
             if not bool(keys):
-                keys = cls.important_field_for_print()
+                keys = list(cls.important_field_for_print())
             if not bool(keys):
                 keys = None
             data = list(
@@ -732,18 +744,22 @@ class Question(db.Entity):
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
                    f"<tbody></tbody></table>"
-        data = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+        body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
 
-        data = '\n'.join(data)
-        # print(data)
+        body_table = '\n'.join(body_table)
+        print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
-               f"<tbody>{data}</tbody></table>"
+               f"<tbody>{body_table}</tbody></table>"
 
     def get_entity_html(self, keys):
         # language=HTML
         return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
+    def important_field_for_print(cls):
+        return []
 
 
 class SimpleEntity(db.Entity):
@@ -754,14 +770,11 @@ class SimpleEntity(db.Entity):
     data = Optional(Json)
 
     @classmethod
-    def important_field_for_print(cls):
-        return []
-
-    @classmethod
     def get_entities_html(cls, *keys):
         try:
+            keys = list(keys)
             if not bool(keys):
-                keys = cls.important_field_for_print()
+                keys = list(cls.important_field_for_print())
             if not bool(keys):
                 keys = None
             data = list(
@@ -774,18 +787,22 @@ class SimpleEntity(db.Entity):
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
                    f"<tbody></tbody></table>"
-        data = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+        body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
 
-        data = '\n'.join(data)
-        # print(data)
+        body_table = '\n'.join(body_table)
+        print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
-               f"<tbody>{data}</tbody></table>"
+               f"<tbody>{body_table}</tbody></table>"
 
     def get_entity_html(self, keys):
         # language=HTML
         return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
+    def important_field_for_print(cls):
+        return []
 
 
 class News(Page):
@@ -796,14 +813,11 @@ class News(Page):
     description = Optional(str)  # краткое описание новости
 
     @classmethod
-    def important_field_for_print(cls):
-        return []
-
-    @classmethod
     def get_entities_html(cls, *keys):
         try:
+            keys = list(keys)
             if not bool(keys):
-                keys = cls.important_field_for_print()
+                keys = list(cls.important_field_for_print())
             if not bool(keys):
                 keys = None
             data = list(
@@ -816,15 +830,19 @@ class News(Page):
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
                    f"<tbody></tbody></table>"
-        data = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+        body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
 
-        data = '\n'.join(data)
-        # print(data)
+        body_table = '\n'.join(body_table)
+        print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
-               f"<tbody>{data}</tbody></table>"
+               f"<tbody>{body_table}</tbody></table>"
 
     def get_entity_html(self, keys):
         # language=HTML
         return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
+    def important_field_for_print(cls):
+        return []

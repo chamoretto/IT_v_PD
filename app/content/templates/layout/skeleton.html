@@ -26,7 +26,7 @@
     <link rel="stylesheet" href="{{url_for('stiles', path='/style-fallback.css')}}"> <!--/css/style-fallback.css -->
   </noscript>
 
-  <title>{{title + " | 1000-LIST-NICK" if title is defined else "1000-LIST-NICK"}}</title>
+  <title>{{title + " | 1000-LIST-NICK" if title is defined and title else "1000-LIST-NICK"}}</title>
 </head>
 <body>
 <script src="{{url_for('scripts', path='/dark-mode.js')}}"></script> <!--/js/dark-mode.js -->

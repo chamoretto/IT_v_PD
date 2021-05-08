@@ -29,6 +29,7 @@ from app.utils.utils_of_security import security
 from app.utils.basic_utils import async_iterator_wrapper as aiwrap
 from app.utils.html_utils import Alert
 from app.db.create_db_content import create_pages
+from app.db_router.routers import db_route
 
 app = FastAPI(
     # route_class=TimedRoute,
@@ -68,6 +69,7 @@ app.include_router(smm)
 app.include_router(direction_expert)
 app.include_router(admin)
 app.include_router(dev)
+app.include_router(db_route)
 
 app.include_router(security_user)
 app.include_router(security_smmer)

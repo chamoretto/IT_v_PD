@@ -5,9 +5,8 @@ from pony.orm import db_session, show, select
 from app.db._change_db import _raw_models as _raw_m
 from app.db._change_db._db_additions.tools_for_addition import AddArrtInDbClass
 
-
-
 _start = set(globals())
+
 
 # @classmethod
 # def db_show(cls, width=None):
@@ -40,11 +39,13 @@ def get_entity_html(self, keys):
     # language=HTML
     return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
 
+
 @classmethod
 def get_entities_html(cls, *keys):
     try:
+        keys = list(keys)
         if not bool(keys):
-            keys = cls.important_field_for_print()
+            keys = list(cls.important_field_for_print())
         if not bool(keys):
             keys = None
         data = list(select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
@@ -56,14 +57,14 @@ def get_entities_html(cls, *keys):
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
                f"<tbody></tbody></table>"
-    data = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+    body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
 
-    data = '\n'.join(data)
-    # print(data)
+    body_table = '\n'.join(body_table)
+    print(data)
     # language=HTML
     return f"<table><caption>{cls.__name__}</caption>" \
            f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
-           f"<tbody>{data}</tbody></table>"
+           f"<tbody>{body_table}</tbody></table>"
 
 
 added_params = set(globals()) - _start - {"_start"}
@@ -83,6 +84,6 @@ print(AddArrtInDbClass.change_field)
 
 if __name__ == "__main__":
     from app.dependencies import *
-    with db_session:
 
+    with db_session:
         print(_raw_m.Page.get_entities_html())
