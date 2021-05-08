@@ -8,11 +8,6 @@ db = Database()
 class Human(db.Entity):
     """Базовый класс человека
 
-    :param db_path: путь к БД
-    :type db_path: путь к БД
-    :param deep: глубина рекурсии
-    :param db_l: объект БД
-
 напрямую использоваться не должен"""
     id = PrimaryKey(int, auto=True)
     username = Required(str, unique=True)  # login
@@ -28,6 +23,14 @@ class Human(db.Entity):
     questions = Set('Question')
 
     @classmethod
+    def important_field_for_print(cls):
+        return ["id", "username", "name", "surname", "photo"]
+
+    def get_entity_html(self, keys):
+        # language=HTML
+        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -53,20 +56,20 @@ class Human(db.Entity):
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
-
-    def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
-
-    @classmethod
-    def important_field_for_print(cls):
-        return []
 
 
 class Admin(Human):
     pass
 
     @classmethod
+    def important_field_for_print(cls):
+        return ["id", "username", "name", "surname", "photo"]
+
+    def get_entity_html(self, keys):
+        # language=HTML
+        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -92,27 +95,27 @@ class Admin(Human):
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
-
-    def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
-
-    @classmethod
-    def important_field_for_print(cls):
-        return []
 
 
 class User(Human):
     """Участник, который может отправлять работы на конкурс
 
 (если ему еще нет 18)"""
+    date_of_birth = Required(date)  # день рождения
     user_works = Set('UserWork')
     about_program = Optional(str)  # Отзыв о программе
     direction = Optional(str)  # с каким направлением себя ассоциирует участник
     visible_about_program_field = Required(bool, default='false')
     # будет ли отзыв участника о программе
     # отображаться на главной странице
-    date_of_birth = Required(date)  # день рождения
+
+    @classmethod
+    def important_field_for_print(cls):
+        return ["id", "username", "name", "surname", "photo"]
+
+    def get_entity_html(self, keys):
+        # language=HTML
+        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
 
     @classmethod
     def get_entities_html(cls, *keys):
@@ -140,14 +143,6 @@ class User(Human):
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
-
-    def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
-
-    @classmethod
-    def important_field_for_print(cls):
-        return []
 
 
 class Smm(Human):
@@ -157,6 +152,14 @@ class Smm(Human):
     pass
 
     @classmethod
+    def important_field_for_print(cls):
+        return ["id", "username", "name", "surname", "photo"]
+
+    def get_entity_html(self, keys):
+        # language=HTML
+        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -182,20 +185,20 @@ class Smm(Human):
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
-
-    def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
-
-    @classmethod
-    def important_field_for_print(cls):
-        return []
 
 
 class Developer(Human):
     pass
 
     @classmethod
+    def important_field_for_print(cls):
+        return ["id", "username", "name", "surname", "photo"]
+
+    def get_entity_html(self, keys):
+        # language=HTML
+        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -221,14 +224,6 @@ class Developer(Human):
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
-
-    def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
-
-    @classmethod
-    def important_field_for_print(cls):
-        return []
 
 
 class HumanContacts(db.Entity):
@@ -241,6 +236,14 @@ class HumanContacts(db.Entity):
     telegram = Optional(str)
 
     @classmethod
+    def important_field_for_print(cls):
+        return ["human", "vk", "phone"]
+
+    def get_entity_html(self, keys):
+        # language=HTML
+        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -266,14 +269,6 @@ class HumanContacts(db.Entity):
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
-
-    def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
-
-    @classmethod
-    def important_field_for_print(cls):
-        return []
 
 
 class DirectionExpert(Human):
@@ -281,6 +276,14 @@ class DirectionExpert(Human):
     competition_directions = Set('CompetitionDirection')  # один эксперт может быть экспертом в нескольких направлениях
 
     @classmethod
+    def important_field_for_print(cls):
+        return ["id", "username", "name", "surname", "photo"]
+
+    def get_entity_html(self, keys):
+        # language=HTML
+        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -307,18 +310,11 @@ class DirectionExpert(Human):
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
 
-    def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
-
-    @classmethod
-    def important_field_for_print(cls):
-        return []
-
 
 class Competition(db.Entity):
     """Конкурс типа НоваторВеб"""
-    name = PrimaryKey(str)
+    id = PrimaryKey(int, auto=True)
+    name = Required(str)  # Соревнование, такое как "Новатор Web"
     start = Required(datetime)  # Время начала конкурса
     end = Required(datetime)  # Время окончания конкурса
     description = Optional(str)
@@ -326,6 +322,14 @@ class Competition(db.Entity):
     document = Optional(str)  # ссылка на документ, регламентирующий конкурс
 
     @classmethod
+    def important_field_for_print(cls):
+        return ["name", "start", "end"]
+
+    def get_entity_html(self, keys):
+        # language=HTML
+        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -351,14 +355,6 @@ class Competition(db.Entity):
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
-
-    def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
-
-    @classmethod
-    def important_field_for_print(cls):
-        return []
 
 
 class Direction(db.Entity):
@@ -369,6 +365,14 @@ class Direction(db.Entity):
     video_lessons = Optional(Json)
 
     @classmethod
+    def important_field_for_print(cls):
+        return ["icon", "name"]
+
+    def get_entity_html(self, keys):
+        # language=HTML
+        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -394,14 +398,6 @@ class Direction(db.Entity):
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
-
-    def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
-
-    @classmethod
-    def important_field_for_print(cls):
-        return []
 
 
 class CompetitionDirection(db.Entity):
@@ -415,6 +411,14 @@ class CompetitionDirection(db.Entity):
     PrimaryKey(directions, competition)
 
     @classmethod
+    def important_field_for_print(cls):
+        return ["competition", "directions"]
+
+    def get_entity_html(self, keys):
+        # language=HTML
+        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -440,14 +444,6 @@ class CompetitionDirection(db.Entity):
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
-
-    def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
-
-    @classmethod
-    def important_field_for_print(cls):
-        return []
 
 
 class Task(db.Entity):
@@ -467,6 +463,14 @@ class Task(db.Entity):
     user_works = Set('UserWork')
 
     @classmethod
+    def important_field_for_print(cls):
+        return ["id", "competition_direction", "start", "end", "photo"]
+
+    def get_entity_html(self, keys):
+        # language=HTML
+        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -492,14 +496,6 @@ class Task(db.Entity):
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
-
-    def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
-
-    @classmethod
-    def important_field_for_print(cls):
-        return []
 
 
 class UserWork(db.Entity):
@@ -516,6 +512,14 @@ class UserWork(db.Entity):
     PrimaryKey(user, task)
 
     @classmethod
+    def important_field_for_print(cls):
+        return ["user", "task", "mark"]
+
+    def get_entity_html(self, keys):
+        # language=HTML
+        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -541,14 +545,6 @@ class UserWork(db.Entity):
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
-
-    def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
-
-    @classmethod
-    def important_field_for_print(cls):
-        return []
 
 
 class Criterion(db.Entity):
@@ -562,6 +558,14 @@ class Criterion(db.Entity):
     mark_works = Set('MarkWork')  # Каждый критерий можно применить ко всем работам в направлении конкурса
 
     @classmethod
+    def important_field_for_print(cls):
+        return ["id", "competition_direction", "name", "max_value"]
+
+    def get_entity_html(self, keys):
+        # language=HTML
+        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -587,14 +591,6 @@ class Criterion(db.Entity):
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
-
-    def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
-
-    @classmethod
-    def important_field_for_print(cls):
-        return []
 
 
 class MarkWork(db.Entity):
@@ -608,6 +604,14 @@ class MarkWork(db.Entity):
     PrimaryKey(criterion, user_work)
 
     @classmethod
+    def important_field_for_print(cls):
+        return ["criterion", "user_work", "value"]
+
+    def get_entity_html(self, keys):
+        # language=HTML
+        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -634,26 +638,11 @@ class MarkWork(db.Entity):
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
 
-    def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
-
-    @classmethod
-    def important_field_for_print(cls):
-        return []
-
 
 class Page(db.Entity):
     """Страница сайта
 
-    :param db_path: путь к БД
-    :type db_path: путь к БД
-    :param deep: глубина рекурсии
-    :param db_l: объект БД
-    :return:
-
-    пока что будет использоваться только для заголовков
-    """
+пока что будет использоваться только для заголовков"""
     id = PrimaryKey(int, auto=True)
     page_url = Optional(str)  # ссылка, на которой будет располагаться эта страница
     page_path = Optional(str)  # Путь, по которому лежит html-файл этой страницы
@@ -670,6 +659,14 @@ class Page(db.Entity):
     questions = Set('Question')
 
     @classmethod
+    def important_field_for_print(cls):
+        return ["id", "title", "page_url", "is_header", "visible"]
+
+    def get_entity_html(self, keys):
+        # language=HTML
+        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -695,14 +692,6 @@ class Page(db.Entity):
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
-
-    def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
-
-    @classmethod
-    def important_field_for_print(cls):
-        return []
 
 
 class Question(db.Entity):
@@ -727,6 +716,14 @@ class Question(db.Entity):
     was_answered = Required(bool, default='false')  # ответ на вопрос отправлен?
 
     @classmethod
+    def important_field_for_print(cls):
+        return ["id", "question_title", "human", "was_read", "was_answered"]
+
+    def get_entity_html(self, keys):
+        # language=HTML
+        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -752,14 +749,6 @@ class Question(db.Entity):
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
-
-    def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
-
-    @classmethod
-    def important_field_for_print(cls):
-        return []
 
 
 class SimpleEntity(db.Entity):
@@ -770,6 +759,14 @@ class SimpleEntity(db.Entity):
     data = Optional(Json)
 
     @classmethod
+    def important_field_for_print(cls):
+        return ["key"]
+
+    def get_entity_html(self, keys):
+        # language=HTML
+        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -795,14 +792,6 @@ class SimpleEntity(db.Entity):
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
-
-    def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
-
-    @classmethod
-    def important_field_for_print(cls):
-        return []
 
 
 class News(Page):
@@ -813,6 +802,14 @@ class News(Page):
     description = Optional(str)  # краткое описание новости
 
     @classmethod
+    def important_field_for_print(cls):
+        return ["id", "title", "visible", "image"]
+
+    def get_entity_html(self, keys):
+        # language=HTML
+        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+
+    @classmethod
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -838,11 +835,3 @@ class News(Page):
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
-
-    def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
-
-    @classmethod
-    def important_field_for_print(cls):
-        return []

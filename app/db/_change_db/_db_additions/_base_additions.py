@@ -3,7 +3,7 @@ from typing import List
 from pony.orm import db_session, show, select
 
 from app.db._change_db import _raw_models as _raw_m
-from app.db._change_db._db_additions.tools_for_addition import AddArrtInDbClass
+from app.db._change_db._db_additions._tools_for_addition import AddArrtInDbClass
 
 _start = set(globals())
 
@@ -67,7 +67,15 @@ def get_entities_html(cls, *keys):
            f"<tbody>{body_table}</tbody></table>"
 
 
+
+
 added_params = set(globals()) - _start - {"_start"}
+
+new_funcs = {
+    "important_field_for_print": "",
+    "get_entity_html": "",
+    "get_entities_html": ""
+}
 
 entities_code = {}  # Тут будет находиться код сущностей БД в удобном виде
 for name, ent in _raw_m.db.entities.items():
@@ -78,7 +86,8 @@ for name, ent in _raw_m.db.entities.items():
     # entities_code[name] = entities_code[ent]
 
     [setattr(ent, added_param, globals()[added_param]) for added_param in added_params]
-    AddArrtInDbClass.change_field[name] = AddArrtInDbClass.change_field.get(name, set()) | set(added_params)
+    AddArrtInDbClass.change_field[ent] = AddArrtInDbClass.change_field.get(ent, dict()) | new_funcs
+    # AddArrtInDbClass.change_field_types[name] = "@classmethod"
 
 print(AddArrtInDbClass.change_field)
 

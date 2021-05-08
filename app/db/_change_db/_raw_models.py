@@ -9,11 +9,6 @@ db = Database()
 class Human(db.Entity):
     """Базовый класс человека
 
-    :param db_path: путь к БД
-    :type db_path: путь к БД
-    :param deep: глубина рекурсии
-    :param db_l: объект БД
-
 напрямую использоваться не должен"""
     id = PrimaryKey(int, auto=True)
     username = Required(str, unique=True)  # login
@@ -37,13 +32,13 @@ class User(Human):
     """Участник, который может отправлять работы на конкурс
 
 (если ему еще нет 18)"""
+    date_of_birth = Required(date)  # день рождения
     user_works = Set('UserWork')
     about_program = Optional(str)  # Отзыв о программе
     direction = Optional(str)  # с каким направлением себя ассоциирует участник
     visible_about_program_field = Required(bool, default='false')
     # будет ли отзыв участника о программе
     # отображаться на главной странице
-    date_of_birth = Required(date)  # день рождения
 
 
 class Smm(Human):
@@ -74,7 +69,8 @@ class DirectionExpert(Human):
 
 class Competition(db.Entity):
     """Конкурс типа НоваторВеб"""
-    name = PrimaryKey(str)
+    id = PrimaryKey(int, auto=True)
+    name = Required(str)  # Соревнование, такое как "Новатор Web"
     start = Required(datetime)  # Время начала конкурса
     end = Required(datetime)  # Время окончания конкурса
     description = Optional(str)
@@ -157,14 +153,7 @@ class MarkWork(db.Entity):
 class Page(db.Entity):
     """Страница сайта
 
-    :param db_path: путь к БД
-    :type db_path: путь к БД
-    :param deep: глубина рекурсии
-    :param db_l: объект БД
-    :return:
-
-    пока что будет использоваться только для заголовков
-    """
+пока что будет использоваться только для заголовков"""
     id = PrimaryKey(int, auto=True)
     page_url = Optional(str)  # ссылка, на которой будет располагаться эта страница
     page_path = Optional(str)  # Путь, по которому лежит html-файл этой страницы
@@ -218,49 +207,3 @@ class News(Page):
     author = Optional(str)
     description = Optional(str)  # краткое описание новости
 
-
-# dict_db = {"Admin": []}
-#
-#
-# class BaseDb:
-#     """
-#         Класс, который иммитирует работу БД
-#     """
-#
-#     @classmethod
-#     def exists(cls, **kwargs):
-#         if any([all([getattr(i, key) == val for key, val in kwargs.items()]) for i in dict_db.get(cls.__name__, [])]):
-#             return True
-#         return False
-#
-#     @classmethod
-#     def get(cls, **kwargs):
-#         return \
-#         [i for i in dict_db.get(cls.__name__, []) if all([getattr(i, key) == val for key, val in kwargs.items()])][0]
-#
-#     def __init__(self, **kwargs):
-#         # self.me = HumanInDB(**kwargs)
-#         self.__dict__ = kwargs
-#         dict_db[self.__class__.__name__] = dict_db.get(self.__class__.__name__, []) + [self]
-#
-#     def to_dict(self, **kwargs):
-#         return dict(self.__dict__)
-#
-#
-# class FakeAdmin(BaseDb):
-#     pass
-#
-#
-# from app.utils.utils_of_security import get_password_hash
-#
-# FakeAdmin(
-#     id=1,
-#     username="admin",
-#     hash_password=get_password_hash("admin"),
-#     name="Daniil",
-#     surname="D'yachkov",
-#     email="rkbcu@mail.ru",
-# )
-
-# News
-# print(db.entities)

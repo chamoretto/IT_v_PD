@@ -127,9 +127,9 @@ def create_db_models():
     for name, ent in db.entities.items():
         classes[name] = inspect.getsource(ent)
         classes[name] += "\n\n"
-        add_func = [inspect.getsource(
+        add_func = [[decorator] + inspect.getsource(
             getattr(ent, i)
-        ).split('\n') for i in AddArrtInDbClass.change_field[name]]
+        ).split('\n') for i, decorator in AddArrtInDbClass.change_field[ent].items()]
         add_func = ["\n".join(["\t" + j for j in i]) for i in add_func]
         classes[name] += "\n\n".join([i for i in add_func])
 
@@ -139,7 +139,7 @@ def create_db_models():
         print(file_code, file=f)
 
 
-
-create_db_models()
+if __name__ == "__main__":
+    create_db_models()
 
 

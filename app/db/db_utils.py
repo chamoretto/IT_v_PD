@@ -128,8 +128,8 @@ def _connect_with_db(db_path=DB_PATH, deep=0, db_l=db):
 
 def connect_with_db(db_path=DB_PATH, deep=0, db_l=db):
     try:
+        raise Exception()
         _connect_with_db(db_path=db_path, deep=deep, db_l=db_l)
-
     except Exception:
         old_connect_with_db(db_path=db_path, deep=deep, db_l=db_l)
     finally:
