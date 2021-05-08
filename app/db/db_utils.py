@@ -1,8 +1,8 @@
 from pony.orm import db_session, commit
 from datetime import date
 
-from app.db import raw_models as models
-from app.db.raw_models import db
+from app.db import models
+from app.db.models import db
 from app.settings.config import cfg, DB_PATH, DB_BACKUPS
 from app.utils.utils_of_security import get_password_hash
 
@@ -186,8 +186,6 @@ def connect_with_db(db_path=DB_PATH, deep=0, db_l=db):
             # models.Pampam(id=1, pam=models.Pam[1, "3"])
             # commit()
             # print(models.Pampam[1, 1, "3"])
-
-
 
 
 def open_db_session():

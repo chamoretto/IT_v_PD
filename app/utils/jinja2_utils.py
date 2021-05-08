@@ -109,3 +109,4 @@ class MyJinja2Templates:
 
 login_templates = MyJinja2Templates(directory="content/templates/login")
 error_templates = MyJinja2Templates(directory="content/templates/errors")
+db_templates = MyJinja2Templates(directory="content/templates/database")

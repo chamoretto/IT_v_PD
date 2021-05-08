@@ -1,8 +1,5 @@
-from datetime import timedelta
-
-from fastapi.security import OAuth2PasswordBearer
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from pony.orm import db_session
@@ -10,7 +7,7 @@ from pony.orm import db_session
 from app.utils.pydantic_security import *
 from app.settings.config import cfg
 from app.dependencies import *
-from app.db.raw_models import User
+from app.db import models as m
 from app.utils.utils_of_security import generate_security, basic_login
 
 
@@ -22,7 +19,7 @@ token_path = "user_token"
  authenticate_user,
  get_current_user,
  create_user_access_token
- ] = generate_security(User)
+ ] = generate_security(m.User)
 
 user = APIRouter(
     tags=["user"],

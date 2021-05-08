@@ -1,9 +1,14 @@
-from typing import Tuple, Dict, List, Union, Optional, Any
+from typing import Tuple, Dict, List, Any
 from functools import reduce
 
-from app.pydantic_models.standart_methhods_redefinition import BaseModel
-from app.db.raw_models import db
+import inspect
 
+from app.settings.config import HOME_DIR, join
+from app.pydantic_models.standart_methhods_redefinition import BaseModel
+from app.db._change_db._raw_models import db
+from app.db._change_db import _raw_models
+# from app.db._change_db._db_additions._base_additions import *
+from app.db._change_db._all_db_additions import AddArrtInDbClass
 
 class StringDB(BaseModel):
     """Олицетворяет одну строку в классе сузности Pony"""
@@ -117,7 +122,24 @@ def db_ent_to_dict(ent) -> Tuple[
 
 
 def create_db_models():
+    header_file = inspect.getsource(_raw_models).split('class')[0]
+    classes: Dict[str: str] = {}
     for name, ent in db.entities.items():
-        ent.describe()
+        classes[name] = inspect.getsource(ent)
+        classes[name] += "\n\n"
+        add_func = [inspect.getsource(
+            getattr(ent, i)
+        ).split('\n') for i in AddArrtInDbClass.change_field[name]]
+        add_func = ["\n".join(["\t" + j for j in i]) for i in add_func]
+        classes[name] += "\n\n".join([i for i in add_func])
+
+    file_code = header_file
+    file_code += "\n\n\n".join(list(classes.values()))
+    with open(join(HOME_DIR, "db", "models.py"), "w", encoding='utf-8') as f:
+        print(file_code, file=f)
+
+
+
+create_db_models()
 
 

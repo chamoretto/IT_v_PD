@@ -1,18 +1,17 @@
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
-from typing import Optional, Callable, Any, List, Dict, Tuple, Union
-from pydantic import ValidationError, Field
+from typing import Optional, List, Dict, Tuple, Union
+from pydantic import ValidationError
 
 from fastapi import Depends, HTTPException, status, APIRouter
 from jose import JWTError, jwt
 from pony.orm import db_session
-from pony.orm.core import Entity
 from fastapi.security import (
     OAuth2PasswordBearer,
     OAuth2PasswordRequestForm,
     SecurityScopes,
 )
-from app.db import raw_models as models
+from app.db import models as m
 
 from app.settings.config import cfg
 from app.utils.pydantic_security import TokenData, HumanInDB, Token, BaseModel
@@ -54,19 +53,19 @@ oauth2_scheme = OAuth2PasswordBearer(
 )
 
 # scopes_to_db = {
-#     "user": models.User,
-#     "smmer": models.Smm,
-#     "direction_expert": models.DirectionExpert,
-#     "admin": models.Admin,
-#     "developer": models.Developer
+#     "user": m.User,
+#     "smmer": m.Smm,
+#     "direction_expert": m.DirectionExpert,
+#     "admin": m.Admin,
+#     "developer": m.Developer
 # }
 
-scopes_to_db: Dict[models.db.Entity, List[str]] = {
-    models.User: ["user"],
-    models.Smm: ["smmer"],
-    models.DirectionExpert: ["direction_expert"],
-    models.Admin: ["admin", "smmer"],
-    models.Developer: ["developer", "user", "direction_expert", "admin", "smmer"]
+scopes_to_db: Dict[m.db.Entity, List[str]] = {
+    m.User: ["user"],
+    m.Smm: ["smmer"],
+    m.DirectionExpert: ["direction_expert"],
+    m.Admin: ["admin", "smmer"],
+    m.Developer: ["developer", "user", "direction_expert", "admin", "smmer"]
 }
 
 
@@ -90,8 +89,8 @@ def generate_security(entity, getter_human=None):
     if getter_human is None:
         @db_session
         def getter_human(username: str):
-            if models.Human.exists(username=username):
-                human_db = models.Human.get(username=username)
+            if m.Human.exists(username=username):
+                human_db = m.Human.get(username=username)
                 return HumanInDB.from_pony_orm(human_db)
 
     def authenticate_human(username: str, password: str):
@@ -165,11 +164,11 @@ security = APIRouter(
 
 
 def check_scopes(username: str, password: str, scopes: List[str]) \
-        -> Tuple[Optional[models.db.Entity], Union[List[str], bool]]:
+        -> Tuple[Optional[m.db.Entity], Union[List[str], bool]]:
 
-    if not models.Human.exists(username=username):
+    if not m.Human.exists(username=username):
         return None, False
-    ent = models.Human.get(username=username)
+    ent = m.Human.get(username=username)
     scopes = [i for i in scopes_to_db[ent.__class__] if i in scopes]
     if verify_password(password, ent.hash_password):
         return ent, scopes

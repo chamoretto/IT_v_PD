@@ -2,22 +2,15 @@
 
 """Главный файл нашего web-приложения"""
 
-from fastapi import FastAPI
 import uvicorn
-import time
 from fastapi.responses import FileResponse
 from fastapi.responses import HTMLResponse
-from typing import Callable
 
-from fastapi import Depends, FastAPI, Request, HTTPException, Response
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
-from fastapi.responses import RedirectResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import StreamingResponse
-from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
-from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.routing import APIRoute
 from pony.orm.core import TransactionIntegrityError
 
 from app.dependencies import *
@@ -35,14 +28,7 @@ from app.developers.security import dev as security_dev
 from app.utils.utils_of_security import security
 from app.utils.basic_utils import async_iterator_wrapper as aiwrap
 from app.utils.html_utils import Alert
-from app.db.db_utils import connect_with_db
-from app.db.db_utils import db_session
-from app.db.raw_models import Admin, Human
 from app.db.create_db_content import create_pages
-from app.pydantic_models.standart_methhods_redefinition import BaseModel
-
-
-
 
 app = FastAPI(
     # route_class=TimedRoute,
@@ -137,6 +123,7 @@ def custom_http_exception_handler(request: Request, exc: HTTPException):
         elif exc.status_code == 404:
             return error_templates.TemplateResponse("404.html", {
                 "request": request,
+                "detail": exc.detail,
                 "alert": Alert("Похоже данной страницы не существует...", Alert.ERROR)})
         return JSONResponse(
             status_code=exc.status_code,

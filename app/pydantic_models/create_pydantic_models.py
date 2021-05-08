@@ -1,9 +1,9 @@
-from typing import Dict, List, Tuple, Any, Set
+from typing import Dict, List, Tuple, Any
 from itertools import chain
 from functools import reduce
 
-from app.db.raw_models import db
-from app.db.create_models import db_ent_to_dict, StringDB
+from app.db.models import db
+from app.db._change_db._create_models import db_ent_to_dict, StringDB
 from app.settings.config import AUTO_PYDANTIC_MODELS
 
 # =======! Правила изменения типа pony-атрибутов !=======

@@ -1,8 +1,5 @@
-from datetime import timedelta
-
-from fastapi.security import OAuth2PasswordBearer
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from pony.orm import db_session
@@ -10,7 +7,7 @@ from pony.orm import db_session
 from app.utils.pydantic_security import *
 from app.settings.config import cfg
 from app.dependencies import *
-from app.db.raw_models import Admin
+from app.db import models as m
 from app.utils.utils_of_security import generate_security, basic_login
 
 SECRET_KEY = cfg.get('keys', "admin")
@@ -28,7 +25,7 @@ admin = APIRouter(
  authenticate_admin,
  get_current_admin,
  create_admin_access_token
- ] = generate_security(Admin)
+ ] = generate_security(m.Admin)
 
 
 @admin.post("/" + token_path, response_model=Token)
