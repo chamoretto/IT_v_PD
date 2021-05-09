@@ -202,4 +202,5 @@ def create_pd_models():
         print(file_code, file=f)
 
 
-create_pd_models()
+if __name__ == '__main__':
+    create_pd_models()

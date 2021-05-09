@@ -43,9 +43,9 @@ PkSmm = Union[int, Smm]
 PkDeveloper = Union[int, Developer]
 PkHumanContacts = Union[int, HumanContacts]
 PkDirectionExpert = Union[int, DirectionExpert]
-PkCompetition = Union[str, Competition]
+PkCompetition = Union[int, Competition]
 PkDirection = Union[str, Direction]
-PkCompetitionDirection = Union[Tuple[str, str], CompetitionDirection]
+PkCompetitionDirection = Union[Tuple[str, int], CompetitionDirection]
 PkTask = Union[int, Task]
 PkUserWork = Union[Tuple[int, int], UserWork]
 PkCriterion = Union[int, Criterion]
@@ -62,9 +62,9 @@ OptionalPkSmm = Union[int, Smm, None]
 OptionalPkDeveloper = Union[int, Developer, None]
 OptionalPkHumanContacts = Union[int, HumanContacts, None]
 OptionalPkDirectionExpert = Union[int, DirectionExpert, None]
-OptionalPkCompetition = Union[str, Competition, None]
+OptionalPkCompetition = Union[int, Competition, None]
 OptionalPkDirection = Union[str, Direction, None]
-OptionalPkCompetitionDirection = Union[Tuple[str, str], CompetitionDirection, None]
+OptionalPkCompetitionDirection = Union[Tuple[str, int], CompetitionDirection, None]
 OptionalPkTask = Union[int, Task, None]
 OptionalPkUserWork = Union[Tuple[int, int], UserWork, None]
 OptionalPkCriterion = Union[int, Criterion, None]
@@ -79,7 +79,7 @@ class Human(BaseModel):
 	id: int
 	username: str
 	hash_password: str
-	name: str
+	name: str = 'Вася'
 	surname: str
 	email: str
 	human_contacts: Optional[OptionalPkHumanContacts] = None
@@ -97,7 +97,7 @@ class Admin(BaseModel):
 	id: int
 	username: str
 	hash_password: str
-	name: str
+	name: str = 'Вася'
 	surname: str
 	email: str
 	human_contacts: Optional[OptionalPkHumanContacts] = None
@@ -115,7 +115,7 @@ class User(BaseModel):
 	id: int
 	username: str
 	hash_password: str
-	name: str
+	name: str = 'Вася'
 	surname: str
 	email: str
 	human_contacts: Optional[OptionalPkHumanContacts] = None
@@ -138,7 +138,7 @@ class Smm(BaseModel):
 	id: int
 	username: str
 	hash_password: str
-	name: str
+	name: str = 'Вася'
 	surname: str
 	email: str
 	human_contacts: Optional[OptionalPkHumanContacts] = None
@@ -156,7 +156,7 @@ class Developer(BaseModel):
 	id: int
 	username: str
 	hash_password: str
-	name: str
+	name: str = 'Вася'
 	surname: str
 	email: str
 	human_contacts: Optional[OptionalPkHumanContacts] = None
@@ -187,7 +187,7 @@ class DirectionExpert(BaseModel):
 	id: int
 	username: str
 	hash_password: str
-	name: str
+	name: str = 'Вася'
 	surname: str
 	email: str
 	human_contacts: Optional[OptionalPkHumanContacts] = None
@@ -203,6 +203,7 @@ class DirectionExpert(BaseModel):
 
 
 class Competition(BaseModel):
+	id: int
 	name: str
 	start: datetime
 	end: datetime

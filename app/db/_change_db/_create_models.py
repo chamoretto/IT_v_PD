@@ -14,7 +14,7 @@ class StringDB(BaseModel):
     """Олицетворяет одну строку в классе сузности Pony"""
 
     name: str  # имя поля (атрибута)
-    db_type: str  # Set, Optional, Requires, PrimaryKey
+    db_type: str  # Set, Optional, Required, PrimaryKey
     param_type: str  # тип параметра, записываемого в БД
     default: Any = None  # параметр по умолчанию
     other_params: dict  # другие параметры

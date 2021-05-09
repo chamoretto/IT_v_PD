@@ -1,0 +1,82 @@
+{# =======!!! ВНИМАНИЕ !!!======= #}
+{# =======! Этот файл генерируется автоматически на основе документации класса сущности БД в файле app/db/models.py !=======#}
+
+{# =======! Ни одно изменение в этом файле не будет сохранено! !======= #}
+
+<div class="container max-width-lg">
+<form id="{entity_name.lower()}" action="{link}" method="post" enctype="multipart/form-data">
+<fieldset class="margin-bottom-md">
+<legend class="form-legend">Smm</legend>
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+id имеет тип number, который еще не поддерживается...
+</label></div>
+
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Smm_username">username
+<span class="color-error">*</span></label>
+<input class="form-control width-100% text-sm" placeholder="" type="text" name="username" id="Smm_username" 
+        {{
+                'value="' + smm.username + '"'
+                if smm is defined
+                else
+                ""
+        }} required>
+</div>
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Smm_name">name
+<span class="color-error">*</span></label>
+<input class="form-control width-100% text-sm" placeholder="" type="text" name="name" id="Smm_name" 
+        {{
+                'value="' + smm.name + '"'
+                if smm is defined
+                else
+                'value="Вася"'|safe
+        }} required>
+</div>
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Smm_surname">surname
+<span class="color-error">*</span></label>
+<input class="form-control width-100% text-sm" placeholder="" type="text" name="surname" id="Smm_surname" 
+        {{
+                'value="' + smm.surname + '"'
+                if smm is defined
+                else
+                ""
+        }} required>
+</div>
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Smm_email">email
+<span class="color-error">*</span></label>
+<input class="form-control width-100% text-sm" placeholder="" type="text" name="email" id="Smm_email" 
+        {{
+                'value="' + smm.email + '"'
+                if smm is defined
+                else
+                ""
+        }} required>
+</div>
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Smm_status">status
+</label>
+<input class="form-control width-100% text-sm" placeholder="" type="text" name="status" id="Smm_status" 
+        {{
+                'value="' + smm.status + '"'
+                if smm is defined
+                else
+                ""
+        }}>
+</div>
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Smm_description">description
+</label>
+<input class="form-control width-100% text-sm" placeholder="" type="text" name="description" id="Smm_description" 
+        {{
+                'value="' + smm.description + '"'
+                if smm is defined
+                else
+                ""
+        }}>
+</div></fieldset><div>
+<button class="btn btn--primary" type="submit">Отправить</button>
+<button class="btn btn--subtle" type="reset">Сбросить</button>
+</div></form></div>

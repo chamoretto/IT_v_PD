@@ -8,13 +8,32 @@ db = Database()
 
 
 class Human(db.Entity):
-    """Базовый класс человека
 
-напрямую использоваться не должен"""
+    """
+        Базовый класс человека
+
+        :param id: Идентификатор
+        :type id: number
+        :param username: Логин
+        :type username: text
+        :param name: Имя пользователя
+        :type name: text
+        :param surname: Фамилия пользователя
+        :type surname: text
+        :param email: Почта
+        :type email: text
+        :param status: Почта
+        :type status: text
+        :param description: Почта
+        :type description: text
+
+        напрямую использоваться не должен
+    """
+
     id = PrimaryKey(int, auto=True)
     username = Required(str, unique=True)  # login
     hash_password = Required(str, 8192)
-    name = Required(str)
+    name = Required(str, default="Вася")
     surname = Required(str)
     email = Required(str, unique=True)
     human_contacts = Optional('HumanContacts')
@@ -101,6 +120,8 @@ class Admin(Human):
 
 class User(Human):
     """Участник, который может отправлять работы на конкурс
+
+
 
 (если ему еще нет 18)"""
     date_of_birth = Required(date)  # день рождения
