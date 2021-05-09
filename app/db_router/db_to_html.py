@@ -30,17 +30,18 @@ class DbDocs(BaseModel):
 
 
 def all_html_form(content: str, entity_name: str) -> str:
-    # language=HTML
+    # langua ge=HTML
     text = f'<div class="container max-width-lg">\n' \
-           f'<form id="{{entity_name.lower()}}" action="{{link}}" method="post"' \
-           f' enctype="multipart/form-data">\n' \
+           f'<form id="{{entity_name.lower()}}" action="/db/{entity_name}/new" method="post"' \
+           f' enctype="multipart/form-data" onsubmit="return false">\n' \
            f'<fieldset class="margin-bottom-md">\n' \
            f'<legend class="form-legend">{entity_name}</legend>\n' \
            f'{content}' \
            f'</fieldset><div>\n' \
-           f'<button class="btn btn--primary" type="submit">Отправить</button>\n' \
+           f'<button class="btn btn--primary" type="submit" id="submit">Отправить</button>\n' \
            f'<button class="btn btn--subtle" type="reset">Сбросить</button>\n' \
-           f'</div></form></div>'
+           f'</div></form></div>' \
+           f'<script src="{"{{"}url_for("scripts", path="/async_forms_and_redirects.js"){"}}"}"></script>'
     return text
 
 
@@ -69,7 +70,8 @@ def html_text(param: DbDocs) -> str:
            f'<input class="form-control width-100% text-sm" placeholder="{param.placeholder}"' \
            f' type="text" name="{param.name}" id="{param.class_name}_{param.name}"' \
            f' {value}' \
-           f'{" required" if param.required else ""}>\n</div>'
+           f'{" required" if param.required else ""}>\n' \
+           f'<div id="{param.class_name}_{param.name}_error"></div></div>'
     return text
 
 
@@ -101,7 +103,7 @@ type_to_html: dict[str, Callable[[DbDocs], str]] = defaultdict(
 )
 
 
-def create_html_file(ent: m.db.Entity, pd_ent: BaseModel):
+def create_html_file(ent: m.db.Entity):
     pd_ent = getattr(pd, ent.__name__)
     all_ent_docs: Dict[str, DbDocs] = {}
     all_docs = (i.strip() for i in get_doc(ent).split("\n"))
@@ -134,5 +136,5 @@ def create_html_file(ent: m.db.Entity, pd_ent: BaseModel):
 if __name__ == '__main__':
     create_pd_models()
     for name, ent in m.db.entities.items():
-        create_html_file(ent, None)
+        create_html_file(ent)
 

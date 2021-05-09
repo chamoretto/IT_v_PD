@@ -10,6 +10,7 @@ from app.db._change_db import _raw_models
 # from app.db._change_db._db_additions._base_additions import *
 from app.db._change_db._all_db_additions import AddArrtInDbClass
 
+
 class StringDB(BaseModel):
     """Олицетворяет одну строку в классе сузности Pony"""
 

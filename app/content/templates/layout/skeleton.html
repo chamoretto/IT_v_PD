@@ -8,6 +8,8 @@
   <link href="https://fonts.googleapis.com/css?family=Comfortaa&display=swap" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@13.0.1/dist/lazyload.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
   <script>
       var lazyLoadInstance = new LazyLoad ( {
           elements_selector: "[loading='lazy']"
@@ -131,7 +133,7 @@
 </header>
 
 <script src="https://cdn.ckeditor.com/4.13.1/standard-all/ckeditor.js"></script>
-
+<script src=" {{url_for('scripts', path='/async_forms_and_redirects.js')}}"></script>
 <div class="_content my-4 margin-bottom-lg">
   {% if alert is defined and alert_context is defined and alert%}
     {{alert.render(alert_context)|safe}}

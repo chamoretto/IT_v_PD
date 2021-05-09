@@ -30,6 +30,11 @@
                         // вывести результат
                         console.log(xhr.responseText);
                         document.querySelectorAll("html")[0].innerHTML = " " + xhr.responseText;
+
+                        send_form_as_ajax();
+
+                        //[...document.querySelectorAll("script")].map(i => eval(i.innerHTML))
+                        //eval($("script", doc).text())
                         // document.html = " " + xhr.responseText;
                     } else {
                         // обработать ошибку

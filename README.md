@@ -1,5 +1,7 @@
 # Сайт 1000ln
 
+    use: python 3.9 +
+
 ## Installing (windows):
 
     pip install -r requirements.txt 

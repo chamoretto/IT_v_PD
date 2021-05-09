@@ -4,7 +4,7 @@
 {# =======! Ни одно изменение в этом файле не будет сохранено! !======= #}
 
 <div class="container max-width-lg">
-<form id="{entity_name.lower()}" action="{link}" method="post" enctype="multipart/form-data">
+<form id="{entity_name.lower()}" action="/db/Human/new" method="post" enctype="multipart/form-data">
 <fieldset class="margin-bottom-md">
 <legend class="form-legend">Human</legend>
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
@@ -77,6 +77,6 @@ id имеет тип number, который еще не поддерживает
                 ""
         }}>
 </div></fieldset><div>
-<button class="btn btn--primary" type="submit">Отправить</button>
+<button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
-</div></form></div>
+</div></form></div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>

@@ -38,21 +38,21 @@ app = FastAPI(
 # app.add_middleware(GZipMiddleware, minimum_size=1000)  # все файлы ответов больше 1000 байт сжимаются
 
 
-@app.middleware("http")
-async def add_process_time_header(request: Request, call_next):
-    response: StreamingResponse = await call_next(request)
-    # print("---==!!", response.headers)
-    if any(["text/html" in val.lower() for key, val in response.headers.items() if key.lower() == "content-type"]):
-        resp_body = [section async for section in response.__dict__['body_iterator']]
-        # print(resp_body)
-        # print(hasattr(response, "template"))
-        response.__setattr__('body_iterator', aiwrap(resp_body))
-        return response
-    # content = await response.body_iterator
-    # response.body_iterator = (content)
-    # print(type(response), content)
-    # await response("", receive, send)
-    return response
+# @app.middleware("http")
+# async def add_process_time_header(request: Request, call_next):
+#     response: StreamingResponse = await call_next(request)
+#     # print("---==!!", response.headers)
+#     if any(["text/html" in val.lower() for key, val in response.headers.items() if key.lower() == "content-type"]):
+#         resp_body = [section async for section in response.__dict__['body_iterator']]
+#         # print(resp_body)
+#         # print(hasattr(response, "template"))
+#         response.__setattr__('body_iterator', aiwrap(resp_body))
+#         return response
+#     # content = await response.body_iterator
+#     # response.body_iterator = (content)
+#     # print(type(response), content)
+#     # await response("", receive, send)
+#     return response
 
 
 app.mount("/public", StaticFiles(directory="content/public"), name="public")

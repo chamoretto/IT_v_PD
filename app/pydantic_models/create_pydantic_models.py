@@ -1,10 +1,10 @@
-from typing import Dict, List, Tuple, Any
+from typing import Dict, List, Tuple, Any, Callable
 from itertools import chain
 from functools import reduce
 
 from app.db.models import db
 from app.db._change_db._create_models import db_ent_to_dict, StringDB
-from app.settings.config import AUTO_PYDANTIC_MODELS
+from app.settings.config import AUTO_PYDANTIC_MODELS, split, join
 
 # =======! Правила изменения типа pony-атрибутов !=======
 change_attr_type_rules = {
@@ -15,10 +15,14 @@ change_attr_type_rules = {
 change_attr_type = {
     lambda i: i.param_type in change_attr_type_rules:
         lambda i: setattr(i, 'param_type', change_attr_type_rules[i.param_type]),
-    lambda i: i.param_type in db.entities and i.db_type != "Optional":
+    lambda i: i.param_type in db.entities and i.db_type == "Required":
         lambda i: setattr(i, 'param_type', "Pk" + i.param_type),
     lambda i: i.param_type in db.entities and i.db_type == "Optional":
-        lambda i: setattr(i, 'param_type', "OptionalPk" + i.param_type),
+        lambda i: [setattr(i, 'param_type', "OptionalPk" + i.param_type),
+                   setattr(i, 'db_type', "")],
+    lambda i: i.param_type in db.entities and i.db_type == "Set":
+        lambda i: [setattr(i, 'param_type', "SetPk" + i.param_type),
+                   setattr(i, 'db_type', "")],
 }
 
 # =======! Интерпретируем типы полей БД в pydantic-язык !=======
@@ -30,7 +34,8 @@ change_db_field = {
     "Discriminator": "Optional",
 }
 type_db_param_to_text = {
-    lambda i: i.db_type in change_db_field: lambda i: setattr(i, 'db_type', change_db_field[i.db_type]),
+    lambda i: i.db_type in change_db_field:
+        lambda i: setattr(i, 'db_type', change_db_field[i.db_type]),
 }
 
 # =======! Устанавливаем значения по умолчанию !=======
@@ -50,6 +55,10 @@ change_default = {
         lambda i: setattr(i, 'default', '"' + i.default + '"'),
     lambda i: i.default is None or "lambda" in i.default:
         lambda i: setattr(i, 'default', change_default_rules[i.db_type]),
+    lambda i: (i.default is None or "lambda" in i.default) and "Set" in i.param_type:
+        lambda i: setattr(i, 'default', "[]"),
+    lambda i: (i.default is None or "lambda" in i.default) and "Optional" in i.param_type:
+        lambda i: setattr(i, 'default', "None"),
 }
 
 
@@ -114,17 +123,24 @@ def create_pk_types(pd_db):
 
     # =======! Выносим большие типы в отдельные переменные !=======
     new_types = []
+    new_types_dict = dict()
     for name, val in pk_for_pydantic.items():
         new_types.append(f"Pk{name} = Union[{', '.join(val)}]\n")
+        new_types_dict[f"Pk{name}"] = f"Union[{', '.join(val)}]"
     new_types.append('\n')
     for name, val in pk_for_pydantic.items():
         new_types.append(f"OptionalPk{name} = Union[{', '.join(val + ['None'])}]\n")
+        new_types_dict[f"OptionalPk{name}"] = f"Union[{', '.join(val + ['None'])}]"
+    new_types.append('\n')
+    for name, val in pk_for_pydantic.items():
+        new_types.append(f"SetPk{name} = Set[Union[{', '.join(val)}]]\n")
+        new_types_dict[f"SetPk{name}"] = f"Set[Union[{', '.join(val)}]]"
     new_types = "".join(new_types)
 
-    return new_types + "\n\n", pk_for_pydantic
+    return new_types + "\n\n", pk_for_pydantic, new_types_dict
 
 
-def create_pd_class_body(class_name: str, code: List[StringDB]) -> str:
+def create_pd_class_body(class_name: str, code: List[StringDB], new_types_dict: dict[str, str]) -> str:
     """Создаёт тела pydantic-класса"""
 
     #       приводим тип атрибута к типу, понятному pydantic
@@ -134,6 +150,7 @@ def create_pd_class_body(class_name: str, code: List[StringDB]) -> str:
     #       устанавливаем значения по умолчанию
     [[val(i) for key, val in change_default.items() if key(i)] for i in code]
 
+    [setattr(i, "param_type", new_types_dict[i.param_type]) for i in code if i.param_type in new_types_dict]
     pd_class_body = "".join([db_string_to_pydantic_string(i) for i in code])
 
     return pd_class_body
@@ -151,7 +168,7 @@ def create_header_pd_file(entities: List[db.Entity]) -> str:
             'from typing import Optional, Literal, Any\n' \
             'from pydantic import Json\n' \
             'from datetime import date, datetime, time\n\n' \
-            'from app.pydantic_models.standart_methhods_redefinition import BaseModel\n' \
+            'from app.pydantic_models.standart_methhods_redefinition import BaseModel, as_form\n' \
             'from app.settings.config import HOME_DIR\n\n\n'
 
     for entity in entities:
@@ -159,9 +176,10 @@ def create_header_pd_file(entities: List[db.Entity]) -> str:
     return data + "\n"
 
 
-def create_pd_class(class_name: str, code: List[StringDB]) -> str:
-    data = f"class {class_name}(BaseModel):\n"
-    data += create_pd_class_body(class_name, code)
+def create_pd_class(class_name: str, code: List[StringDB], new_types_dict: dict[str, str]) -> str:
+    data = f""
+    data += f"class {class_name}(BaseModel):\n"
+    data += create_pd_class_body(class_name, code, new_types_dict)
     data += '\n' \
             '\tclass Config:\n' \
             '\t\torm_mode = True\n\n\n'
@@ -176,31 +194,45 @@ def create_footer_pd_file(entities: List[db.Entity]) -> str:
     return data
 
 
-def create_pd_models():
+def create_pd_models(
+        file_name: str = AUTO_PYDANTIC_MODELS,
+        filter_func: Callable = lambda *a, **k: True,
+        map_param_funcs: list[Callable[..., Tuple[str, StringDB]]] = [lambda key, val, *a, **k: (key, val)]
+):
     pd_db: Dict[str, Tuple[Dict[str, StringDB], Dict[str, Dict[List[str], List[str]]], Any, db.Entity]] = {}
 
     # =======! Получаем код сущности !=======
     for name, ent in db.entities.items():
         code, p_k = db_ent_to_dict(ent)
+        print(name, p_k)
         code.pop("Discriminator", "")
         code.pop("classtype", "")
+        code = {key: val for key, val in code.items() if filter_func(key, val, p_k)}
+        for map_param_func in map_param_funcs:
+            code = dict([map_param_func(key, val, p_k) for key, val in code.items()])
+
         pd_db[name] = [code, p_k, ent.__bases__[0], ent]
 
     # =======! Обрабатываем сложные типы !=======
     pd_db = get_nice_pk(pd_db)
-    new_types_code, pk_for_pydantic = create_pk_types(pd_db)
+    new_types_code, pk_for_pydantic, new_types_dict = create_pk_types(pd_db)
 
     # ======! Превращаем класс PonyORM в pydantic-класс !=======
     file_code: str = create_header_pd_file(db.entities)
     file_code += new_types_code
     for name, [code, p_k, parent, ent] in pd_db.items():
-        file_code += create_pd_class(name, code.values())
+        file_code += create_pd_class(name, code.values(), new_types_dict)
 
     file_code += create_footer_pd_file(db.entities)
 
-    with open(AUTO_PYDANTIC_MODELS, "w", encoding='utf-8') as f:
+    with open(file_name, "w", encoding='utf-8') as f:
         print(file_code, file=f)
 
 
 if __name__ == '__main__':
     create_pd_models()
+    create_pd_models(
+        join(split(AUTO_PYDANTIC_MODELS)[0], "unique_db_field_models.py"),
+        lambda key, val, p_k, *a, **k:
+        val.other_params.get("unique") or val.is_primary_key or any(val.name in j for j in p_k))
+    # print(dict([(1, 2), (3, 4)]))
