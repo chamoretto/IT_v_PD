@@ -1,5 +1,6 @@
 from typing import Callable
 import time
+import enum
 
 from fastapi import APIRouter, Depends, Security, Response, Request, HTTPException, status
 from pony.orm import db_session
@@ -25,6 +26,9 @@ db_route = APIRouter(
     responses={404: {"description": "Not found------"},
                401: {"description": "Пользователь не был авторизировани"}},
 )
+# DynamicEnum = enum.Enum('DynamicEnum', {'foo':42, 'bar':24})
+# DynamicEnum = enum.Enum('DynamicEnum', {key: key for key, val in m.db.entities.items()})
+
 
 @db_route.get('/')
 @db_session
@@ -34,9 +38,9 @@ def dgsfsdf():
 
 @db_route.get('/{entity}')
 @db_session
-def start_dev(entity: str, request: Request):
+def start_dev(entity: m.db.EntitiesEnum, request: Request):
     print("---ESMg mf k")
-    if entity not in m.db.entities and type(m.db.entities[entity]) == m.db.Entity:
+    if entity.value not in m.db.entities and type(m.db.entities[entity.value]) == m.db.Entity:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Такая Сущность в базе данных не найдена...",
@@ -44,4 +48,4 @@ def start_dev(entity: str, request: Request):
         )
 
     return db_templates.TemplateResponse(
-        "show_entity.html", {"request": request, "table": m.db.entities[entity].get_entities_html()})
+        "show_entity.html", {"request": request, "table": m.db.entities[entity.value].get_entities_html()})

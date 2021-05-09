@@ -123,6 +123,7 @@ def db_ent_to_dict(ent) -> Tuple[
 
 def create_db_models():
     header_file = inspect.getsource(_raw_models).split('class')[0]
+    header_file = "import enum\n\n" + header_file
     classes: Dict[str: str] = {}
     for name, ent in db.entities.items():
         classes[name] = inspect.getsource(ent)
@@ -135,6 +136,7 @@ def create_db_models():
 
     file_code = header_file
     file_code += "\n\n\n".join(list(classes.values()))
+    file_code += "\n\nsetattr(db, 'EntitiesEnum', enum.Enum('DynamicEnum', {key: key for key, val in db.entities.items()}))"
     with open(join(HOME_DIR, "db", "models.py"), "w", encoding='utf-8') as f:
         print(file_code, file=f)
 

@@ -1,3 +1,5 @@
+import enum
+
 from datetime import date
 from datetime import datetime
 from pony.orm import *
@@ -835,3 +837,6 @@ class News(Page):
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
+
+
+setattr(db, 'EntitiesEnum', enum.Enum('DynamicEnum', {key: key for key, val in db.entities.items()}))
