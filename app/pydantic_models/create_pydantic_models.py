@@ -197,7 +197,8 @@ def create_footer_pd_file(entities: List[db.Entity]) -> str:
 def create_pd_models(
         file_name: str = AUTO_PYDANTIC_MODELS,
         filter_func: Callable = lambda *a, **k: True,
-        map_param_funcs: list[Callable[..., Tuple[str, StringDB]]] = [lambda key, val, *a, **k: (key, val)]
+        map_param_funcs: list[Callable[..., Tuple[str, StringDB]]] = [lambda key, val, *a, **k: (key, val)],
+        class_filter: Callable = lambda *a, **k: True
 ):
     pd_db: Dict[str, Tuple[Dict[str, StringDB], Dict[str, Dict[List[str], List[str]]], Any, db.Entity]] = {}
 
@@ -205,6 +206,8 @@ def create_pd_models(
     for name, ent in db.entities.items():
         code, p_k = db_ent_to_dict(ent)
         print(name, p_k)
+        if not class_filter(code, p_k):
+            continue
         code.pop("Discriminator", "")
         code.pop("classtype", "")
         code = {key: val for key, val in code.items() if filter_func(key, val, p_k)}
@@ -229,10 +232,23 @@ def create_pd_models(
         print(file_code, file=f)
 
 
+def change_hash_to_password_field(key, val, *a, **k):
+    if key == "hash_password":
+        key = "password"
+        setattr(val, "name", "password")
+    return key, val
+
 if __name__ == '__main__':
-    create_pd_models()
-    create_pd_models(
+    create_pd_models()  # Обычнве модели из базы данных
+    create_pd_models(  # модель только с уникальными параметрами
         join(split(AUTO_PYDANTIC_MODELS)[0], "unique_db_field_models.py"),
         lambda key, val, p_k, *a, **k:
         val.other_params.get("unique") or val.is_primary_key or any(val.name in j for j in p_k))
     # print(dict([(1, 2), (3, 4)]))
+    create_pd_models(
+        file_name=join(split(AUTO_PYDANTIC_MODELS)[0], "input_ent.py"),
+        map_param_funcs=[change_hash_to_password_field])  # Сущности, которые будут приниматься с сайта
+    create_pd_models(  # сущности, которые должен возвращать сайт
+        file_name=join(split(AUTO_PYDANTIC_MODELS)[0], "output_ent.py"),
+        filter_func=lambda key, val, *a, **k: all(i not in key for i in ["password", "hash"]))
+
