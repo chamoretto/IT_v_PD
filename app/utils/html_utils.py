@@ -36,4 +36,4 @@ class Alert:
 
 class SitePageMenu(BaseModel):
     name: str
-    href: str = "*"
+    href: str = "/novator"

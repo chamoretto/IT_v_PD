@@ -11,81 +11,81 @@
 id имеет тип number, который еще не поддерживается...
 </label></div>
 
-{% if (admin is defined and hasattr(param.class_name.lower(), "username")) or admin is not defined %}<div class="margin-bottom-sm">
+{% if (admin is defined and admin.username != Undefined) or admin is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Admin_username">username
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="username" id="Admin_username" 
         {{
-                'value="' + admin.username + '"'
+                ('value="' + admin.username + '"'
                 if admin is defined
                 else
-                ""
+                "")|safe
         }} required>
 <div id="Admin_username_error"></div></div>{% endif %}
-{% if (admin is defined and hasattr(param.class_name.lower(), "password")) or admin is not defined %}<div class="margin-bottom-sm">
+{% if (admin is defined and admin.password != Undefined) or admin is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Admin_password">password
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="password" id="Admin_password" 
         {{
-                'value="' + admin.password + '"'
+                ('value="' + admin.password + '"'
                 if admin is defined
                 else
-                ""
+                "")|safe
         }} required>
 <div id="Admin_password_error"></div></div>{% endif %}
-{% if (admin is defined and hasattr(param.class_name.lower(), "name")) or admin is not defined %}<div class="margin-bottom-sm">
+{% if (admin is defined and admin.name != Undefined) or admin is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Admin_name">name
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="name" id="Admin_name" 
         {{
-                'value="' + admin.name + '"'
+                ('value="' + admin.name + '"'
                 if admin is defined
                 else
-                ""
+                "")|safe
         }} required>
 <div id="Admin_name_error"></div></div>{% endif %}
-{% if (admin is defined and hasattr(param.class_name.lower(), "surname")) or admin is not defined %}<div class="margin-bottom-sm">
+{% if (admin is defined and admin.surname != Undefined) or admin is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Admin_surname">surname
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="surname" id="Admin_surname" 
         {{
-                'value="' + admin.surname + '"'
+                ('value="' + admin.surname + '"'
                 if admin is defined
                 else
-                ""
+                "")|safe
         }} required>
 <div id="Admin_surname_error"></div></div>{% endif %}
-{% if (admin is defined and hasattr(param.class_name.lower(), "email")) or admin is not defined %}<div class="margin-bottom-sm">
+{% if (admin is defined and admin.email != Undefined) or admin is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Admin_email">email
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="email" id="Admin_email" 
         {{
-                'value="' + admin.email + '"'
+                ('value="' + admin.email + '"'
                 if admin is defined
                 else
-                ""
+                "")|safe
         }} required>
 <div id="Admin_email_error"></div></div>{% endif %}
-{% if (admin is defined and hasattr(param.class_name.lower(), "status")) or admin is not defined %}<div class="margin-bottom-sm">
+{% if (admin is defined and admin.status != Undefined) or admin is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Admin_status">status
 </label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="status" id="Admin_status" 
         {{
-                'value="' + admin.status + '"'
+                ('value="' + admin.status + '"'
                 if admin is defined
                 else
-                ""
+                "")|safe
         }}>
 <div id="Admin_status_error"></div></div>{% endif %}
-{% if (admin is defined and hasattr(param.class_name.lower(), "description")) or admin is not defined %}<div class="margin-bottom-sm">
+{% if (admin is defined and admin.description != Undefined) or admin is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Admin_description">description
 </label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="description" id="Admin_description" 
         {{
-                'value="' + admin.description + '"'
+                ('value="' + admin.description + '"'
                 if admin is defined
                 else
-                ""
+                "")|safe
         }}>
 <div id="Admin_description_error"></div></div>{% endif %}</fieldset><div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>

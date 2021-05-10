@@ -95,7 +95,7 @@ SetPkNews = Set[Union[int, News]]
 
 
 class Human(BaseModel):
-	id: Optional[int] = None
+	id: int
 	username: str
 	hash_password: str
 	name: str
@@ -113,7 +113,7 @@ class Human(BaseModel):
 
 
 class Admin(BaseModel):
-	id: Optional[int] = None
+	id: int
 	username: str
 	hash_password: str
 	name: str
@@ -131,7 +131,7 @@ class Admin(BaseModel):
 
 
 class User(BaseModel):
-	id: Optional[int] = None
+	id: int
 	username: str
 	hash_password: str
 	name: str
@@ -154,7 +154,7 @@ class User(BaseModel):
 
 
 class Smm(BaseModel):
-	id: Optional[int] = None
+	id: int
 	username: str
 	hash_password: str
 	name: str
@@ -172,7 +172,7 @@ class Smm(BaseModel):
 
 
 class Developer(BaseModel):
-	id: Optional[int] = None
+	id: int
 	username: str
 	hash_password: str
 	name: str
@@ -203,7 +203,7 @@ class HumanContacts(BaseModel):
 
 
 class DirectionExpert(BaseModel):
-	id: Optional[int] = None
+	id: int
 	username: str
 	hash_password: str
 	name: str
@@ -222,7 +222,7 @@ class DirectionExpert(BaseModel):
 
 
 class Competition(BaseModel):
-	id: Optional[int] = None
+	id: int
 	name: str
 	start: datetime
 	end: datetime
@@ -256,7 +256,7 @@ class CompetitionDirection(BaseModel):
 
 
 class Task(BaseModel):
-	id: Optional[int] = None
+	id: int
 	competition_direction: Union[Tuple[str, int], CompetitionDirection]
 	task_document: Optional[str] = ''
 	description: Optional[str] = ''
@@ -281,7 +281,7 @@ class UserWork(BaseModel):
 
 
 class Criterion(BaseModel):
-	id: Optional[int] = None
+	id: int
 	competition_direction: Union[Tuple[str, int], CompetitionDirection]
 	name: str
 	description: Optional[str] = ''
@@ -302,7 +302,7 @@ class MarkWork(BaseModel):
 
 
 class Page(BaseModel):
-	id: Optional[int] = None
+	id: int
 	page_url: Optional[str] = ''
 	page_path: Optional[str] = ''
 	is_header: bool = False
@@ -317,7 +317,7 @@ class Page(BaseModel):
 
 
 class Question(BaseModel):
-	id: Optional[int] = None
+	id: int
 	question_title: Optional[str] = ''
 	question: str
 	answer: Optional[str] = ''
@@ -332,7 +332,7 @@ class Question(BaseModel):
 
 
 class SimpleEntity(BaseModel):
-	key: Optional[str] = None
+	key: str
 	data: Optional[Union[Json, dict]] = {}
 
 	class Config:
@@ -340,7 +340,7 @@ class SimpleEntity(BaseModel):
 
 
 class News(BaseModel):
-	id: Optional[int] = None
+	id: int
 	page_url: Optional[str] = ''
 	page_path: Optional[str] = ''
 	is_header: bool = False

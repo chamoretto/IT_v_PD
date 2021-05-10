@@ -124,7 +124,14 @@ def db_ent_to_dict(ent) -> Tuple[
 
 def create_db_models():
     header_file = inspect.getsource(_raw_models).split('class')[0]
-    header_file = "import enum\n\n" + header_file
+    header_file = "import enum\n\n" \
+                  "from app.pydantic_models import db_models as pd\n" \
+                  "from app.pydantic_models import unique_db_field_models as pk_pd\n" \
+                  "from app.pydantic_models import unique_db_field_models as pk_pd\n" \
+                  "from app.pydantic_models import input_ent as inp_pd\n" \
+                  "from app.pydantic_models import output_ent as out_pd\n" \
+                  "from app.pydantic_models import only_primarykey_fields_model as only_pk\n\n" + header_file
+
     classes: Dict[str: str] = {}
     for name, ent in db.entities.items():
         classes[name] = inspect.getsource(ent)

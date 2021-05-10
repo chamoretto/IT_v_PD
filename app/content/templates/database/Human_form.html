@@ -11,81 +11,81 @@
 id имеет тип number, который еще не поддерживается...
 </label></div>
 
-{% if (human is defined and hasattr(param.class_name.lower(), "username")) or human is not defined %}<div class="margin-bottom-sm">
+{% if (human is defined and human.username != Undefined) or human is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Human_username">username
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="username" id="Human_username" 
         {{
-                'value="' + human.username + '"'
+                ('value="' + human.username + '"'
                 if human is defined
                 else
-                ""
+                "")|safe
         }} required>
 <div id="Human_username_error"></div></div>{% endif %}
-{% if (human is defined and hasattr(param.class_name.lower(), "password")) or human is not defined %}<div class="margin-bottom-sm">
+{% if (human is defined and human.password != Undefined) or human is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Human_password">password
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="password" id="Human_password" 
         {{
-                'value="' + human.password + '"'
+                ('value="' + human.password + '"'
                 if human is defined
                 else
-                ""
+                "")|safe
         }} required>
 <div id="Human_password_error"></div></div>{% endif %}
-{% if (human is defined and hasattr(param.class_name.lower(), "name")) or human is not defined %}<div class="margin-bottom-sm">
+{% if (human is defined and human.name != Undefined) or human is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Human_name">name
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="name" id="Human_name" 
         {{
-                'value="' + human.name + '"'
+                ('value="' + human.name + '"'
                 if human is defined
                 else
-                ""
+                "")|safe
         }} required>
 <div id="Human_name_error"></div></div>{% endif %}
-{% if (human is defined and hasattr(param.class_name.lower(), "surname")) or human is not defined %}<div class="margin-bottom-sm">
+{% if (human is defined and human.surname != Undefined) or human is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Human_surname">surname
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="surname" id="Human_surname" 
         {{
-                'value="' + human.surname + '"'
+                ('value="' + human.surname + '"'
                 if human is defined
                 else
-                ""
+                "")|safe
         }} required>
 <div id="Human_surname_error"></div></div>{% endif %}
-{% if (human is defined and hasattr(param.class_name.lower(), "email")) or human is not defined %}<div class="margin-bottom-sm">
+{% if (human is defined and human.email != Undefined) or human is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Human_email">email
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="email" id="Human_email" 
         {{
-                'value="' + human.email + '"'
+                ('value="' + human.email + '"'
                 if human is defined
                 else
-                ""
+                "")|safe
         }} required>
 <div id="Human_email_error"></div></div>{% endif %}
-{% if (human is defined and hasattr(param.class_name.lower(), "status")) or human is not defined %}<div class="margin-bottom-sm">
+{% if (human is defined and human.status != Undefined) or human is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Human_status">status
 </label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="status" id="Human_status" 
         {{
-                'value="' + human.status + '"'
+                ('value="' + human.status + '"'
                 if human is defined
                 else
-                ""
+                "")|safe
         }}>
 <div id="Human_status_error"></div></div>{% endif %}
-{% if (human is defined and hasattr(param.class_name.lower(), "description")) or human is not defined %}<div class="margin-bottom-sm">
+{% if (human is defined and human.description != Undefined) or human is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Human_description">description
 </label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="description" id="Human_description" 
         {{
-                'value="' + human.description + '"'
+                ('value="' + human.description + '"'
                 if human is defined
                 else
-                ""
+                "")|safe
         }}>
 <div id="Human_description_error"></div></div>{% endif %}</fieldset><div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>

@@ -90,25 +90,10 @@ async def root():
     return FileResponse('index.html')
 
 
-@app.get('/something')
-def trololo():
-    print("__0))(#)Iw4985")
-    return {"aa": "bb"}
-
-
-@app.get('/gimg')
-async def getimg(some_func: str = ""):
-    try:
-        some_func: str = trololo
-        return some_func()
-    except Exception:
-        return {'1': 1}
-
-
 @app.exception_handler(StarletteHTTPException)
 def custom_http_exception_handler(request: Request, exc: HTTPException):
     try:
-        # print(request)
+        # print("========HEADERS", *dict(request.headers).items(), sep="\n")
         # print(request.url, request.method)
         # print([exc])
         if exc.status_code == 401:
@@ -134,96 +119,6 @@ def custom_http_exception_handler(request: Request, exc: HTTPException):
     except Exception as e:
         print("-------------", e)
         return "help me!"
-
-
-# from fastapi import Depends, FastAPI
-# from fastapi.security import HTTPBasic, HTTPBasicCredentials
-# from passlib.context import CryptContext
-# from datetime import datetime, timedelta
-# from typing import Optional, Callable, Any
-# from pydantic import ValidationError
-#
-# from fastapi import Depends, HTTPException, status, APIRouter
-# from jose import JWTError, jwt
-# from pony.orm import db_session
-# from fastapi.security import (
-#     OAuth2PasswordBearer,
-#     OAuth2PasswordRequestForm,
-#     SecurityScopes,
-# )
-# from app.db import raw_models as models
-# from app.settings.config import cfg
-# from app.utils.pydantic_security import TokenData, HumanInDB, Token
-# from app.utils.utils_of_security import check_scopes, basic_create_access_token
-#
-# app = FastAPI()
-#
-# security = HTTPBasic()
-# oauth2_scheme = OAuth2PasswordBearer(
-#     tokenUrl="token",
-#     scopes={
-#         "user": "Участник программы 1000ln",
-#         "smmer": "Редактор различного контента на сайте",
-#         "direction_expert": "Проверяющий работы на конкурсе",
-#         "admin": "Управляющий сайтом",
-#         "developer": "Разработчик сайта"
-#     },
-# )
-#
-# @app.get("/users/me")
-# def read_current_user(credentials: HTTPBasicCredentials = Depends(security)):
-#     return {"username": credentials.username, "password": credentials.password}
-#
-#
-# @app.get("/token")
-# @db_session
-# def basic_login(credentials: HTTPBasicCredentials = Depends(security),
-#                 # form_data: OAuth2PasswordRequestForm = Depends(),
-#                 authenticate: str = None,
-#                 access_token_time=0,
-#                 create_access_token: str = None,
-#                 scopes: list = []
-#
-#                 ):
-#     try:
-#         # form_data = Depends(OAuth2PasswordRequestForm)
-#         print(credentials.username, credentials.password,)
-#         error = HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Incorrect username or password",
-#             headers={"WWW-Authenticate": 'Bearer'},
-#         )
-#         if create_access_token is None and authenticate is None:
-#             print(1)
-#             role = check_scopes(credentials.username, credentials.password, scopes)
-#             if not role or not bool(role):
-#                 print(0, role)
-#                 raise error
-#             role = HumanInDB.from_orm(role[-1])
-#             create_access_token = basic_create_access_token
-#             access_token_time = 30
-#         elif authenticate is None:
-#             print(2)
-#             raise error
-#         elif create_access_token is None:
-#             print(3)
-#             raise error
-#         else:
-#             print(4)
-#             role = authenticate(credentials.username, credentials.password)
-#         if not role:
-#             print(5)
-#             raise error
-#         access_token_expires = timedelta(minutes=access_token_time)
-#         access_token = create_access_token(
-#             data={"sub": role.username, "scopes": scopes},
-#             expires_delta=access_token_expires,
-#         )
-#         print(scopes, "access_token", access_token)
-#         return {"access_token": access_token, "token_type": "bearer"}
-#     except Exception as e:
-#         print("--------------------------", [e])
-#         return {"username": credentials.username, "password": credentials.password}
 
 
 if __name__ == "__main__":

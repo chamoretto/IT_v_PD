@@ -19,8 +19,6 @@ $('#submit').click((event) => {
         processData: false,
         data: $("#oauth_username, #oauth_password").serialize(),
 
-        success: data => {  }
+        success: data => { urls_as_ajax(); }
     });
 });
-
-console.log("{#{who}#}")

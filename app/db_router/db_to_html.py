@@ -56,16 +56,15 @@ def default_html(param: DbDocs) -> str:
 
 
 def html_text(param: DbDocs) -> str:
-
     # l anguage=HTML
     value = f'''
         {'{{'}
-                'value="' + {param.class_name.lower()}.{param.name} + '"'
+                ('value="' + {param.class_name.lower()}.{param.name} + '"'
                 if {param.class_name.lower()} is defined
                 else
-                {"'" + 'value="' + str(param.default) + '"' + "'|safe" if param.default is not None and bool(param.default) else '""'}
+                {"'" + 'value="' + str(param.default) + '"' + "'|safe" if param.default is not None and bool(param.default) else '""'})|safe
         {'}}'}'''
-    text = f'{"{%"} if ({param.class_name.lower()} is defined and hasattr(param.class_name.lower(), "{param.name}")) or {param.class_name.lower()} is not defined {"%}"}'
+    text = f'{"{%"} if ({param.class_name.lower()} is defined and {param.class_name.lower()}.{param.name} != Undefined) or {param.class_name.lower()} is not defined {"%}"}'
     text += f'<div class="margin-bottom-sm">\n' \
            f'<label class="form-label margin-bottom-xxs" for="{param.class_name}_{param.name}">{param.name}\n' \
            f'{"""<span class="color-error">*</span>""" if param.required else ""}</label>\n' \

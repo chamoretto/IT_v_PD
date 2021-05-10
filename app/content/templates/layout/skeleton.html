@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="shortcut icon" href="favicon.png" type="image/png">
+  <link rel="shortcut icon" href="{{url_for('img', path='/favicon.png')}}" type="image/png">
 
   <link href="https://fonts.googleapis.com/css?family=Comfortaa&display=swap" rel="stylesheet">
 
@@ -37,7 +37,7 @@
   <div class="header__container container max-width-lg">
     <div class="header__logo">
       <a href="/" class="color-primary margin-y-sm no-effect">
-        <img src="/logo.svg" class="text-md font-bold" style="color: var(--color-primary)" width="79" height="90" alt="1000
+        <img src="{{url_for('img', path='/logo.svg')}}" class="text-md font-bold" style="color: var(--color-primary)" width="79" height="90" alt="1000
             LIST
             NICK">
       </a>
@@ -133,15 +133,19 @@
 </header>
 
 <script src="https://cdn.ckeditor.com/4.13.1/standard-all/ckeditor.js"></script>
-<script src=" {{url_for('scripts', path='/async_forms_and_redirects.js')}}"></script>
+<script src="{{url_for('scripts', path='/ajax_utils.js')}}"></script>
+<script src="{{url_for('scripts', path='/callback_ajax_funcs.js')}}"></script>
+<script src="{{url_for('scripts', path='/location_control.js')}}"></script>
+<script src="{{url_for('scripts', path='/async_forms_and_redirects.js')}}"></script>
 <div class="_content my-4 margin-bottom-lg">
+  <main>
   {% if alert is defined and alert_context is defined and alert%}
     {{alert.render(alert_context)|safe}}
   {% endif %}
   {% if current_page is defined and current_page_context is defined %}
     {{current_page.render(current_page_context)|safe}}
   {% endif %}
-
+  </main>
   <a class="back-to-top js-back-to-top no-effect" href="#" data-offset="100" data-duration="300">
     <svg class="icon" viewBox="0 0 16 16"><title>Наверх!</title>
       <g stroke-width="1" stroke="currentColor">
@@ -159,7 +163,7 @@
 
       <div class="col-2 margin-left-auto">
         <a href="/" class="no-effect">
-          <img src="/images/footer_icons/footer-logo.png" alt="1000LISTNICK" class="text-lg font-bold color-black">
+          <img src="{{url_for('img', path='/footer_icons/footer-logo.png')}}" alt="1000LISTNICK" class="text-lg font-bold color-black">
         </a>
       </div>
     </div>

@@ -9,14 +9,14 @@ function send_ajax(url,
         const xhr = new XMLHttpRequest();
         xhr.open(method, url, true);
         let headers = {
-            "Accept-Encoding": "gzip, deflate, br",
+            // "Accept-Encoding": "gzip, deflate, br",
             "Accept-Language": "ru,en;q=0.9,la;q=0.8",
             "Cache-Control": "no-cache",
-            "Connection": "keep-alive",
+            // "Connection": "keep-alive",
             "Pragma": "no-cache",
-            "Sec-Fetch-Dest": "empty",
-            "Sec-Fetch-Mode": "cors",
-            "Sec-Fetch-Site": "same-origin",
+            // "Sec-Fetch-Dest": "empty",
+            // "Sec-Fetch-Mode": "cors",
+            // "Sec-Fetch-Site": "same-origin",
             "Accept": "application/json",
             "X-Requested-With": "XMLHttpRequest"
         }

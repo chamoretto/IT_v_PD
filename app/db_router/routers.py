@@ -171,7 +171,7 @@ def edit_entity(request: Request,
                 ent_model: only_pk.Admin):
     if m.db.Admin.exists(**dict(ent_model)):
         entity = m.db.Admin.get(**dict(ent_model))
-        entity = getattr(inp_pd, name).from_pony_orm(entity)
+        entity = getattr(out_pd, name).from_pony_orm(entity)
         return db_templates.TemplateResponse(
             f"{name}_form.html", {"request": request,
                                   name.lower(): entity})

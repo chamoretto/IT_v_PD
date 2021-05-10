@@ -88,7 +88,10 @@
         <a href="/admin/blog/edit/{{post.id}}"><i class="far fa-edit"></i></a>
         <a href="/admin/blog/delete/{{post.id}}" class="color-error"><i class="far fa-trash-alt"></i></a>
         % if post.draft:
-          <i class="far fa-eye-slash" id="droft_{{i}}" title="В черновике" onclick='var el = document.getElementById("droft_{{i}}");el.classList.toggle("fa-eye-slash");el.classList.toggle("fa-eye");document.getElementById("send_draft_status").style.visibility = "visible";'></i>
+          <i class="far fa-eye-slash" id="droft_{{i}}" title="В черновике"
+             onclick='var el = document.getElementById("droft_{{i}}");el.classList.toggle("fa-eye-slash");el.classList.toggle("fa-eye");document.getElementById("send_draft_status").style.visibility = "visible";'>
+
+          </i>
         % else:
           <i class="far fa-eye" style="color: chartreuse;" title="Опубликовано"></i>
         % end

@@ -11,81 +11,81 @@
 id имеет тип number, который еще не поддерживается...
 </label></div>
 
-{% if (developer is defined and hasattr(param.class_name.lower(), "username")) or developer is not defined %}<div class="margin-bottom-sm">
+{% if (developer is defined and developer.username != Undefined) or developer is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Developer_username">username
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="username" id="Developer_username" 
         {{
-                'value="' + developer.username + '"'
+                ('value="' + developer.username + '"'
                 if developer is defined
                 else
-                ""
+                "")|safe
         }} required>
 <div id="Developer_username_error"></div></div>{% endif %}
-{% if (developer is defined and hasattr(param.class_name.lower(), "password")) or developer is not defined %}<div class="margin-bottom-sm">
+{% if (developer is defined and developer.password != Undefined) or developer is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Developer_password">password
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="password" id="Developer_password" 
         {{
-                'value="' + developer.password + '"'
+                ('value="' + developer.password + '"'
                 if developer is defined
                 else
-                ""
+                "")|safe
         }} required>
 <div id="Developer_password_error"></div></div>{% endif %}
-{% if (developer is defined and hasattr(param.class_name.lower(), "name")) or developer is not defined %}<div class="margin-bottom-sm">
+{% if (developer is defined and developer.name != Undefined) or developer is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Developer_name">name
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="name" id="Developer_name" 
         {{
-                'value="' + developer.name + '"'
+                ('value="' + developer.name + '"'
                 if developer is defined
                 else
-                ""
+                "")|safe
         }} required>
 <div id="Developer_name_error"></div></div>{% endif %}
-{% if (developer is defined and hasattr(param.class_name.lower(), "surname")) or developer is not defined %}<div class="margin-bottom-sm">
+{% if (developer is defined and developer.surname != Undefined) or developer is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Developer_surname">surname
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="surname" id="Developer_surname" 
         {{
-                'value="' + developer.surname + '"'
+                ('value="' + developer.surname + '"'
                 if developer is defined
                 else
-                ""
+                "")|safe
         }} required>
 <div id="Developer_surname_error"></div></div>{% endif %}
-{% if (developer is defined and hasattr(param.class_name.lower(), "email")) or developer is not defined %}<div class="margin-bottom-sm">
+{% if (developer is defined and developer.email != Undefined) or developer is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Developer_email">email
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="email" id="Developer_email" 
         {{
-                'value="' + developer.email + '"'
+                ('value="' + developer.email + '"'
                 if developer is defined
                 else
-                ""
+                "")|safe
         }} required>
 <div id="Developer_email_error"></div></div>{% endif %}
-{% if (developer is defined and hasattr(param.class_name.lower(), "status")) or developer is not defined %}<div class="margin-bottom-sm">
+{% if (developer is defined and developer.status != Undefined) or developer is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Developer_status">status
 </label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="status" id="Developer_status" 
         {{
-                'value="' + developer.status + '"'
+                ('value="' + developer.status + '"'
                 if developer is defined
                 else
-                ""
+                "")|safe
         }}>
 <div id="Developer_status_error"></div></div>{% endif %}
-{% if (developer is defined and hasattr(param.class_name.lower(), "description")) or developer is not defined %}<div class="margin-bottom-sm">
+{% if (developer is defined and developer.description != Undefined) or developer is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Developer_description">description
 </label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="description" id="Developer_description" 
         {{
-                'value="' + developer.description + '"'
+                ('value="' + developer.description + '"'
                 if developer is defined
                 else
-                ""
+                "")|safe
         }}>
 <div id="Developer_description_error"></div></div>{% endif %}</fieldset><div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>

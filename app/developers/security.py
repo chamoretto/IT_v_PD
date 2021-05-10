@@ -1,7 +1,7 @@
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import Depends
-from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, Request, Header
+from fastapi.responses import HTMLResponse, JSONResponse
 from pony.orm import db_session
 
 from app.utils.pydantic_security import *
@@ -38,8 +38,9 @@ def login_for_access_token_developer(form_data: OAuth2PasswordRequestForm = Depe
     return basic_login(form_data, access_token_time=ACCESS_TOKEN_TIME)
 
 
-@dev.get("/dev", response_class=HTMLResponse)
+@dev.get("/dev")
 async def login_dev(request: Request):
+    print(request.headers)
     return login_templates.TemplateResponse(
         "login.html",
         {"request": request, "who": "Разработчика", "auth_url": "/" + token_path})

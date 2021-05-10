@@ -11,81 +11,81 @@
 id имеет тип number, который еще не поддерживается...
 </label></div>
 
-{% if (directionexpert is defined and hasattr(param.class_name.lower(), "username")) or directionexpert is not defined %}<div class="margin-bottom-sm">
+{% if (directionexpert is defined and directionexpert.username != Undefined) or directionexpert is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="DirectionExpert_username">username
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="username" id="DirectionExpert_username" 
         {{
-                'value="' + directionexpert.username + '"'
+                ('value="' + directionexpert.username + '"'
                 if directionexpert is defined
                 else
-                ""
+                "")|safe
         }} required>
 <div id="DirectionExpert_username_error"></div></div>{% endif %}
-{% if (directionexpert is defined and hasattr(param.class_name.lower(), "password")) or directionexpert is not defined %}<div class="margin-bottom-sm">
+{% if (directionexpert is defined and directionexpert.password != Undefined) or directionexpert is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="DirectionExpert_password">password
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="password" id="DirectionExpert_password" 
         {{
-                'value="' + directionexpert.password + '"'
+                ('value="' + directionexpert.password + '"'
                 if directionexpert is defined
                 else
-                ""
+                "")|safe
         }} required>
 <div id="DirectionExpert_password_error"></div></div>{% endif %}
-{% if (directionexpert is defined and hasattr(param.class_name.lower(), "name")) or directionexpert is not defined %}<div class="margin-bottom-sm">
+{% if (directionexpert is defined and directionexpert.name != Undefined) or directionexpert is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="DirectionExpert_name">name
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="name" id="DirectionExpert_name" 
         {{
-                'value="' + directionexpert.name + '"'
+                ('value="' + directionexpert.name + '"'
                 if directionexpert is defined
                 else
-                ""
+                "")|safe
         }} required>
 <div id="DirectionExpert_name_error"></div></div>{% endif %}
-{% if (directionexpert is defined and hasattr(param.class_name.lower(), "surname")) or directionexpert is not defined %}<div class="margin-bottom-sm">
+{% if (directionexpert is defined and directionexpert.surname != Undefined) or directionexpert is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="DirectionExpert_surname">surname
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="surname" id="DirectionExpert_surname" 
         {{
-                'value="' + directionexpert.surname + '"'
+                ('value="' + directionexpert.surname + '"'
                 if directionexpert is defined
                 else
-                ""
+                "")|safe
         }} required>
 <div id="DirectionExpert_surname_error"></div></div>{% endif %}
-{% if (directionexpert is defined and hasattr(param.class_name.lower(), "email")) or directionexpert is not defined %}<div class="margin-bottom-sm">
+{% if (directionexpert is defined and directionexpert.email != Undefined) or directionexpert is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="DirectionExpert_email">email
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="email" id="DirectionExpert_email" 
         {{
-                'value="' + directionexpert.email + '"'
+                ('value="' + directionexpert.email + '"'
                 if directionexpert is defined
                 else
-                ""
+                "")|safe
         }} required>
 <div id="DirectionExpert_email_error"></div></div>{% endif %}
-{% if (directionexpert is defined and hasattr(param.class_name.lower(), "status")) or directionexpert is not defined %}<div class="margin-bottom-sm">
+{% if (directionexpert is defined and directionexpert.status != Undefined) or directionexpert is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="DirectionExpert_status">status
 </label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="status" id="DirectionExpert_status" 
         {{
-                'value="' + directionexpert.status + '"'
+                ('value="' + directionexpert.status + '"'
                 if directionexpert is defined
                 else
-                ""
+                "")|safe
         }}>
 <div id="DirectionExpert_status_error"></div></div>{% endif %}
-{% if (directionexpert is defined and hasattr(param.class_name.lower(), "description")) or directionexpert is not defined %}<div class="margin-bottom-sm">
+{% if (directionexpert is defined and directionexpert.description != Undefined) or directionexpert is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="DirectionExpert_description">description
 </label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="description" id="DirectionExpert_description" 
         {{
-                'value="' + directionexpert.description + '"'
+                ('value="' + directionexpert.description + '"'
                 if directionexpert is defined
                 else
-                ""
+                "")|safe
         }}>
 <div id="DirectionExpert_description_error"></div></div>{% endif %}</fieldset><div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
