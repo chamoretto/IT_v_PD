@@ -7,7 +7,7 @@ from functools import partial
 
 from fastapi import APIRouter, Depends, Security, Response, Request, HTTPException, status, Path, Form, Body
 from fastapi.responses import HTMLResponse, JSONResponse
-from pony.orm import db_session
+from pony.orm import db_session, commit
 from pydantic import Json
 
 from fastapi.routing import APIRoute
@@ -15,9 +15,12 @@ from fastapi.routing import APIRoute
 from app.db import models as m
 from app.pydantic_models import db_models as pd
 from app.pydantic_models import unique_db_field_models as pk_pd
+from app.pydantic_models import input_ent as inp_pd
+from app.pydantic_models import output_ent as out_pd
 from app.dependencies import *
 from app.utils.jinja2_utils import db_templates
 from app.developers.security import get_current_dev
+from app.utils.utils_of_security import get_password_hash
 from app.db.db_utils import open_db_session
 from app.utils.pydantic_security import HumanInDB
 from app.pydantic_models.standart_methhods_redefinition import BaseModel, as_form
@@ -118,7 +121,7 @@ def entity_screen(request: Request,
 # def check(entity: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных"), )
 def simple_decorator(name, ent):
 
-    def create_entity(request: Request, new_ent_data: getattr(pd, name) = Body(...)):
+    def create_entity(request: Request, new_ent_data: getattr(inp_pd, name) = Body(...)):
 
         data = dict(getattr(pk_pd, name)(**dict(new_ent_data))).items()
         print(data, ent.__name__, name, ent.exists(id=1))
@@ -131,7 +134,19 @@ def simple_decorator(name, ent):
                  "errors": {name + "_" + key + "_error": "Введите другое значение в это поле. Это занято" for key in
                             chek_unique}
                  }, status_code=400)
-
+        password = dict(new_ent_data).get("password")
+        if password:
+            password = get_password_hash(password)
+        new_ent_data = getattr(pd, name)(**dict(new_ent_data), hash_password=password)
+        try:
+            ent(**dict(new_ent_data))
+            commit()
+        except Exception as e:
+            return JSONResponse(
+                {"answer_for_user": "Возникла непонятная ошибка, попробуйте еще раз",
+                 "type": "fields_create_entity"}, status_code=400)
+        return JSONResponse({"answer_for_user": "Данные успешно внесены в базу данных",
+                             "type": "success_creation"}, status_code=201)
     return create_entity
 
 
