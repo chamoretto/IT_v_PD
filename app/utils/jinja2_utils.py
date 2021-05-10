@@ -79,24 +79,30 @@ class MyJinja2Templates:
         headers: dict = None,
         media_type: str = None,
         background: BackgroundTask = None,
+        only_part: bool = False
     ) -> _MyTemplateResponse:
         if "request" not in local_context:
             raise ValueError('context must include a "request" key')
         template = self.get_template(name)
-        # print("template")
-        # print(template)
-        local_env = self.get_env("content/templates/layout")
-        skeleton_template = local_env.get_template("skeleton.html")
-        # print(skeleton_template)
-        context = dict(
-            alert=local_env.get_template("alert.html") if local_context.get('alert') else None,
-            alert_context=dict(alert=local_context.pop('alert', None)),
-            current_page=template,
-            current_page_context=local_context,
-            request=local_context['request'],
-            header=[SitePageMenu(name=i) for i in ["Новатор_WEB", "События", "Новости", "Результы"]],
-            title=local_context.get('title', None)
-        )
+        print("========HEADERS", local_context['request'], *dict(local_context['request'].headers).items(), sep="\n")
+        if dict(local_context['request'].headers).get("x-part") == "basic-content":
+            context = local_context
+            skeleton_template = template
+        else:
+            # print("template")
+            # print(template)
+            local_env = self.get_env("content/templates/layout")
+            skeleton_template = local_env.get_template("skeleton.html")
+            # print(skeleton_template)
+            context = dict(
+                alert=local_env.get_template("alert.html") if local_context.get('alert') else None,
+                alert_context=dict(alert=local_context.pop('alert', None)),
+                current_page=template,
+                current_page_context=local_context,
+                request=local_context['request'],
+                header=[SitePageMenu(name=i) for i in ["Новатор_WEB", "События", "Новости", "Результы"]],
+                title=local_context.get('title', None)
+            )
         return _MyTemplateResponse(
             skeleton_template,
             context,

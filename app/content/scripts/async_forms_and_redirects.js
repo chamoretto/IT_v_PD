@@ -24,7 +24,7 @@ function send_form_as_ajax() {
 
             xhr.setRequestHeader("Accept", "application/json");
 //            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+            xhr.setRequestHeader("RequestedWith3456i876543", "XMLHttpRequest");
 
             if (token) {
                 xhr.setRequestHeader('Authorization', 'Bearer ' + token);
@@ -33,6 +33,7 @@ function send_form_as_ajax() {
             // xhr.send($current_form.find("input, select").not('[type="submit"]').serialize());
             let send_data = {};
             let form_fields = $current_form.find("input, select").not('[type="submit"]');
+
             console.log(form_fields);
             [...form_fields].map( i => {
                 send_data[$(i).attr('name')] = $(i).val();
@@ -41,11 +42,13 @@ function send_form_as_ajax() {
             console.log(send_data)
             // xhr.send(JSON.stringify($current_form.find("input, select").not('[type="submit"]')));
             xhr.send(JSON.stringify(send_data));
-            xhr.onreadystatechange = () => { // (3)
+            xhr.onreadystatechange = (event) => { // (3)
+
                 if (xhr.readyState === 2) {
                     // получены загаловки
                 }
                 if (xhr.readyState !== 4) return;
+
 
                 if (xhr.status === 200 || xhr.status === 201) {
                     // вывести результат
@@ -55,7 +58,7 @@ function send_form_as_ajax() {
 
                         send_form_as_ajax();
                     } else if (xhr.status === 201) {
-
+                        console.log(xhr.responseText);
                     }
 
 
@@ -80,7 +83,10 @@ function send_form_as_ajax() {
                     } else {
                         // обработать ошибку
                     }
+                } else if (xhr.status === 401) {
+
                 }
+                urls_as_ajax();
             }
         })
 

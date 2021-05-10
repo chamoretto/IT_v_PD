@@ -5,7 +5,7 @@ from typing import Optional, Set, Union
 from functools import wraps
 from functools import partial
 
-from fastapi import APIRouter, Depends, Security, Response, Request, HTTPException, status, Path, Form, Body
+from fastapi import APIRouter, Depends, Security, Response, Request, HTTPException, status, Path, Form, Body, Header
 from fastapi.responses import HTMLResponse, JSONResponse
 from pony.orm import db_session, commit
 from pydantic import Json
@@ -49,8 +49,9 @@ def all_entities(request: Request):
 @db_route.get('/{entity}')
 @db_session
 def entity_screen(request: Request,
-                  entity: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")):
-    print("---ESMg mf k")
+                  entity: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных"),
+                  x_part: Optional[list[str]] = Header(None)):
+    print("---ESMg mf k", x_part)
     if entity.value not in m.db.entities and type(m.db.entities[entity.value]) == m.db.Entity:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -121,7 +122,8 @@ def entity_screen(request: Request,
 # def check(entity: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных"), )
 def simple_decorator(name, ent):
 
-    def create_entity(request: Request, new_ent_data: getattr(inp_pd, name) = Body(...)):
+    def create_entity(request: Request,
+                      new_ent_data: getattr(inp_pd, name) = Body(...)):
 
         data = dict(getattr(pk_pd, name)(**dict(new_ent_data))).items()
         print(data, ent.__name__, name, ent.exists(id=1))
