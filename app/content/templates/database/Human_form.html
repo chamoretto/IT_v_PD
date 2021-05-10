@@ -4,7 +4,7 @@
 {# =======! Ни одно изменение в этом файле не будет сохранено! !======= #}
 
 <div class="container max-width-lg">
-<form id="{entity_name.lower()}" action="/db/Human/new" method="post" enctype="multipart/form-data">
+<form id="{entity_name.lower()}" action="/db/Human/new" method="post" enctype="multipart/form-data" onsubmit="return false">
 <fieldset class="margin-bottom-md">
 <legend class="form-legend">Human</legend>
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
@@ -21,7 +21,18 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }} required>
-</div>
+<div id="Human_username_error"></div></div>
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Human_password">password
+<span class="color-error">*</span></label>
+<input class="form-control width-100% text-sm" placeholder="" type="text" name="password" id="Human_password" 
+        {{
+                'value="' + human.password + '"'
+                if human is defined
+                else
+                ""
+        }} required>
+<div id="Human_password_error"></div></div>
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Human_name">name
 <span class="color-error">*</span></label>
@@ -32,7 +43,7 @@ id имеет тип number, который еще не поддерживает
                 else
                 'value="Вася"'|safe
         }} required>
-</div>
+<div id="Human_name_error"></div></div>
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Human_surname">surname
 <span class="color-error">*</span></label>
@@ -43,7 +54,7 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }} required>
-</div>
+<div id="Human_surname_error"></div></div>
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Human_email">email
 <span class="color-error">*</span></label>
@@ -54,7 +65,7 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }} required>
-</div>
+<div id="Human_email_error"></div></div>
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Human_status">status
 </label>
@@ -65,7 +76,7 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }}>
-</div>
+<div id="Human_status_error"></div></div>
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Human_description">description
 </label>
@@ -76,7 +87,7 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }}>
-</div></fieldset><div>
+<div id="Human_description_error"></div></div></fieldset><div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
 </div></form></div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>

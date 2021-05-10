@@ -238,17 +238,34 @@ def change_hash_to_password_field(key, val, *a, **k):
         setattr(val, "name", "password")
     return key, val
 
+
 if __name__ == '__main__':
-    create_pd_models()  # Обычнве модели из базы данных
+    create_pd_models(
+        map_param_funcs=[
+            lambda key, val, *a, **k: (
+                [setattr(val, "db_type", "Optional"), (key, val)][1] if val.other_params.get("auto") else (key, val))
+        ]
+    )  # Обычнве модели из базы данных
     create_pd_models(  # модель только с уникальными параметрами
-        join(split(AUTO_PYDANTIC_MODELS)[0], "unique_db_field_models.py"),
-        lambda key, val, p_k, *a, **k:
-        val.other_params.get("unique") or val.is_primary_key or any(val.name in j for j in p_k))
-    # print(dict([(1, 2), (3, 4)]))
+        file_name=join(split(AUTO_PYDANTIC_MODELS)[0], "unique_db_field_models.py"),
+        filter_func=lambda key, val, p_k, *a, **k:
+        (val.other_params.get("unique") or val.is_primary_key or any(val.name in j for j in p_k)),
+        map_param_funcs=[
+            lambda key, val, *a, **k: (
+                [setattr(val, "db_type", "Optional"), (key, val)][1] if val.other_params.get("auto") else (key, val))
+        ]
+    )
+
     create_pd_models(
         file_name=join(split(AUTO_PYDANTIC_MODELS)[0], "input_ent.py"),
-        map_param_funcs=[change_hash_to_password_field])  # Сущности, которые будут приниматься с сайта
+        filter_func=lambda key, val, p_k, *a, **k: not val.other_params.get("auto"),
+        map_param_funcs=[
+            change_hash_to_password_field,
+            lambda key, val, *a, **k: (
+                [setattr(val, "db_type", "Optional"), (key, val)][1] if val.other_params.get("auto") else (
+                    key, val))
+
+        ])  # Сущности, которые будут приниматься с сайта
     create_pd_models(  # сущности, которые должен возвращать сайт
         file_name=join(split(AUTO_PYDANTIC_MODELS)[0], "output_ent.py"),
         filter_func=lambda key, val, *a, **k: all(i not in key for i in ["password", "hash"]))
-

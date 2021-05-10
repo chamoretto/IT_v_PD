@@ -16,6 +16,8 @@ class Human(db.Entity):
         :type id: number
         :param username: Логин
         :type username: text
+        :param password: Пароль
+        :type password: text
         :param name: Имя пользователя
         :type name: text
         :param surname: Фамилия пользователя
@@ -119,11 +121,15 @@ class Admin(Human):
 
 
 class User(Human):
-    """Участник, который может отправлять работы на конкурс
+    """
+        Участник, который может отправлять работы на конкурс
 
+        :param date_of_birth: Идентификатор
+        :type date_of_birth: number
 
+        (если ему еще нет 18)
+    """
 
-(если ему еще нет 18)"""
     date_of_birth = Required(date)  # день рождения
     user_works = Set('UserWork')
     about_program = Optional(str)  # Отзыв о программе

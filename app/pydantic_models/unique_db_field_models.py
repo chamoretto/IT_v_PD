@@ -95,7 +95,7 @@ SetPkNews = Set[Union[int, News]]
 
 
 class Human(BaseModel):
-	id: int
+	id: Optional[int] = None
 	username: str
 	email: str
 
@@ -104,7 +104,7 @@ class Human(BaseModel):
 
 
 class Admin(BaseModel):
-	id: int
+	id: Optional[int] = None
 	username: str
 	email: str
 
@@ -113,7 +113,7 @@ class Admin(BaseModel):
 
 
 class User(BaseModel):
-	id: int
+	id: Optional[int] = None
 	username: str
 	email: str
 
@@ -122,7 +122,7 @@ class User(BaseModel):
 
 
 class Smm(BaseModel):
-	id: int
+	id: Optional[int] = None
 	username: str
 	email: str
 
@@ -131,7 +131,7 @@ class Smm(BaseModel):
 
 
 class Developer(BaseModel):
-	id: int
+	id: Optional[int] = None
 	username: str
 	email: str
 
@@ -147,7 +147,7 @@ class HumanContacts(BaseModel):
 
 
 class DirectionExpert(BaseModel):
-	id: int
+	id: Optional[int] = None
 	username: str
 	email: str
 
@@ -156,7 +156,7 @@ class DirectionExpert(BaseModel):
 
 
 class Competition(BaseModel):
-	id: int
+	id: Optional[int] = None
 
 	class Config:
 		orm_mode = True
@@ -178,7 +178,7 @@ class CompetitionDirection(BaseModel):
 
 
 class Task(BaseModel):
-	id: int
+	id: Optional[int] = None
 
 	class Config:
 		orm_mode = True
@@ -193,7 +193,7 @@ class UserWork(BaseModel):
 
 
 class Criterion(BaseModel):
-	id: int
+	id: Optional[int] = None
 
 	class Config:
 		orm_mode = True
@@ -208,28 +208,28 @@ class MarkWork(BaseModel):
 
 
 class Page(BaseModel):
-	id: int
+	id: Optional[int] = None
 
 	class Config:
 		orm_mode = True
 
 
 class Question(BaseModel):
-	id: int
+	id: Optional[int] = None
 
 	class Config:
 		orm_mode = True
 
 
 class SimpleEntity(BaseModel):
-	key: str
+	key: Optional[str] = None
 
 	class Config:
 		orm_mode = True
 
 
 class News(BaseModel):
-	id: int
+	id: Optional[int] = None
 
 	class Config:
 		orm_mode = True

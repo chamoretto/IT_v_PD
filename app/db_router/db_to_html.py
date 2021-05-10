@@ -115,13 +115,19 @@ def create_html_file(ent: m.db.Entity):
         setattr(obj, ("html_type" if t.strip() == "type" else "description"), d)
         all_ent_docs[n.strip()] = obj
     for name, doc in all_ent_docs.items():
-        doc.required = code[name].db_type in ["PrimaryKey", "Required"]
-        doc.is_set = code[name].db_type in ["Set"]
-        doc.default = getattr(pd_ent.__fields__[name], "default")
-        print(ent.__name__, name, doc.default)
-        doc.is_entity = any(i in code[name].param_type for i in m.db.entities)
+        if code.get(name):
+            doc.required = code[name].db_type in ["PrimaryKey", "Required"]
+            doc.is_set = not doc.required and code[name].db_type in ["Set"]
+            doc.default = getattr(pd_ent.__fields__[name], "default")
+            print(ent.__name__, name, doc.default)
+            doc.is_entity = any(i in code[name].param_type for i in m.db.entities)
+        else:
+            doc.required = code.get(name, True)
+            doc.is_set = False
+            doc.default = None
+            doc.is_entity = False
 
-    # print(*all_ent_docs.items(), sep="\n")
+            # print(*all_ent_docs.items(), sep="\n")
     html_form = [type_to_html[val.html_type](val) for key, val in all_ent_docs.items()]
     html_form = all_html_form("\n".join(html_form), ent.__name__)
     html_form = "{# =======!!! ВНИМАНИЕ !!!======= #}\n" \

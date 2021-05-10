@@ -22,7 +22,7 @@ function send_form_as_ajax() {
             xhr.setRequestHeader("Sec-Fetch-Mode", "cors");
             xhr.setRequestHeader("Sec-Fetch-Site", "same-origin");
 
-            xhr.setRequestHeader("Accept", "application/json, text/plain, */*");
+            xhr.setRequestHeader("Accept", "application/json");
 //            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
@@ -30,7 +30,17 @@ function send_form_as_ajax() {
                 xhr.setRequestHeader('Authorization', 'Bearer ' + token);
             }
 
-            xhr.send($current_form.find("input, select").not('[type="submit"]').serialize());
+            // xhr.send($current_form.find("input, select").not('[type="submit"]').serialize());
+            let send_data = {};
+            let form_fields = $current_form.find("input, select").not('[type="submit"]');
+            console.log(form_fields);
+            [...form_fields].map( i => {
+                send_data[$(i).attr('name')] = $(i).val();
+            });
+
+            console.log(send_data)
+            // xhr.send(JSON.stringify($current_form.find("input, select").not('[type="submit"]')));
+            xhr.send(JSON.stringify(send_data));
             xhr.onreadystatechange = () => { // (3)
                 if (xhr.readyState === 2) {
                     // получены загаловки
@@ -39,14 +49,16 @@ function send_form_as_ajax() {
 
                 if (xhr.status === 200 || xhr.status === 201) {
                     // вывести результат
-                    console.log(xhr.responseText);
-                    document.querySelectorAll("html")[0].innerHTML = " " + xhr.responseText;
+                    if (xhr.status === 200) {
+                        console.log(xhr.responseText);
+                        document.querySelectorAll("html")[0].innerHTML = " " + xhr.responseText;
 
-                    send_form_as_ajax();
+                        send_form_as_ajax();
+                    } else if (xhr.status === 201) {
 
-                    //[...document.querySelectorAll("script")].map(i => eval(i.innerHTML))
-                    //eval($("script", doc).text())
-                    // document.html = " " + xhr.responseText;
+                    }
+
+
                 } else if (xhr.status === 400) {
                     let data = JSON.parse(xhr.responseText);
                     if (data.type) {
@@ -61,30 +73,30 @@ function send_form_as_ajax() {
                                     i.addClass('error');
                                 }
                             });
-                        }
+                        } else if (data["type"] === "fields_create_entity") {
 
-                        
+
+                        }
+                    } else {
+                        // обработать ошибку
                     }
-                } else {
-                    // обработать ошибку
                 }
             }
-        });
-    })
+        })
 
-    // const login_form = new FormData();
-    // login_form.append('username', $("#username").val());
-    // login_form.append('password', $("#password").val());
-    //
-    // $.ajax({
-    //     type: 'post',
-    //     dataType: 'json',
-    //     contentType: false,
-    //     processData: false,
-    //     data: ,
-    //
-    //     success: data => {  }
-    // });
+        // const login_form = new FormData();
+        // login_form.append('username', $("#username").val());
+        // login_form.append('password', $("#password").val());
+        //
+        // $.ajax({
+        //     type: 'post',
+        //     dataType: 'json',
+        //     contentType: false,
+        //     processData: false,
+        //     data: ,
+        //
+        //     success: data => {  }
+        // });
+    });
 }
-
-send_form_as_ajax()
+send_form_as_ajax();

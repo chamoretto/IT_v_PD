@@ -95,7 +95,6 @@ SetPkNews = Set[Union[int, News]]
 
 
 class Human(BaseModel):
-	id: int
 	username: str
 	password: str
 	name: str = 'Вася'
@@ -113,7 +112,6 @@ class Human(BaseModel):
 
 
 class Admin(BaseModel):
-	id: int
 	username: str
 	password: str
 	name: str = 'Вася'
@@ -131,7 +129,6 @@ class Admin(BaseModel):
 
 
 class User(BaseModel):
-	id: int
 	username: str
 	password: str
 	name: str = 'Вася'
@@ -154,7 +151,6 @@ class User(BaseModel):
 
 
 class Smm(BaseModel):
-	id: int
 	username: str
 	password: str
 	name: str = 'Вася'
@@ -172,7 +168,6 @@ class Smm(BaseModel):
 
 
 class Developer(BaseModel):
-	id: int
 	username: str
 	password: str
 	name: str = 'Вася'
@@ -203,7 +198,6 @@ class HumanContacts(BaseModel):
 
 
 class DirectionExpert(BaseModel):
-	id: int
 	username: str
 	password: str
 	name: str = 'Вася'
@@ -222,7 +216,6 @@ class DirectionExpert(BaseModel):
 
 
 class Competition(BaseModel):
-	id: int
 	name: str
 	start: datetime
 	end: datetime
@@ -256,7 +249,6 @@ class CompetitionDirection(BaseModel):
 
 
 class Task(BaseModel):
-	id: int
 	competition_direction: Union[Tuple[str, int], CompetitionDirection]
 	task_document: Optional[str] = ''
 	description: Optional[str] = ''
@@ -281,7 +273,6 @@ class UserWork(BaseModel):
 
 
 class Criterion(BaseModel):
-	id: int
 	competition_direction: Union[Tuple[str, int], CompetitionDirection]
 	name: str
 	description: Optional[str] = ''
@@ -302,7 +293,6 @@ class MarkWork(BaseModel):
 
 
 class Page(BaseModel):
-	id: int
 	page_url: Optional[str] = ''
 	page_path: Optional[str] = ''
 	is_header: bool = False
@@ -317,7 +307,6 @@ class Page(BaseModel):
 
 
 class Question(BaseModel):
-	id: int
 	question_title: Optional[str] = ''
 	question: str
 	answer: Optional[str] = ''
@@ -332,7 +321,6 @@ class Question(BaseModel):
 
 
 class SimpleEntity(BaseModel):
-	key: str
 	data: Optional[Json] = "{}"
 
 	class Config:
@@ -340,7 +328,6 @@ class SimpleEntity(BaseModel):
 
 
 class News(BaseModel):
-	id: int
 	page_url: Optional[str] = ''
 	page_path: Optional[str] = ''
 	is_header: bool = False
