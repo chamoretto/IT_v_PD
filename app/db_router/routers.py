@@ -5,7 +5,7 @@ from typing import Optional, Set, Union
 from functools import wraps
 from functools import partial
 
-from fastapi import APIRouter, Depends, Security, Response, Request, HTTPException, status, Path, Form, Body, Header
+from fastapi import APIRouter, Depends, Security, Response, Request, HTTPException, status, Path, Form, Body, Header, Query
 from fastapi.responses import HTMLResponse, JSONResponse
 from pony.orm import db_session, commit
 from pydantic import Json
@@ -17,6 +17,8 @@ from app.pydantic_models import db_models as pd
 from app.pydantic_models import unique_db_field_models as pk_pd
 from app.pydantic_models import input_ent as inp_pd
 from app.pydantic_models import output_ent as out_pd
+from app.pydantic_models import only_primarykey_fields_model as only_pk
+from app.pydantic_models import all_optional_models as op_pd
 from app.dependencies import *
 from app.utils.jinja2_utils import db_templates
 from app.developers.security import get_current_dev
@@ -50,8 +52,9 @@ def all_entities(request: Request):
 @db_session
 def entity_screen(request: Request,
                   entity: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных"),
-                  x_part: Optional[list[str]] = Header(None)):
-    print("---ESMg mf k", x_part)
+                  # x_part: Optional[list[str]] = Header(None)
+                  ):
+    # print("---ESMg mf k", x_part)
     if entity.value not in m.db.entities and type(m.db.entities[entity.value]) == m.db.Entity:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -100,6 +103,7 @@ def entity_screen(request: Request,
         )
 
     return db_templates.TemplateResponse(f"{entity.value}_form.html", {"request": request})
+
 # @as_form
 # class TestHuman(BaseModel):
 #     id: int
@@ -139,7 +143,7 @@ def simple_decorator(name, ent):
         password = dict(new_ent_data).get("password")
         if password:
             password = get_password_hash(password)
-        new_ent_data = getattr(pd, name)(**dict(new_ent_data), hash_password=password)
+        new_ent_data = getattr(op_pd, name)(**dict(new_ent_data), hash_password=password)
         try:
             ent(**dict(new_ent_data))
             commit()
@@ -157,6 +161,23 @@ for name, ent in m.db.entities.items():
     create_func = db_session(create_func)
     decorator_maker = db_route.post(f'/{name}/new')
     create_func = decorator_maker(create_func)
+
+
+
+name = "Admin"
+@db_route.post(f'/{name}/edit')
+@db_session
+def edit_entity(request: Request,
+                ent_model: only_pk.Admin):
+    if m.db.Admin.exists(**dict(ent_model)):
+        entity = m.db.Admin.get(**dict(ent_model))
+        entity = getattr(inp_pd, name).from_pony_orm(entity)
+        return db_templates.TemplateResponse(
+            f"{name}_form.html", {"request": request,
+                                  name.lower(): entity})
+    return {1: 34534}
+    # return db_templates.TemplateResponse(
+    #     "show_entity.html", {"request": request, "table": m.db.entities[entity.value].get_entities_html()})
 
 # @wraps(entity_screen)
 # @db_route.post('/' + name + '/new', status_code=201)

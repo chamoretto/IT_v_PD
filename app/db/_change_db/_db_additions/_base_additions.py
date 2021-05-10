@@ -4,30 +4,10 @@ from pony.orm import db_session, show, select
 
 from app.db._change_db import _raw_models as _raw_m
 from app.db._change_db._db_additions._tools_for_addition import AddArrtInDbClass
+from app.pydantic_models import only_primarykey_fields_model as only_pk
 
 _start = set(globals())
 
-
-# @classmethod
-# def db_show(cls, width=None):
-#     class MyStream:
-#
-#         def __init__(self):
-#             self.content = ""
-#
-#         def write(self, string: str):
-#             self.content += string
-#
-#         def flush(self):
-#             pass
-#
-#         def get_result(self):
-#             return self.content
-#
-#     my_stream = MyStream()
-#     show(cls, width=width, stream=my_stream)
-#
-#     return my_stream.get_result()
 
 
 @classmethod
@@ -36,8 +16,21 @@ def important_field_for_print(cls):
 
 
 def get_entity_html(self, keys):
-    # language=HTML
-    return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+    # language=H TML
+    data =  f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
+           f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
+           f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+           f'<i class="far fa-trash-alt"></i></a></td>' \
+           f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+    # print(data)
+    return data
+
+
+def key_as_part_query(self):
+    _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
+    _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
+    return _dict
+
 
 
 @classmethod
@@ -63,7 +56,7 @@ def get_entities_html(cls, *keys):
     print(data)
     # language=HTML
     return f"<table><caption>{cls.__name__}</caption>" \
-           f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
+           f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
            f"<tbody>{body_table}</tbody></table>"
 
 
@@ -74,7 +67,8 @@ added_params = set(globals()) - _start - {"_start"}
 new_funcs = {
     "important_field_for_print": "",
     "get_entity_html": "",
-    "get_entities_html": ""
+    "get_entities_html": "",
+    "key_as_part_query": ""
 }
 
 entities_code = {}  # Тут будет находиться код сущностей БД в удобном виде

@@ -13,4 +13,5 @@ function url_processing(event){
         document.querySelectorAll("main")[0].innerHTML = " " + xhr.responseText;
     }
     urls_as_ajax();
+    send_form_as_ajax();
 }

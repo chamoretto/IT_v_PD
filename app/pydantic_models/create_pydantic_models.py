@@ -8,14 +8,14 @@ from app.settings.config import AUTO_PYDANTIC_MODELS, split, join
 
 # =======! Правила изменения типа pony-атрибутов !=======
 change_attr_type_rules = {
-    "Json": "Json",
+    "Json": "Union[Json, dict]",
     "time": "time",
     "datetime": "datetime"
 }
 change_attr_type = {
     lambda i: i.param_type in change_attr_type_rules:
         lambda i: setattr(i, 'param_type', change_attr_type_rules[i.param_type]),
-    lambda i: i.param_type in db.entities and i.db_type == "Required":
+    lambda i: i.param_type in db.entities and i.db_type in ["Required", "PrimaryKey"]:
         lambda i: setattr(i, 'param_type', "Pk" + i.param_type),
     lambda i: i.param_type in db.entities and i.db_type == "Optional":
         lambda i: [setattr(i, 'param_type', "OptionalPk" + i.param_type),
@@ -269,3 +269,16 @@ if __name__ == '__main__':
     create_pd_models(  # сущности, которые должен возвращать сайт
         file_name=join(split(AUTO_PYDANTIC_MODELS)[0], "output_ent.py"),
         filter_func=lambda key, val, *a, **k: all(i not in key for i in ["password", "hash"]))
+
+    create_pd_models(
+        file_name=join(split(AUTO_PYDANTIC_MODELS)[0], "only_primarykey_fields_model.py"),
+        filter_func=lambda key, val, p_k, *a, **k:
+        (val.is_primary_key or any(val.name in j for j in p_k))
+    )
+    create_pd_models(
+        file_name=join(split(AUTO_PYDANTIC_MODELS)[0], "all_optional_models.py"),
+        map_param_funcs=[
+            lambda key, val, *a, **k: (setattr(val, "db_type", "Optional"), (key, val))[
+                1] if val.db_type != "Set" else (key, val)
+        ]
+    )

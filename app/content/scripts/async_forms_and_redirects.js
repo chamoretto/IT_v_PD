@@ -1,11 +1,8 @@
 function send_form_as_ajax() {
     const token = localStorage.getItem('token')
     console.log('--------------------');
-    $('input[type=submit], button[type=submit], #submit').click((event) => {
-
-
-        console.log(event)
-        console.log(event.target)
+    console.log("Асинхронность формы запущена");
+    $('[type=submit], #submit').click((event) => {
 
         event.preventDefault();
         setTimeout(() => {
@@ -13,14 +10,14 @@ function send_form_as_ajax() {
             const $current_form = $(event.target).parents("form");
             xhr.open($current_form.attr('method'), $current_form.attr('action'), true);
 
-            xhr.setRequestHeader("Accept-Encoding", "gzip, deflate, br");
+            // xhr.setRequestHeader("Accept-Encoding", "gzip, deflate, br");
             xhr.setRequestHeader("Accept-Language", "ru,en;q=0.9,la;q=0.8");
             xhr.setRequestHeader("Cache-Control", "no-cache");
-            xhr.setRequestHeader("Connection", "keep-alive");
+            // xhr.setRequestHeader("Connection", "keep-alive");
             xhr.setRequestHeader("Pragma", "no-cache");
-            xhr.setRequestHeader("Sec-Fetch-Dest", "empty");
-            xhr.setRequestHeader("Sec-Fetch-Mode", "cors");
-            xhr.setRequestHeader("Sec-Fetch-Site", "same-origin");
+            // xhr.setRequestHeader("Sec-Fetch-Dest", "empty");
+            // xhr.setRequestHeader("Sec-Fetch-Mode", "cors");
+            // xhr.setRequestHeader("Sec-Fetch-Site", "same-origin");
 
             xhr.setRequestHeader("Accept", "application/json");
 //            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");

@@ -1,5 +1,12 @@
 import enum
 
+from app.pydantic_models import db_models as pd
+from app.pydantic_models import unique_db_field_models as pk_pd
+from app.pydantic_models import unique_db_field_models as pk_pd
+from app.pydantic_models import input_ent as inp_pd
+from app.pydantic_models import output_ent as out_pd
+from app.pydantic_models import only_primarykey_fields_model as only_pk
+
 from datetime import date
 from datetime import datetime
 from pony.orm import *
@@ -8,7 +15,6 @@ db = Database()
 
 
 class Human(db.Entity):
-
     """
         Базовый класс человека
 
@@ -31,11 +37,10 @@ class Human(db.Entity):
 
         напрямую использоваться не должен
     """
-
     id = PrimaryKey(int, auto=True)
     username = Required(str, unique=True)  # login
     hash_password = Required(str, 8192)
-    name = Required(str, default="Вася")
+    name = Required(str)
     surname = Required(str)
     email = Required(str, unique=True)
     human_contacts = Optional('HumanContacts')
@@ -50,8 +55,14 @@ class Human(db.Entity):
         return ["id", "username", "name", "surname", "photo"]
 
     def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+        # language=H TML
+        data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+        # print(data)
+        return data
 
     @classmethod
     def get_entities_html(cls, *keys):
@@ -77,11 +88,20 @@ class Human(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
+
+    def key_as_part_query(self):
+        _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
+        _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
+        return _dict
 
 
 class Admin(Human):
+    """
+    Админ
+
+    """
     pass
 
     @classmethod
@@ -89,8 +109,14 @@ class Admin(Human):
         return ["id", "username", "name", "surname", "photo"]
 
     def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+        # language=H TML
+        data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+        # print(data)
+        return data
 
     @classmethod
     def get_entities_html(cls, *keys):
@@ -116,25 +142,25 @@ class Admin(Human):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
+
+    def key_as_part_query(self):
+        _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
+        _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
+        return _dict
 
 
 class User(Human):
-    """
-        Участник, который может отправлять работы на конкурс
+    """Участник, который может отправлять работы на конкурс
 
-        :param date_of_birth: Идентификатор
-        :type date_of_birth: number
-
-        (если ему еще нет 18)
-    """
-
+(если ему еще нет 18)"""
     date_of_birth = Required(date)  # день рождения
     user_works = Set('UserWork')
     about_program = Optional(str)  # Отзыв о программе
     direction = Optional(str)  # с каким направлением себя ассоциирует участник
     visible_about_program_field = Required(bool, default='false')
+
     # будет ли отзыв участника о программе
     # отображаться на главной странице
 
@@ -143,8 +169,14 @@ class User(Human):
         return ["id", "username", "name", "surname", "photo"]
 
     def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+        # language=H TML
+        data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+        # print(data)
+        return data
 
     @classmethod
     def get_entities_html(cls, *keys):
@@ -170,8 +202,13 @@ class User(Human):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
+
+    def key_as_part_query(self):
+        _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
+        _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
+        return _dict
 
 
 class Smm(Human):
@@ -185,8 +222,14 @@ class Smm(Human):
         return ["id", "username", "name", "surname", "photo"]
 
     def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+        # language=H TML
+        data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+        # print(data)
+        return data
 
     @classmethod
     def get_entities_html(cls, *keys):
@@ -212,11 +255,20 @@ class Smm(Human):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
+
+    def key_as_part_query(self):
+        _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
+        _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
+        return _dict
 
 
 class Developer(Human):
+    """
+    Админ
+
+    """
     pass
 
     @classmethod
@@ -224,8 +276,14 @@ class Developer(Human):
         return ["id", "username", "name", "surname", "photo"]
 
     def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+        # language=H TML
+        data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+        # print(data)
+        return data
 
     @classmethod
     def get_entities_html(cls, *keys):
@@ -251,8 +309,13 @@ class Developer(Human):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
+
+    def key_as_part_query(self):
+        _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
+        _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
+        return _dict
 
 
 class HumanContacts(db.Entity):
@@ -269,8 +332,14 @@ class HumanContacts(db.Entity):
         return ["human", "vk", "phone"]
 
     def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+        # language=H TML
+        data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+        # print(data)
+        return data
 
     @classmethod
     def get_entities_html(cls, *keys):
@@ -296,8 +365,13 @@ class HumanContacts(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
+
+    def key_as_part_query(self):
+        _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
+        _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
+        return _dict
 
 
 class DirectionExpert(Human):
@@ -309,8 +383,14 @@ class DirectionExpert(Human):
         return ["id", "username", "name", "surname", "photo"]
 
     def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+        # language=H TML
+        data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+        # print(data)
+        return data
 
     @classmethod
     def get_entities_html(cls, *keys):
@@ -336,8 +416,13 @@ class DirectionExpert(Human):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
+
+    def key_as_part_query(self):
+        _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
+        _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
+        return _dict
 
 
 class Competition(db.Entity):
@@ -355,8 +440,14 @@ class Competition(db.Entity):
         return ["name", "start", "end"]
 
     def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+        # language=H TML
+        data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+        # print(data)
+        return data
 
     @classmethod
     def get_entities_html(cls, *keys):
@@ -382,8 +473,13 @@ class Competition(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
+
+    def key_as_part_query(self):
+        _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
+        _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
+        return _dict
 
 
 class Direction(db.Entity):
@@ -398,8 +494,14 @@ class Direction(db.Entity):
         return ["icon", "name"]
 
     def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+        # language=H TML
+        data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+        # print(data)
+        return data
 
     @classmethod
     def get_entities_html(cls, *keys):
@@ -425,8 +527,13 @@ class Direction(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
+
+    def key_as_part_query(self):
+        _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
+        _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
+        return _dict
 
 
 class CompetitionDirection(db.Entity):
@@ -444,8 +551,14 @@ class CompetitionDirection(db.Entity):
         return ["competition", "directions"]
 
     def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+        # language=H TML
+        data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+        # print(data)
+        return data
 
     @classmethod
     def get_entities_html(cls, *keys):
@@ -471,8 +584,13 @@ class CompetitionDirection(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
+
+    def key_as_part_query(self):
+        _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
+        _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
+        return _dict
 
 
 class Task(db.Entity):
@@ -496,8 +614,14 @@ class Task(db.Entity):
         return ["id", "competition_direction", "start", "end", "photo"]
 
     def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+        # language=H TML
+        data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+        # print(data)
+        return data
 
     @classmethod
     def get_entities_html(cls, *keys):
@@ -523,8 +647,13 @@ class Task(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
+
+    def key_as_part_query(self):
+        _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
+        _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
+        return _dict
 
 
 class UserWork(db.Entity):
@@ -545,8 +674,14 @@ class UserWork(db.Entity):
         return ["user", "task", "mark"]
 
     def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+        # language=H TML
+        data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+        # print(data)
+        return data
 
     @classmethod
     def get_entities_html(cls, *keys):
@@ -572,8 +707,13 @@ class UserWork(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
+
+    def key_as_part_query(self):
+        _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
+        _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
+        return _dict
 
 
 class Criterion(db.Entity):
@@ -591,8 +731,14 @@ class Criterion(db.Entity):
         return ["id", "competition_direction", "name", "max_value"]
 
     def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+        # language=H TML
+        data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+        # print(data)
+        return data
 
     @classmethod
     def get_entities_html(cls, *keys):
@@ -618,8 +764,13 @@ class Criterion(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
+
+    def key_as_part_query(self):
+        _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
+        _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
+        return _dict
 
 
 class MarkWork(db.Entity):
@@ -637,8 +788,14 @@ class MarkWork(db.Entity):
         return ["criterion", "user_work", "value"]
 
     def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+        # language=H TML
+        data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+        # print(data)
+        return data
 
     @classmethod
     def get_entities_html(cls, *keys):
@@ -664,8 +821,13 @@ class MarkWork(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
+
+    def key_as_part_query(self):
+        _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
+        _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
+        return _dict
 
 
 class Page(db.Entity):
@@ -692,8 +854,14 @@ class Page(db.Entity):
         return ["id", "title", "page_url", "is_header", "visible"]
 
     def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+        # language=H TML
+        data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+        # print(data)
+        return data
 
     @classmethod
     def get_entities_html(cls, *keys):
@@ -719,8 +887,13 @@ class Page(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
+
+    def key_as_part_query(self):
+        _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
+        _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
+        return _dict
 
 
 class Question(db.Entity):
@@ -749,8 +922,14 @@ class Question(db.Entity):
         return ["id", "question_title", "human", "was_read", "was_answered"]
 
     def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+        # language=H TML
+        data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+        # print(data)
+        return data
 
     @classmethod
     def get_entities_html(cls, *keys):
@@ -776,8 +955,13 @@ class Question(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
+
+    def key_as_part_query(self):
+        _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
+        _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
+        return _dict
 
 
 class SimpleEntity(db.Entity):
@@ -792,8 +976,14 @@ class SimpleEntity(db.Entity):
         return ["key"]
 
     def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+        # language=H TML
+        data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+        # print(data)
+        return data
 
     @classmethod
     def get_entities_html(cls, *keys):
@@ -819,8 +1009,13 @@ class SimpleEntity(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
+
+    def key_as_part_query(self):
+        _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
+        _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
+        return _dict
 
 
 class News(Page):
@@ -835,8 +1030,14 @@ class News(Page):
         return ["id", "title", "visible", "image"]
 
     def get_entity_html(self, keys):
-        # language=HTML
-        return f"<tr>{''.join(['<td>' + str(getattr(self, key)) + '</td>' for key in keys])}</tr>"
+        # language=H TML
+        data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a></td>' \
+               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+        # print(data)
+        return data
 
     @classmethod
     def get_entities_html(cls, *keys):
@@ -862,8 +1063,13 @@ class News(Page):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}</tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
+
+    def key_as_part_query(self):
+        _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
+        _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
+        return _dict
 
 
 setattr(db, 'EntitiesEnum', enum.Enum('DynamicEnum', {key: key for key, val in db.entities.items()}))

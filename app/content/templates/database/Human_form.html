@@ -11,7 +11,7 @@
 id имеет тип number, который еще не поддерживается...
 </label></div>
 
-<div class="margin-bottom-sm">
+{% if (human is defined and hasattr(param.class_name.lower(), "username")) or human is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Human_username">username
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="username" id="Human_username" 
@@ -21,8 +21,8 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }} required>
-<div id="Human_username_error"></div></div>
-<div class="margin-bottom-sm">
+<div id="Human_username_error"></div></div>{% endif %}
+{% if (human is defined and hasattr(param.class_name.lower(), "password")) or human is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Human_password">password
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="password" id="Human_password" 
@@ -32,8 +32,8 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }} required>
-<div id="Human_password_error"></div></div>
-<div class="margin-bottom-sm">
+<div id="Human_password_error"></div></div>{% endif %}
+{% if (human is defined and hasattr(param.class_name.lower(), "name")) or human is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Human_name">name
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="name" id="Human_name" 
@@ -41,10 +41,10 @@ id имеет тип number, который еще не поддерживает
                 'value="' + human.name + '"'
                 if human is defined
                 else
-                'value="Вася"'|safe
+                ""
         }} required>
-<div id="Human_name_error"></div></div>
-<div class="margin-bottom-sm">
+<div id="Human_name_error"></div></div>{% endif %}
+{% if (human is defined and hasattr(param.class_name.lower(), "surname")) or human is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Human_surname">surname
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="surname" id="Human_surname" 
@@ -54,8 +54,8 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }} required>
-<div id="Human_surname_error"></div></div>
-<div class="margin-bottom-sm">
+<div id="Human_surname_error"></div></div>{% endif %}
+{% if (human is defined and hasattr(param.class_name.lower(), "email")) or human is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Human_email">email
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="email" id="Human_email" 
@@ -65,8 +65,8 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }} required>
-<div id="Human_email_error"></div></div>
-<div class="margin-bottom-sm">
+<div id="Human_email_error"></div></div>{% endif %}
+{% if (human is defined and hasattr(param.class_name.lower(), "status")) or human is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Human_status">status
 </label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="status" id="Human_status" 
@@ -76,8 +76,8 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }}>
-<div id="Human_status_error"></div></div>
-<div class="margin-bottom-sm">
+<div id="Human_status_error"></div></div>{% endif %}
+{% if (human is defined and hasattr(param.class_name.lower(), "description")) or human is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Human_description">description
 </label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="description" id="Human_description" 
@@ -87,7 +87,7 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }}>
-<div id="Human_description_error"></div></div></fieldset><div>
+<div id="Human_description_error"></div></div>{% endif %}</fieldset><div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
 </div></form></div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>

@@ -6,39 +6,35 @@
                 const xhr = new XMLHttpRequest();
                 xhr.open('{{current_method}}', '{{current_url}}', true);
                 xhr.setRequestHeader('accept', 'application/json');
-                xhr.setRequestHeader("Accept-Encoding", "gzip, deflate, br");
+                // xhr.setRequestHeader("Accept-Encoding", "gzip, deflate, br");
                 xhr.setRequestHeader("Accept-Language", "ru,en;q=0.9,la;q=0.8");
                 xhr.setRequestHeader("Cache-Control", "no-cache");
-                xhr.setRequestHeader("Connection", "keep-alive");
+                // xhr.setRequestHeader("Connection", "keep-alive");
                 xhr.setRequestHeader("Pragma", "no-cache");
-                xhr.setRequestHeader("Sec-Fetch-Dest", "empty");
-                xhr.setRequestHeader("Sec-Fetch-Mode", "cors");
-                xhr.setRequestHeader("Sec-Fetch-Site",  "same-origin");
-                // xhr.setRequestHeader(  );
-                // xhr.setRequestHeader(  );
-                // xhr.setRequestHeader(  );
-                // xhr.setRequestHeader(  );
+                // xhr.setRequestHeader("Sec-Fetch-Dest", "empty");
+                // xhr.setRequestHeader("Sec-Fetch-Mode", "cors");
+                // xhr.setRequestHeader("Sec-Fetch-Site",  "same-origin");
                 xhr.setRequestHeader('Authorization',  'Bearer ' + token);
                 xhr.send();
-                xhr.onreadystatechange = () => { // (3)
-                    if (xhr.readyState === 2){
+                xhr.onreadystatechange = (event) => { // (3)
+                    ev_xhr = event.target;
+                    if (ev_xhr.readyState === 2){
                         // получены загаловки
                     }
-                    if (xhr.readyState !== 4) return;
+                    if (ev_xhr.readyState !== 4) return;
 
-                    if (xhr.status === 200) {
+                    if (ev_xhr.status === 200) {
                         // вывести результат
+                        console.log("--------------------------", event);
+                        console.log("++++=++++++++++++", this);
                         console.log(xhr.responseText);
                         document.querySelectorAll("html")[0].innerHTML = " " + xhr.responseText;
 
-                        send_form_as_ajax();
-
-                        //[...document.querySelectorAll("script")].map(i => eval(i.innerHTML))
-                        //eval($("script", doc).text())
-                        // document.html = " " + xhr.responseText;
                     } else {
                         // обработать ошибку
                     }
+                    urls_as_ajax();
+                    send_form_as_ajax();
                 }
             });
         }

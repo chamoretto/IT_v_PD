@@ -56,6 +56,7 @@ def default_html(param: DbDocs) -> str:
 
 
 def html_text(param: DbDocs) -> str:
+
     # l anguage=HTML
     value = f'''
         {'{{'}
@@ -64,7 +65,8 @@ def html_text(param: DbDocs) -> str:
                 else
                 {"'" + 'value="' + str(param.default) + '"' + "'|safe" if param.default is not None and bool(param.default) else '""'}
         {'}}'}'''
-    text = f'<div class="margin-bottom-sm">\n' \
+    text = f'{"{%"} if ({param.class_name.lower()} is defined and hasattr(param.class_name.lower(), "{param.name}")) or {param.class_name.lower()} is not defined {"%}"}'
+    text += f'<div class="margin-bottom-sm">\n' \
            f'<label class="form-label margin-bottom-xxs" for="{param.class_name}_{param.name}">{param.name}\n' \
            f'{"""<span class="color-error">*</span>""" if param.required else ""}</label>\n' \
            f'<input class="form-control width-100% text-sm" placeholder="{param.placeholder}"' \
@@ -72,6 +74,7 @@ def html_text(param: DbDocs) -> str:
            f' {value}' \
            f'{" required" if param.required else ""}>\n' \
            f'<div id="{param.class_name}_{param.name}_error"></div></div>'
+    text += '{% endif %}'
     return text
 
 
@@ -106,7 +109,8 @@ type_to_html: dict[str, Callable[[DbDocs], str]] = defaultdict(
 def create_html_file(ent: m.db.Entity):
     pd_ent = getattr(pd, ent.__name__)
     all_ent_docs: Dict[str, DbDocs] = {}
-    all_docs = (i.strip() for i in get_doc(ent).split("\n"))
+    all_docs = [i.strip() for i in get_doc(ent).split("\n")]
+    print(all_docs)
     all_docs = (i[1:].split(":") for i in all_docs if bool(i) and (i.startswith(":param") or i.startswith(":type")))
     all_docs = (t.split() + [d.strip()] for [t, d] in all_docs)
     code, pk = db_ent_to_dict(ent)

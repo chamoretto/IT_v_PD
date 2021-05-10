@@ -11,7 +11,7 @@
 id имеет тип number, который еще не поддерживается...
 </label></div>
 
-<div class="margin-bottom-sm">
+{% if (smm is defined and hasattr(param.class_name.lower(), "username")) or smm is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Smm_username">username
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="username" id="Smm_username" 
@@ -21,8 +21,8 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }} required>
-<div id="Smm_username_error"></div></div>
-<div class="margin-bottom-sm">
+<div id="Smm_username_error"></div></div>{% endif %}
+{% if (smm is defined and hasattr(param.class_name.lower(), "password")) or smm is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Smm_password">password
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="password" id="Smm_password" 
@@ -32,8 +32,8 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }} required>
-<div id="Smm_password_error"></div></div>
-<div class="margin-bottom-sm">
+<div id="Smm_password_error"></div></div>{% endif %}
+{% if (smm is defined and hasattr(param.class_name.lower(), "name")) or smm is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Smm_name">name
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="name" id="Smm_name" 
@@ -41,10 +41,10 @@ id имеет тип number, который еще не поддерживает
                 'value="' + smm.name + '"'
                 if smm is defined
                 else
-                'value="Вася"'|safe
+                ""
         }} required>
-<div id="Smm_name_error"></div></div>
-<div class="margin-bottom-sm">
+<div id="Smm_name_error"></div></div>{% endif %}
+{% if (smm is defined and hasattr(param.class_name.lower(), "surname")) or smm is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Smm_surname">surname
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="surname" id="Smm_surname" 
@@ -54,8 +54,8 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }} required>
-<div id="Smm_surname_error"></div></div>
-<div class="margin-bottom-sm">
+<div id="Smm_surname_error"></div></div>{% endif %}
+{% if (smm is defined and hasattr(param.class_name.lower(), "email")) or smm is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Smm_email">email
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="email" id="Smm_email" 
@@ -65,8 +65,8 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }} required>
-<div id="Smm_email_error"></div></div>
-<div class="margin-bottom-sm">
+<div id="Smm_email_error"></div></div>{% endif %}
+{% if (smm is defined and hasattr(param.class_name.lower(), "status")) or smm is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Smm_status">status
 </label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="status" id="Smm_status" 
@@ -76,8 +76,8 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }}>
-<div id="Smm_status_error"></div></div>
-<div class="margin-bottom-sm">
+<div id="Smm_status_error"></div></div>{% endif %}
+{% if (smm is defined and hasattr(param.class_name.lower(), "description")) or smm is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Smm_description">description
 </label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="description" id="Smm_description" 
@@ -87,7 +87,7 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }}>
-<div id="Smm_description_error"></div></div></fieldset><div>
+<div id="Smm_description_error"></div></div>{% endif %}</fieldset><div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
 </div></form></div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>

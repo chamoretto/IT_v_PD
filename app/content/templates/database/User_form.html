@@ -8,14 +8,10 @@
 <fieldset class="margin-bottom-md">
 <legend class="form-legend">User</legend>
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-date_of_birth имеет тип number, который еще не поддерживается...
-</label></div>
-
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
 id имеет тип number, который еще не поддерживается...
 </label></div>
 
-<div class="margin-bottom-sm">
+{% if (user is defined and hasattr(param.class_name.lower(), "username")) or user is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_username">username
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="username" id="User_username" 
@@ -25,8 +21,8 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }} required>
-<div id="User_username_error"></div></div>
-<div class="margin-bottom-sm">
+<div id="User_username_error"></div></div>{% endif %}
+{% if (user is defined and hasattr(param.class_name.lower(), "password")) or user is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_password">password
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="password" id="User_password" 
@@ -36,8 +32,8 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }} required>
-<div id="User_password_error"></div></div>
-<div class="margin-bottom-sm">
+<div id="User_password_error"></div></div>{% endif %}
+{% if (user is defined and hasattr(param.class_name.lower(), "name")) or user is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_name">name
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="name" id="User_name" 
@@ -45,10 +41,10 @@ id имеет тип number, который еще не поддерживает
                 'value="' + user.name + '"'
                 if user is defined
                 else
-                'value="Вася"'|safe
+                ""
         }} required>
-<div id="User_name_error"></div></div>
-<div class="margin-bottom-sm">
+<div id="User_name_error"></div></div>{% endif %}
+{% if (user is defined and hasattr(param.class_name.lower(), "surname")) or user is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_surname">surname
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="surname" id="User_surname" 
@@ -58,8 +54,8 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }} required>
-<div id="User_surname_error"></div></div>
-<div class="margin-bottom-sm">
+<div id="User_surname_error"></div></div>{% endif %}
+{% if (user is defined and hasattr(param.class_name.lower(), "email")) or user is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_email">email
 <span class="color-error">*</span></label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="email" id="User_email" 
@@ -69,8 +65,8 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }} required>
-<div id="User_email_error"></div></div>
-<div class="margin-bottom-sm">
+<div id="User_email_error"></div></div>{% endif %}
+{% if (user is defined and hasattr(param.class_name.lower(), "status")) or user is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_status">status
 </label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="status" id="User_status" 
@@ -80,8 +76,8 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }}>
-<div id="User_status_error"></div></div>
-<div class="margin-bottom-sm">
+<div id="User_status_error"></div></div>{% endif %}
+{% if (user is defined and hasattr(param.class_name.lower(), "description")) or user is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_description">description
 </label>
 <input class="form-control width-100% text-sm" placeholder="" type="text" name="description" id="User_description" 
@@ -91,7 +87,7 @@ id имеет тип number, который еще не поддерживает
                 else
                 ""
         }}>
-<div id="User_description_error"></div></div></fieldset><div>
+<div id="User_description_error"></div></div>{% endif %}</fieldset><div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
 </div></form></div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>

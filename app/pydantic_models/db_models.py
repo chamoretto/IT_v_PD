@@ -98,14 +98,14 @@ class Human(BaseModel):
 	id: Optional[int] = None
 	username: str
 	hash_password: str
-	name: str = 'Вася'
+	name: str
 	surname: str
 	email: str
 	human_contacts: Union[int, HumanContacts, None] = None
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Json] = "{}"
+	scopes: Optional[Union[Json, dict]] = {}
 	questions: Set[Union[int, Question]] = []
 
 	class Config:
@@ -116,14 +116,14 @@ class Admin(BaseModel):
 	id: Optional[int] = None
 	username: str
 	hash_password: str
-	name: str = 'Вася'
+	name: str
 	surname: str
 	email: str
 	human_contacts: Union[int, HumanContacts, None] = None
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Json] = "{}"
+	scopes: Optional[Union[Json, dict]] = {}
 	questions: Set[Union[int, Question]] = []
 
 	class Config:
@@ -134,14 +134,14 @@ class User(BaseModel):
 	id: Optional[int] = None
 	username: str
 	hash_password: str
-	name: str = 'Вася'
+	name: str
 	surname: str
 	email: str
 	human_contacts: Union[int, HumanContacts, None] = None
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Json] = "{}"
+	scopes: Optional[Union[Json, dict]] = {}
 	questions: Set[Union[int, Question]] = []
 	date_of_birth: date
 	user_works: Set[Union[Tuple[int, int], UserWork]] = []
@@ -157,14 +157,14 @@ class Smm(BaseModel):
 	id: Optional[int] = None
 	username: str
 	hash_password: str
-	name: str = 'Вася'
+	name: str
 	surname: str
 	email: str
 	human_contacts: Union[int, HumanContacts, None] = None
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Json] = "{}"
+	scopes: Optional[Union[Json, dict]] = {}
 	questions: Set[Union[int, Question]] = []
 
 	class Config:
@@ -175,14 +175,14 @@ class Developer(BaseModel):
 	id: Optional[int] = None
 	username: str
 	hash_password: str
-	name: str = 'Вася'
+	name: str
 	surname: str
 	email: str
 	human_contacts: Union[int, HumanContacts, None] = None
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Json] = "{}"
+	scopes: Optional[Union[Json, dict]] = {}
 	questions: Set[Union[int, Question]] = []
 
 	class Config:
@@ -190,7 +190,7 @@ class Developer(BaseModel):
 
 
 class HumanContacts(BaseModel):
-	human: Human
+	human: Union[int, Human]
 	phone: Optional[str] = ''
 	vk: Optional[str] = ''
 	insagramm: Optional[str] = ''
@@ -206,14 +206,14 @@ class DirectionExpert(BaseModel):
 	id: Optional[int] = None
 	username: str
 	hash_password: str
-	name: str = 'Вася'
+	name: str
 	surname: str
 	email: str
 	human_contacts: Union[int, HumanContacts, None] = None
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Json] = "{}"
+	scopes: Optional[Union[Json, dict]] = {}
 	questions: Set[Union[int, Question]] = []
 	competition_directions: Set[Union[Tuple[str, int], CompetitionDirection]] = []
 
@@ -238,7 +238,7 @@ class Direction(BaseModel):
 	name: str
 	icon: str
 	competition_direction: Set[Union[Tuple[str, int], CompetitionDirection]] = []
-	video_lessons: Optional[Json] = "{}"
+	video_lessons: Optional[Union[Json, dict]] = {}
 
 	class Config:
 		orm_mode = True
@@ -333,7 +333,7 @@ class Question(BaseModel):
 
 class SimpleEntity(BaseModel):
 	key: Optional[str] = None
-	data: Optional[Json] = "{}"
+	data: Optional[Union[Json, dict]] = {}
 
 	class Config:
 		orm_mode = True

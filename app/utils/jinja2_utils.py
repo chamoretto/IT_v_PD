@@ -84,7 +84,7 @@ class MyJinja2Templates:
         if "request" not in local_context:
             raise ValueError('context must include a "request" key')
         template = self.get_template(name)
-        print("========HEADERS", local_context['request'], *dict(local_context['request'].headers).items(), sep="\n")
+        # print("========HEADERS", local_context['request'], *dict(local_context['request'].headers).items(), sep="\n")
         if dict(local_context['request'].headers).get("x-part") == "basic-content":
             context = local_context
             skeleton_template = template

@@ -95,11 +95,12 @@ SetPkNews = Set[Union[int, News]]
 
 
 class Human(BaseModel):
-	id: int
-	username: str
-	name: str
-	surname: str
-	email: str
+	id: Optional[int] = None
+	username: Optional[str] = None
+	hash_password: Optional[str] = None
+	name: Optional[str] = None
+	surname: Optional[str] = None
+	email: Optional[str] = None
 	human_contacts: Union[int, HumanContacts, None] = None
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
@@ -112,11 +113,12 @@ class Human(BaseModel):
 
 
 class Admin(BaseModel):
-	id: int
-	username: str
-	name: str
-	surname: str
-	email: str
+	id: Optional[int] = None
+	username: Optional[str] = None
+	hash_password: Optional[str] = None
+	name: Optional[str] = None
+	surname: Optional[str] = None
+	email: Optional[str] = None
 	human_contacts: Union[int, HumanContacts, None] = None
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
@@ -129,33 +131,35 @@ class Admin(BaseModel):
 
 
 class User(BaseModel):
-	id: int
-	username: str
-	name: str
-	surname: str
-	email: str
+	id: Optional[int] = None
+	username: Optional[str] = None
+	hash_password: Optional[str] = None
+	name: Optional[str] = None
+	surname: Optional[str] = None
+	email: Optional[str] = None
 	human_contacts: Union[int, HumanContacts, None] = None
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
 	scopes: Optional[Union[Json, dict]] = {}
 	questions: Set[Union[int, Question]] = []
-	date_of_birth: date
+	date_of_birth: Optional[date] = None
 	user_works: Set[Union[Tuple[int, int], UserWork]] = []
 	about_program: Optional[str] = None
 	direction: Optional[str] = None
-	visible_about_program_field: bool = False
+	visible_about_program_field: Optional[bool] = False
 
 	class Config:
 		orm_mode = True
 
 
 class Smm(BaseModel):
-	id: int
-	username: str
-	name: str
-	surname: str
-	email: str
+	id: Optional[int] = None
+	username: Optional[str] = None
+	hash_password: Optional[str] = None
+	name: Optional[str] = None
+	surname: Optional[str] = None
+	email: Optional[str] = None
 	human_contacts: Union[int, HumanContacts, None] = None
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
@@ -168,11 +172,12 @@ class Smm(BaseModel):
 
 
 class Developer(BaseModel):
-	id: int
-	username: str
-	name: str
-	surname: str
-	email: str
+	id: Optional[int] = None
+	username: Optional[str] = None
+	hash_password: Optional[str] = None
+	name: Optional[str] = None
+	surname: Optional[str] = None
+	email: Optional[str] = None
 	human_contacts: Union[int, HumanContacts, None] = None
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
@@ -185,7 +190,7 @@ class Developer(BaseModel):
 
 
 class HumanContacts(BaseModel):
-	human: Union[int, Human]
+	human: Union[int, Human, None] = None
 	phone: Optional[str] = ''
 	vk: Optional[str] = ''
 	insagramm: Optional[str] = ''
@@ -198,11 +203,12 @@ class HumanContacts(BaseModel):
 
 
 class DirectionExpert(BaseModel):
-	id: int
-	username: str
-	name: str
-	surname: str
-	email: str
+	id: Optional[int] = None
+	username: Optional[str] = None
+	hash_password: Optional[str] = None
+	name: Optional[str] = None
+	surname: Optional[str] = None
+	email: Optional[str] = None
 	human_contacts: Union[int, HumanContacts, None] = None
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
@@ -216,10 +222,10 @@ class DirectionExpert(BaseModel):
 
 
 class Competition(BaseModel):
-	id: int
-	name: str
-	start: datetime
-	end: datetime
+	id: Optional[int] = None
+	name: Optional[str] = None
+	start: Optional[datetime] = None
+	end: Optional[datetime] = None
 	description: Optional[str] = ''
 	competition_direction: Set[Union[Tuple[str, int], CompetitionDirection]] = []
 	document: Optional[str] = ''
@@ -229,8 +235,8 @@ class Competition(BaseModel):
 
 
 class Direction(BaseModel):
-	name: str
-	icon: str
+	name: Optional[str] = None
+	icon: Optional[str] = None
 	competition_direction: Set[Union[Tuple[str, int], CompetitionDirection]] = []
 	video_lessons: Optional[Union[Json, dict]] = {}
 
@@ -239,8 +245,8 @@ class Direction(BaseModel):
 
 
 class CompetitionDirection(BaseModel):
-	directions: Union[str, Direction]
-	competition: Union[int, Competition]
+	directions: Union[str, Direction, None] = None
+	competition: Union[int, Competition, None] = None
 	tasks: Set[Union[int, Task]] = []
 	direction_experts: Set[Union[int, DirectionExpert]] = []
 	criterions: Set[Union[int, Criterion]] = []
@@ -250,12 +256,12 @@ class CompetitionDirection(BaseModel):
 
 
 class Task(BaseModel):
-	id: int
-	competition_direction: Union[Tuple[str, int], CompetitionDirection]
+	id: Optional[int] = None
+	competition_direction: Union[Tuple[str, int], CompetitionDirection, None] = None
 	task_document: Optional[str] = ''
 	description: Optional[str] = ''
-	start: datetime
-	end: datetime
+	start: Optional[datetime] = None
+	end: Optional[datetime] = None
 	user_works: Set[Union[Tuple[int, int], UserWork]] = []
 
 	class Config:
@@ -264,10 +270,10 @@ class Task(BaseModel):
 
 class UserWork(BaseModel):
 	mark_works: Set[Union[Tuple[int, int, int], MarkWork]] = []
-	user: Union[int, User]
-	task: Union[int, Task]
+	user: Union[int, User, None] = None
+	task: Union[int, Task, None] = None
 	work: Optional[str] = ''
-	upload_date: datetime
+	upload_date: Optional[datetime] = None
 	mark: Optional[str] = ''
 
 	class Config:
@@ -275,9 +281,9 @@ class UserWork(BaseModel):
 
 
 class Criterion(BaseModel):
-	id: int
-	competition_direction: Union[Tuple[str, int], CompetitionDirection]
-	name: str
+	id: Optional[int] = None
+	competition_direction: Union[Tuple[str, int], CompetitionDirection, None] = None
+	name: Optional[str] = None
 	description: Optional[str] = ''
 	max_value: Optional[float] = None
 	mark_works: Set[Union[Tuple[int, int, int], MarkWork]] = []
@@ -287,20 +293,20 @@ class Criterion(BaseModel):
 
 
 class MarkWork(BaseModel):
-	criterion: Union[int, Criterion]
-	user_work: Union[Tuple[int, int], UserWork]
-	value: int
+	criterion: Union[int, Criterion, None] = None
+	user_work: Union[Tuple[int, int], UserWork, None] = None
+	value: Optional[int] = None
 
 	class Config:
 		orm_mode = True
 
 
 class Page(BaseModel):
-	id: int
+	id: Optional[int] = None
 	page_url: Optional[str] = ''
 	page_path: Optional[str] = ''
-	is_header: bool = False
-	visible: bool = False
+	is_header: Optional[bool] = False
+	visible: Optional[bool] = False
 	child_pages: Set[Union[int, Page]] = []
 	root_page: Union[int, Page, None] = None
 	title: Optional[str] = ''
@@ -311,22 +317,22 @@ class Page(BaseModel):
 
 
 class Question(BaseModel):
-	id: int
+	id: Optional[int] = None
 	question_title: Optional[str] = ''
-	question: str
+	question: Optional[str] = None
 	answer: Optional[str] = ''
 	pages: Set[Union[int, Page]] = []
 	answer_email: Optional[str] = ''
 	human: Union[int, Human, None] = None
-	was_read: bool = False
-	was_answered: bool = False
+	was_read: Optional[bool] = False
+	was_answered: Optional[bool] = False
 
 	class Config:
 		orm_mode = True
 
 
 class SimpleEntity(BaseModel):
-	key: str
+	key: Optional[str] = None
 	data: Optional[Union[Json, dict]] = {}
 
 	class Config:
@@ -334,11 +340,11 @@ class SimpleEntity(BaseModel):
 
 
 class News(BaseModel):
-	id: int
+	id: Optional[int] = None
 	page_url: Optional[str] = ''
 	page_path: Optional[str] = ''
-	is_header: bool = False
-	visible: bool = False
+	is_header: Optional[bool] = False
+	visible: Optional[bool] = False
 	child_pages: Set[Union[int, Page]] = []
 	root_page: Union[int, Page, None] = None
 	title: Optional[str] = ''

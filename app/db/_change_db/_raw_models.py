@@ -7,9 +7,28 @@ db = Database()
 
 
 class Human(db.Entity):
-    """Базовый класс человека
+    """
+        Базовый класс человека
 
-напрямую использоваться не должен"""
+        :param id: Идентификатор
+        :type id: number
+        :param username: Логин
+        :type username: text
+        :param password: Пароль
+        :type password: text
+        :param name: Имя пользователя
+        :type name: text
+        :param surname: Фамилия пользователя
+        :type surname: text
+        :param email: Почта
+        :type email: text
+        :param status: Почта
+        :type status: text
+        :param description: Почта
+        :type description: text
+
+        напрямую использоваться не должен
+    """
     id = PrimaryKey(int, auto=True)
     username = Required(str, unique=True)  # login
     hash_password = Required(str, 8192)
@@ -25,6 +44,10 @@ class Human(db.Entity):
 
 
 class Admin(Human):
+    """
+    Админ
+
+    """
     pass
 
 
@@ -49,6 +72,10 @@ class Smm(Human):
 
 
 class Developer(Human):
+    """
+    Админ
+
+    """
     pass
 
 
