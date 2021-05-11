@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, Security, Response, Request, HTTPExcepti
 from fastapi.responses import HTMLResponse, JSONResponse
 from pony.orm import db_session, commit
 from pydantic import Json
+from pony.orm.dbapiprovider import IntegrityError
 
 from fastapi.routing import APIRoute
 
@@ -128,9 +129,9 @@ def simple_decorator(name, ent):
 
     def create_entity(request: Request,
                       new_ent_data: getattr(inp_pd, name) = Body(...)):
-
+        # TODO: при primaryKey из нескольких аргументов возможны случаи не корректной работы
+        # TODO: когда сущность с одним компонентов primaryKey уже существует
         data = dict(getattr(pk_pd, name)(**dict(new_ent_data))).items()
-        print(data, ent.__name__, name, ent.exists(id=1))
         chek_unique = {key: val for key, val in data if ent.exists(**{key: val})}
         print(chek_unique)
         if bool(chek_unique):
@@ -171,13 +172,53 @@ def edit_entity(request: Request,
                 ent_model: only_pk.Admin):
     if m.db.Admin.exists(**dict(ent_model)):
         entity = m.db.Admin.get(**dict(ent_model))
-        entity = getattr(out_pd, name).from_pony_orm(entity)
+        pd_entity = getattr(out_pd, name).from_pony_orm(entity)
         return db_templates.TemplateResponse(
-            f"{name}_form.html", {"request": request,
-                                  name.lower(): entity})
-    return {1: 34534}
-    # return db_templates.TemplateResponse(
-    #     "show_entity.html", {"request": request, "table": m.db.entities[entity.value].get_entities_html()})
+            f"{name}_form.html", {"request": request, name.lower(): pd_entity,
+                                  "action_url": f"/db/{name}/edit/save?{entity.key_as_part_query()}",
+                                  "send_method": "POST"})
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="Сущность для редактирования в базе данных не найдена..."
+    )
+
+@db_route.post(f'/{name}/edit/save')
+@db_session
+def save_edited_entity(request: Request, new_ent_data: op_pd.Admin,
+                       # old_ent_model: only_pk.Admin = None,
+                       ):
+
+    # print("65yyxdst5", old_ent_model)
+    print("query", dict(request.query_params))
+    # print("body", request.body().)
+    old_ent_model = only_pk.Admin(**request.query_params)
+    # new_ent_data = op_pd.Admin(**request.body().__dict__)
+    if m.db.Admin.exists(**old_ent_model.dict(exclude_unset=True)):
+        entity = m.db.Admin.get(**old_ent_model.dict(exclude_unset=True))
+
+        # TODO: при primaryKey из нескольких аргументов возможны случаи не корректной работы
+        # TODO: когда сущность с одним компонентов primaryKey уже существует
+        try:
+            print(new_ent_data)
+            entity.set(**new_ent_data.dict(exclude_unset=True))
+            commit()
+            return JSONResponse(
+                {"answer_for_user": "Сузность отредактирована успешно!",
+                 "type": "success edit"}, status_code=201)
+        except IntegrityError as e:
+            print(e)
+            if str(e).startswith("UNIQUE constraint failed:"):
+                param = str(e).split()[-1].strip('.')[-1]
+                return JSONResponse({"answer_for_user": "следующие поля уже существуют",
+                 "type": "fields_no_unique",
+                 "errors": {name + "_" + param + "_error": "этот параметр должен быть уникальным"}
+                 }, status_code=400)
+
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="Сущность для редактирования в базе данных не найдена..."
+    )
+
 
 # @wraps(entity_screen)
 # @db_route.post('/' + name + '/new', status_code=201)

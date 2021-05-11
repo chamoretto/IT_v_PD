@@ -8,7 +8,18 @@ function send_form_as_ajax() {
         setTimeout(() => {
             const xhr = new XMLHttpRequest();
             const $current_form = $(event.target).parents("form");
-            xhr.open($current_form.attr('method'), $current_form.attr('action'), true);
+            let action = $current_form.attr('action')
+            const check_data = action.split('?');
+            let data = {};
+            if (false && check_data.length > 1){
+                action = check_data[0];
+                check_data[1].split('&').map( i => i.split('=')).map( i => {data[i[0]] = i[1]})
+                // data = JSON.stringify([data, {}])
+            } else {
+                data = {}
+            }
+
+            xhr.open($current_form.attr('method'), action, true);
 
             // xhr.setRequestHeader("Accept-Encoding", "gzip, deflate, br");
             xhr.setRequestHeader("Accept-Language", "ru,en;q=0.9,la;q=0.8");

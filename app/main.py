@@ -6,7 +6,7 @@ import uvicorn
 from fastapi.responses import FileResponse
 from fastapi.responses import HTMLResponse
 
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException, Query
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -30,10 +30,9 @@ from app.utils.basic_utils import async_iterator_wrapper as aiwrap
 from app.utils.html_utils import Alert
 from app.db.create_db_content import create_pages
 from app.db_router.routers import db_route
+from app.pydantic_models.standart_methhods_redefinition import BaseModel
 
-app = FastAPI(
-    # route_class=TimedRoute,
-)
+app = FastAPI()
 # app.add_middleware(HTTPSRedirectMiddleware)  # Устанавливаем https
 # app.add_middleware(GZipMiddleware, minimum_size=1000)  # все файлы ответов больше 1000 байт сжимаются
 
@@ -53,7 +52,6 @@ app = FastAPI(
 #     # print(type(response), content)
 #     # await response("", receive, send)
 #     return response
-
 
 app.mount("/public", StaticFiles(directory="content/public"), name="public")
 app.mount("/static", StaticFiles(directory="content/static"), name="static")
@@ -93,9 +91,6 @@ async def root():
 @app.exception_handler(StarletteHTTPException)
 def custom_http_exception_handler(request: Request, exc: HTTPException):
     try:
-        # print("========HEADERS", *dict(request.headers).items(), sep="\n")
-        # print(request.url, request.method)
-        # print([exc])
         if exc.status_code == 401:
             return error_templates.TemplateResponse(
                 "401.html",
@@ -119,6 +114,17 @@ def custom_http_exception_handler(request: Request, exc: HTTPException):
     except Exception as e:
         print("-------------", e)
         return "help me!"
+
+
+class TestQuery(BaseModel):
+    a: int
+    b: int
+
+@app.get("/t")
+async def root(request: Request, item: TestQuery = None):
+    print([request.query_params.items()], item)
+    print([request.body()], item)
+    return {"message": "Hello Bigger Applications!"}
 
 
 if __name__ == "__main__":

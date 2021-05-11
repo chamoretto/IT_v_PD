@@ -4,7 +4,7 @@
 {# =======! Ни одно изменение в этом файле не будет сохранено! !======= #}
 
 <div class="container max-width-lg">
-<form id="{entity_name.lower()}" action="/db/DirectionExpert/new" method="post" enctype="multipart/form-data" onsubmit="return false">
+<form id="{entity_name.lower()}" action="{{(action_url if action_url is defined else "/db/DirectionExpert/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
 <fieldset class="margin-bottom-md">
 <legend class="form-legend">DirectionExpert</legend>
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">

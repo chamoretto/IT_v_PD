@@ -32,7 +32,9 @@ class DbDocs(BaseModel):
 def all_html_form(content: str, entity_name: str) -> str:
     # langua ge=HTML
     text = f'<div class="container max-width-lg">\n' \
-           f'<form id="{{entity_name.lower()}}" action="/db/{entity_name}/new" method="post"' \
+           f'<form id="{{entity_name.lower()}}"' \
+           f' action="{"{{"}(action_url if action_url is defined else "/db/{entity_name}/new")|safe {"}}"}"' \
+           f' method="{"{{"} (send_method if send_method is defined else "post")|safe {"}}"}"' \
            f' enctype="multipart/form-data" onsubmit="return false">\n' \
            f'<fieldset class="margin-bottom-md">\n' \
            f'<legend class="form-legend">{entity_name}</legend>\n' \
