@@ -245,7 +245,7 @@ def save_edited_entity(
 
 @db_route.post('/{class_entity_name}/look')
 @db_session
-def edit_entity(
+def look_entity(
         request: Request,
         ent_model: dict[str, Any] = Body(
             ...,
@@ -266,6 +266,30 @@ def edit_entity(
                                   "action_url": f"/db/{name}/look/",
                                   "send_method": "POST",
                                   "disabled": True})
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="Сущность для редактирования в базе данных не найдена..."
+    )
+
+@db_route.post('/{class_entity_name}/delete')
+@db_session
+def delete_entity(
+        request: Request,
+        ent_model: dict[str, Any] = Body(
+            ...,
+            title="словарь, однозначно определяющий объект в БД, через задание всех primaryKey"
+                  " (если их несколько)",
+            description="словарь из пар <key, value> где key - имя primaryKey объекта в БД,"
+                        "а value - значение primaryKey конкретной сущности"),
+        class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")
+):
+    name = class_entity_name.value
+    ent_model = getattr(only_pk, name)(**ent_model)
+    class_entity = m.db.entities[name]
+    if class_entity.exists(**dict(ent_model)):
+        entity = class_entity.get(**dict(ent_model))
+        entity.delete()
+        return {"redirect": ""}
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Сущность для редактирования в базе данных не найдена..."
