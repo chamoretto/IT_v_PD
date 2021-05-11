@@ -4,10 +4,10 @@
 {# =======! Ни одно изменение в этом файле не будет сохранено! !======= #}
 
 <div class="container max-width-lg">
-<form id="{entity_name.lower()}" action="{{(action_url if action_url is defined else "/db/MarkWork/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
-<fieldset class="margin-bottom-md">
+{% if disabled is not defined or not disabled %}<form id="{entity_name.lower()}" action="{{(action_url if action_url is defined else "/db/MarkWork/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
+{% endif %}<fieldset class="margin-bottom-md">
 <legend class="form-legend">MarkWork</legend>
-</fieldset><div>
+</fieldset>{% if disabled is not defined or not disabled %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
-</div></form></div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>
+</div></form>{% endif %}</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>

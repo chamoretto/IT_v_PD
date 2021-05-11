@@ -4,8 +4,8 @@
 {# =======! Ни одно изменение в этом файле не будет сохранено! !======= #}
 
 <div class="container max-width-lg">
-<form id="{entity_name.lower()}" action="{{(action_url if action_url is defined else "/db/User/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
-<fieldset class="margin-bottom-md">
+{% if disabled is not defined or not disabled %}<form id="{entity_name.lower()}" action="{{(action_url if action_url is defined else "/db/User/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
+{% endif %}<fieldset class="margin-bottom-md">
 <legend class="form-legend">User</legend>
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
 id имеет тип number, который еще не поддерживается...
@@ -20,7 +20,7 @@ id имеет тип number, который еще не поддерживает
                 if user is defined
                 else
                 "")|safe
-        }} required>
+        }} required {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
 <div id="User_username_error"></div></div>{% endif %}
 {% if (user is defined and user.password != Undefined) or user is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_password">password
@@ -31,7 +31,7 @@ id имеет тип number, который еще не поддерживает
                 if user is defined
                 else
                 "")|safe
-        }} required>
+        }} required {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
 <div id="User_password_error"></div></div>{% endif %}
 {% if (user is defined and user.name != Undefined) or user is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_name">name
@@ -42,7 +42,7 @@ id имеет тип number, который еще не поддерживает
                 if user is defined
                 else
                 "")|safe
-        }} required>
+        }} required {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
 <div id="User_name_error"></div></div>{% endif %}
 {% if (user is defined and user.surname != Undefined) or user is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_surname">surname
@@ -53,7 +53,7 @@ id имеет тип number, который еще не поддерживает
                 if user is defined
                 else
                 "")|safe
-        }} required>
+        }} required {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
 <div id="User_surname_error"></div></div>{% endif %}
 {% if (user is defined and user.email != Undefined) or user is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_email">email
@@ -64,7 +64,7 @@ id имеет тип number, который еще не поддерживает
                 if user is defined
                 else
                 "")|safe
-        }} required>
+        }} required {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
 <div id="User_email_error"></div></div>{% endif %}
 {% if (user is defined and user.status != Undefined) or user is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_status">status
@@ -75,7 +75,7 @@ id имеет тип number, который еще не поддерживает
                 if user is defined
                 else
                 "")|safe
-        }}>
+        }} {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
 <div id="User_status_error"></div></div>{% endif %}
 {% if (user is defined and user.description != Undefined) or user is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_description">description
@@ -86,8 +86,8 @@ id имеет тип number, который еще не поддерживает
                 if user is defined
                 else
                 "")|safe
-        }}>
-<div id="User_description_error"></div></div>{% endif %}</fieldset><div>
+        }} {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
+<div id="User_description_error"></div></div>{% endif %}</fieldset>{% if disabled is not defined or not disabled %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
-</div></form></div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>
+</div></form>{% endif %}</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>

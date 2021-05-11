@@ -32,17 +32,23 @@ class DbDocs(BaseModel):
 def all_html_form(content: str, entity_name: str) -> str:
     # langua ge=HTML
     text = f'<div class="container max-width-lg">\n' \
+           f'{"{%"} if disabled is not defined or not disabled {"%}"}' \
            f'<form id="{{entity_name.lower()}}"' \
            f' action="{"{{"}(action_url if action_url is defined else "/db/{entity_name}/new")|safe {"}}"}"' \
            f' method="{"{{"} (send_method if send_method is defined else "post")|safe {"}}"}"' \
            f' enctype="multipart/form-data" onsubmit="return false">\n' \
+           f'{"{%"} endif {"%}"}' \
            f'<fieldset class="margin-bottom-md">\n' \
            f'<legend class="form-legend">{entity_name}</legend>\n' \
            f'{content}' \
-           f'</fieldset><div>\n' \
+           f'</fieldset>' \
+           f'{"{%"} if disabled is not defined or not disabled {"%}"}' \
+           f'<div>\n' \
            f'<button class="btn btn--primary" type="submit" id="submit">Отправить</button>\n' \
            f'<button class="btn btn--subtle" type="reset">Сбросить</button>\n' \
-           f'</div></form></div>' \
+           f'</div></form>' \
+           f'{"{%"} endif {"%}"}' \
+           f'</div>' \
            f'<script src="{"{{"}url_for("scripts", path="/async_forms_and_redirects.js"){"}}"}"></script>'
     return text
 
@@ -73,7 +79,7 @@ def html_text(param: DbDocs) -> str:
            f'<input class="form-control width-100% text-sm" placeholder="{param.placeholder}"' \
            f' type="text" name="{param.name}" id="{param.class_name}_{param.name}"' \
            f' {value}' \
-           f'{" required" if param.required else ""}>\n' \
+           f'{" required" if param.required else ""} {"{{"} ("disabled" if disabled is defined and disabled else "")|safe {"}}"}>\n' \
            f'<div id="{param.class_name}_{param.name}_error"></div></div>'
     text += '{% endif %}'
     return text

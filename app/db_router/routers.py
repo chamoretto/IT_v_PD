@@ -175,10 +175,6 @@ def create_entity(request: Request,
              "type": "fields_create_entity"}, status_code=400)
 
 
-
-
-
-
 @db_route.post('/{class_entity_name}/edit')
 @db_session
 def edit_entity(
@@ -241,6 +237,35 @@ def save_edited_entity(
                 {"answer_for_user": "Возникла непонятная ошибка, попробуйте еще раз",
                  "type": "fields_create_entity"}, status_code=400)
 
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="Сущность для редактирования в базе данных не найдена..."
+    )
+
+
+@db_route.post('/{class_entity_name}/look')
+@db_session
+def edit_entity(
+        request: Request,
+        ent_model: dict[str, Any] = Body(
+            ...,
+            title="словарь, однозначно определяющий объект в БД, через задание всех primaryKey"
+                  " (если их несколько)",
+            description="словарь из пар <key, value> где key - имя primaryKey объекта в БД,"
+                        "а value - значение primaryKey конкретной сущности"),
+        class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")
+):
+    name = class_entity_name.value
+    ent_model = getattr(only_pk, name)(**ent_model)
+    class_entity = m.db.entities[name]
+    if class_entity.exists(**dict(ent_model)):
+        entity = class_entity.get(**dict(ent_model))
+        pd_entity = getattr(out_pd, name).from_pony_orm(entity)
+        return db_templates.TemplateResponse(
+            f"{name}_form.html", {"request": request, name.lower(): pd_entity,
+                                  "action_url": f"/db/{name}/look/",
+                                  "send_method": "POST",
+                                  "disabled": True})
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Сущность для редактирования в базе данных не найдена..."
