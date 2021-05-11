@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Any
 import time
 import enum
 from typing import Optional, Set, Union
@@ -91,19 +91,19 @@ def entity_screen(request: Request,
     """
 
 
-@db_route.get('/{entity}/new')
+@db_route.get('/{class_entity_name}/new')
 @db_session
 def entity_screen(request: Request,
-                  entity: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")):
+                  class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")):
     print("---ESMg mf k")
-    if entity.value not in m.db.entities and type(m.db.entities[entity.value]) == m.db.Entity:
+    if class_entity_name.value not in m.db.entities and type(m.db.entities[class_entity_name.value]) == m.db.Entity:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Такая Сущность в базе данных не найдена...",
             headers={"WWW-Authenticate": 'Bearer Basic realm="Restricted Area"'},
         )
 
-    return db_templates.TemplateResponse(f"{entity.value}_form.html", {"request": request})
+    return db_templates.TemplateResponse(f"{class_entity_name.value}_form.html", {"request": request})
 
 # @as_form
 # class TestHuman(BaseModel):
@@ -164,14 +164,23 @@ for name, ent in m.db.entities.items():
     create_func = decorator_maker(create_func)
 
 
-
-name = "Admin"
-@db_route.post(f'/{name}/edit')
+@db_route.post('/{class_entity_name}/edit')
 @db_session
-def edit_entity(request: Request,
-                ent_model: only_pk.Admin):
-    if m.db.Admin.exists(**dict(ent_model)):
-        entity = m.db.Admin.get(**dict(ent_model))
+def edit_entity(
+        request: Request,
+        ent_model: dict[str, Any] = Body(
+            ...,
+            title="словарь, однозначно определяющий объект в БД, через задание всех primaryKey"
+                  " (если их несколько)",
+            description="словарь из пар <key, value> где key - имя primaryKey объекта в БД,"
+                  "а value - значение primaryKey конкретной сущности"),
+        class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")
+):
+    name = class_entity_name.value
+    ent_model = getattr(only_pk, name)(**ent_model)
+    class_entity = m.db.entities[name]
+    if class_entity.exists(**dict(ent_model)):
+        entity = class_entity.get(**dict(ent_model))
         pd_entity = getattr(out_pd, name).from_pony_orm(entity)
         return db_templates.TemplateResponse(
             f"{name}_form.html", {"request": request, name.lower(): pd_entity,
@@ -182,24 +191,23 @@ def edit_entity(request: Request,
         detail="Сущность для редактирования в базе данных не найдена..."
     )
 
-@db_route.post(f'/{name}/edit/save')
+
+@db_route.post('/{class_entity_name}/edit/save')
 @db_session
-def save_edited_entity(request: Request, new_ent_data: op_pd.Admin,
-                       # old_ent_model: only_pk.Admin = None,
-                       ):
+def save_edited_entity(
+        request: Request,
+        new_ent_data: dict[str, Any] = Body(..., title="данные, которые требуется изменить в объектк базы данных"),
+        class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")
+):
 
-    # print("65yyxdst5", old_ent_model)
     print("query", dict(request.query_params))
-    # print("body", request.body().)
-    old_ent_model = only_pk.Admin(**request.query_params)
-    # new_ent_data = op_pd.Admin(**request.body().__dict__)
-    if m.db.Admin.exists(**old_ent_model.dict(exclude_unset=True)):
-        entity = m.db.Admin.get(**old_ent_model.dict(exclude_unset=True))
-
-        # TODO: при primaryKey из нескольких аргументов возможны случаи не корректной работы
-        # TODO: когда сущность с одним компонентов primaryKey уже существует
+    name = class_entity_name.value
+    class_entity = m.db.entities[name]
+    old_ent_model = getattr(only_pk, name)(**request.query_params)
+    new_ent_data = getattr(op_pd, name)(**new_ent_data)
+    if class_entity.exists(**old_ent_model.dict(exclude_unset=True)):
+        entity = class_entity.get(**old_ent_model.dict(exclude_unset=True))
         try:
-            print(new_ent_data)
             entity.set(**new_ent_data.dict(exclude_unset=True))
             commit()
             return JSONResponse(

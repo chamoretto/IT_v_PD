@@ -133,54 +133,56 @@ def connect_with_db(db_path=DB_PATH, deep=0, db_l=db):
     except Exception:
         old_connect_with_db(db_path=db_path, deep=deep, db_l=db_l)
     finally:
-        with db_session:
-            if not models.Admin.exists(username="admin"):
-                models.Admin(
-                    username="admin",
-                    hash_password=get_password_hash("admin"),
-                    name="Daniil",
-                    surname="D'yachkov",
-                    email="ad_rkbcu@mail.ru",
-                )
-                commit()
-            if not models.Developer.exists(username="developer"):
-                models.Developer(
-                    username="developer",
-                    hash_password=get_password_hash("developer"),
-                    name="Daniil",
-                    surname="D'yachkov",
-                    email="de_rkbcu@mail.ru",
-                )
-                commit()
-            if not models.Smm.exists(username="smmer"):
-                models.Smm(
-                    username="smmer",
-                    hash_password=get_password_hash("smmer"),
-                    name="Daniil",
-                    surname="D'yachkov",
-                    email="sm_rkbcu@mail.ru",
-                )
-                commit()
-            if not models.DirectionExpert.exists(username="direction_expert"):
-                models.DirectionExpert(
-                    username="direction_expert",
-                    hash_password=get_password_hash("direction_expert"),
-                    name="Daniil",
-                    surname="D'yachkov",
-                    email="dr_rkbcu@mail.ru",
-                )
-                commit()
-            if not models.User.exists(username="user"):
-                models.User(
-                    username="user",
-                    hash_password=get_password_hash("user"),
-                    name="Daniil",
-                    surname="D'yachkov",
-                    email="us_rkbcu@mail.ru",
-                    date_of_birth=date(2004, 4, 4)
-                )
-                commit()
-
+        try:
+            with db_session:
+                if not models.Admin.exists(username="admin"):
+                    models.Admin(
+                        username="admin",
+                        hash_password=get_password_hash("admin"),
+                        name="Daniil",
+                        surname="D'yachkov",
+                        email="ad_rkbcu@mail.ru",
+                    )
+                    commit()
+                if not models.Developer.exists(username="developer"):
+                    models.Developer(
+                        username="developer",
+                        hash_password=get_password_hash("developer"),
+                        name="Daniil",
+                        surname="D'yachkov",
+                        email="de_rkbcu@mail.ru",
+                    )
+                    commit()
+                if not models.Smm.exists(username="smmer"):
+                    models.Smm(
+                        username="smmer",
+                        hash_password=get_password_hash("smmer"),
+                        name="Daniil",
+                        surname="D'yachkov",
+                        email="sm_rkbcu@mail.ru",
+                    )
+                    commit()
+                if not models.DirectionExpert.exists(username="direction_expert"):
+                    models.DirectionExpert(
+                        username="direction_expert",
+                        hash_password=get_password_hash("direction_expert"),
+                        name="Daniil",
+                        surname="D'yachkov",
+                        email="dr_rkbcu@mail.ru",
+                    )
+                    commit()
+                if not models.User.exists(username="user"):
+                    models.User(
+                        username="user",
+                        hash_password=get_password_hash("user"),
+                        name="Daniil",
+                        surname="D'yachkov",
+                        email="us_rkbcu@mail.ru",
+                        date_of_birth=date(2004, 4, 4)
+                    )
+                    commit()
+        except Exception as e:
+            print("При создании стартовых сущностей возникла непредвиденная ошибка", e)
             # models.Pam(id=1, id_2="3")
             # commit()
             # models.Pampam(id=1, pam=models.Pam[1, "3"])
