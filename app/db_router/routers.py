@@ -294,29 +294,3 @@ def delete_entity(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Сущность для редактирования в базе данных не найдена..."
     )
-
-# @wraps(entity_screen)
-# @db_route.post('/' + name + '/new', status_code=201)
-# @db_session
-
-# if True:
-
-# @db_route.post('/Human/new')
-# @db_session
-# def entity_screen(request: Request, new_ent_data: pd.Human = Body(...)):
-#     print(pd.Human, "---!!!!!!!!!!!!!!!!!!!!!", new_ent_data)
-#     return new_ent_data
-
-
-# return db_templates.TemplateResponse(f"{entity.value}_form.html", {"request": request})
-
-# @db_route.post('/Human/new')
-# @db_session
-# def entity_screen(username: str = Form(None),
-#                   name: str = Form(None),
-#                   surname: str = Form(None),
-#                   email: str = Form(None),
-#                   status: str = Form(None),
-#                   description: str = Form(None),
-#                   ):
-#     return {"username": username, "name":name}

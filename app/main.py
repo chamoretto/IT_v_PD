@@ -111,9 +111,12 @@ def custom_http_exception_handler(request: Request, exc: HTTPException):
             status_code=exc.status_code,
             content={"message": f"Oops! did something. There goes a rainbow..."},
         )
-    except Exception as e:
+    except FileExistsError as e:
         print("-------------", e)
-        return "help me!"
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"message": f"Oops! did something. There goes a rainbow..."},
+        )
 
 
 class TestQuery(BaseModel):

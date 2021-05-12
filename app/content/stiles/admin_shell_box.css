@@ -1,0 +1,88 @@
+* {
+/*
+      margin: 0;
+      padding: 0;
+*/
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+
+.aside_and_menu_flex_box{
+	display: flex;
+	flex-direction: row ;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	align-items: flex-start;
+	
+}
+
+
+.main_content{
+  flex-shrink: 15; /* способность элемента сжиматься default 1 */
+	position: relative;
+	/*left: 40px;*/
+}
+
+
+.flex_aside_admin_shell{
+	padding-left: 20px;
+	padding-right: 20px;
+	height: 100vmax;
+	flex-shrink: 0;
+	flex-basis: auto;
+	width: auto;
+	min-width: 150px;
+	max-width: 200px;
+	margin-right: 40px;
+/*	width: border-box;*/
+	
+}
+
+.aside_admin_shell{
+	position: fixed;
+/*	border: 1px solid green;*/
+	left: 0px;
+	top: 0px;
+	padding-top: 150px;/*	height: 100%;*//*	margin-top: 0px;*/
+	background-color: var(--color-contrast-low, #d3d3d4);
+	z-index: 4;
+	padding-left: 20px;
+	padding-right: 20px;
+	height: 100%;
+	min-width: inherit;
+	max-width: inherit;
+	width: inherit;
+	overflow-wrap: normal;  /* не поддерживает IE, Firefox; является копией word-wrap */ 
+  	word-wrap: break-word;
+  	word-break: keep-all;  /* не поддерживает Opera12.14, значение keep-all не поддерживается IE, Chrome */ 
+  	line-break: auto;  /* нет поддержки для русского языка */ 
+ 	-webkit-hyphens: auto; ​-ms-hyphens: auto; hyphens: auto;  /* значение auto не поддерживается Chrome */ 
+	
+}
+.aside_admin_shell ul{
+	margin-top: 10px;
+}
+.aside_admin_shell li {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	border-top: 1px solid var(--color-contrast-higher, #1c1c21);
+}
+
+.aside_admin_shell a {
+	color: color: var(--color-contrast-higher, #1c1c21);
+}
+.shell_admin_button{
+	position: fixed;
+	left: 20px;
+	top: 130px;
+	z-index: 6;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	height: 60px;	
+
+}
+.main-footer{
+	z-index: 5;
+}

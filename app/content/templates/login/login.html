@@ -1,18 +1,11 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Авторизация {{who}}</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-<!--    <script defer src="{# {# url_for('scripts', path='/login.js') #}#}"></script>-->
-</head>
-<body>
+
 <h1>Авторизация {{who}}</h1>
 <form action="{{auth_url}}" method="post" onsubmit="return false">
     <input name="username" placeholder="Ваш логин" data-name="username" id="oauth_username">
     <input name="password" placeholder="Ваш пароль" type="password" data-name="password"  id="oauth_password">
     <input type="submit" id="submit">
-    <img src="{{url_for('img', path='/структура.png')}}">
+    <a href="{{request.url | replace(request.base_url, '')}}/me">перейти в личный кабинет</a>
+    {#{request.url.replace(request.base_url, '')}#}
     {% include '././some_code.html' %}
     <script >
         $('#submit').click((event) => {
@@ -48,9 +41,7 @@
         });
 
         console.log("{{who}}")
-
-        {#% include 'D:/programs/jobs/1000listnick_new/app/content/scripts/login.js' %#}
+        send_form_as_ajax();
+        urls_as_ajax();
+        set_fixed_position_event();
     </script>
-</form>
-</body>
-</html>

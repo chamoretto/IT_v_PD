@@ -1,0 +1,21 @@
+
+{% if pages is defined and pages and pages != dict() and pages != []%}
+<aside class="flex_aside_admin_shell" id="admin_shell">
+<div class="aside_admin_shell">
+        <header>Панель</header>
+        <nav>
+            <ul>
+                <li><a href="">Глава перва99999999999999999я</a></li>
+                <li><a href="">Глава вторая</a></li>
+                <li><a href="">Глава третья</a></li>
+                {% for name, link in pages.items()%}
+                <li><a href="{{link}}">{{name}}</a></li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
+</aside>
+{% else %}
+<aside id="admin_shell">
+</aside>
+{% endif %}

@@ -1,4 +1,4 @@
-from fastapi import APIRouter,Request
+from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from pony.orm import db_session
 
@@ -8,14 +8,15 @@ from fastapi.staticfiles import StaticFiles
 from app.dependencies import *
 from app.pydantic_models import db_models as pd
 from app.pydantic_models.standart_methhods_redefinition import BaseModel
-
+from app.utils.jinja2_utils import public_templates
+from app.utils.html_utils import Alert
 
 public_router = APIRouter()
 
 
 @public_router.get('/')
-async def start_public_router():
-    return {1: 1}
+def start_public_router(request: Request):
+    return public_templates.TemplateResponse("main.html", {"request": request})
 
 
 # @public_router.get('/content/public/{file_path:path}')

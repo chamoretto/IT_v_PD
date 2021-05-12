@@ -95,6 +95,7 @@ function send_form_as_ajax() {
 
                 }
                 urls_as_ajax();
+                set_fixed_position_event();
             }
         })
 
