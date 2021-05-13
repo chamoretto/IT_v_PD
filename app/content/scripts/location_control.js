@@ -42,4 +42,5 @@ function urls_as_ajax(){
     });
     console.log('Ссылки перезаписаны на ajax')
 }
-urls_as_ajax()
+
+urls_as_ajax();

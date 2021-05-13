@@ -1,47 +1,90 @@
 
-<h1>Авторизация {{who}}</h1>
-<form action="{{auth_url}}" method="post" onsubmit="return false">
-    <input name="username" placeholder="Ваш логин" data-name="username" id="oauth_username">
-    <input name="password" placeholder="Ваш пароль" type="password" data-name="password"  id="oauth_password">
-    <input type="submit" id="submit">
+
+
+<div class="container max-width-adaptive-lg">
+  <form class="login-form" action="{{auth_url}}" method="post" onsubmit="return false" id="authorization">
+    <div class="text-component text-center margin-bottom-sm">
+      <h1>Авторизация {{who}}</h1>
+    </div>
+    <div class="margin-bottom-sm">
+      <label class="form-label margin-bottom-xxxs" for="username">Логин</label>
+        <input  class="form-control width-100%" name="username" placeholder="Ваш логин" data-name="username" id="username" >
+    </div>
+
+    <div class="margin-bottom-sm">
+      <div class="flex justify-between margin-bottom-xxxs">
+        <label class="form-label" for="password">Пароль</label>
+      </div>
+
+      <div class="password js-password">
+        <input class="form-control width-100% password__input js-password__input" type="password" name="password" data-name="password" id="password">
+
+        <button class="password__btn flex flex-center js-password__btn" aria-hidden="true">
+      <span class="password__btn-label" title="Show Password">
+        <svg class="icon block" viewBox="0 0 32 32"><g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" stroke="currentColor" fill="none"><path d="M1.409,17.182a1.936,1.936,0,0,1-.008-2.37C3.422,12.162,8.886,6,16,6c7.02,0,12.536,6.158,14.585,8.81a1.937,1.937,0,0,1,0,2.38C28.536,19.842,23.02,26,16,26S3.453,19.828,1.409,17.182Z" stroke-miterlimit="10"></path><circle cx="16" cy="16" r="6" stroke-miterlimit="10"></circle></g></svg>
+      </span>
+
+          <span class="password__btn-label" title="Hide Password">
+        <svg class="icon block" viewBox="0 0 32 32"><g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" stroke="currentColor" fill="none"><path data-cap="butt" d="M8.373,23.627a27.659,27.659,0,0,1-6.958-6.445,1.938,1.938,0,0,1-.008-2.37C3.428,12.162,8.892,6,16.006,6a14.545,14.545,0,0,1,7.626,2.368" stroke-miterlimit="10" stroke-linecap="butt"></path><path d="M27,10.923a30.256,30.256,0,0,1,3.591,3.887,1.937,1.937,0,0,1,0,2.38C28.542,19.842,23.026,26,16.006,26A12.843,12.843,0,0,1,12,25.341" stroke-miterlimit="10"></path><path data-cap="butt" d="M11.764,20.243a6,6,0,0,1,8.482-8.489" stroke-miterlimit="10" stroke-linecap="butt"></path><path d="M21.923,15a6.005,6.005,0,0,1-5.917,7A6.061,6.061,0,0,1,15,21.916" stroke-miterlimit="10"></path><line x1="2" y1="30" x2="30" y2="2" fill="none" stroke-miterlimit="10"></line></g></svg>
+      </span>
+        </button>
+      </div>
+    </div>
+
+    <div class="margin-bottom-sm">
+<!--      <button class="btn btn&#45;&#45;primary btn&#45;&#45;md width-100%">Вход</button>-->
+        <input type="submit" id="submit" class="btn btn--primary btn--md width-100%">
+    </div>
+  </form>
     <a href="{{request.url | replace(request.base_url, '')}}/me">перейти в личный кабинет</a>
-    {#{request.url.replace(request.base_url, '')}#}
-    {% include '././some_code.html' %}
-    <script >
-        $('#submit').click((event) => {
-            console.log("авторизация")
-            event.preventDefault();
-            // const login_form = new FormData();
-            // login_form.append('username', $("#username").val());
-            // login_form.append('password', $("#password").val());
-
-            $.ajax({
-                url: '{{auth_url}}',
-                headers: {
-                    "Accept": "application/json, text/plain, */*",
-                    "Authorization": "Basic Og==",
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "X-Requested-With": "XMLHttpRequest",
-                },
-                type: 'post',
-                dataType: 'json',
-                contentType: false,
-                processData: false,
-                data: $("#oauth_username, #oauth_password").serialize(),
-
-                success: data => {
-                    console.log(data);
-                    if (data["access_token"]){
-                        localStorage.setItem('token', data["access_token"]);
-                    }
+</div>
 
 
-                }
-            });
-        });
+<!--<h1>Авторизация {{who}}</h1>-->
+<!--<form action="{{auth_url}}" method="post" onsubmit="return false">-->
+<!--    <input name="username" placeholder="Ваш логин" data-name="username" id="oauth_username">-->
+<!--    <input name="password" placeholder="Ваш пароль" type="password" data-name="password"  id="oauth_password">-->
+<!--    <input type="submit" id="submit">-->
+<!--    <a href="{{request.url | replace(request.base_url, '')}}/me">перейти в личный кабинет</a>-->
+<!--    {#{request.url.replace(request.base_url, '')}#}-->
+<!--    {% include '././some_code.html' %}-->
 
-        console.log("{{who}}")
-        send_form_as_ajax();
-        urls_as_ajax();
-        set_fixed_position_event();
-    </script>
+
+<!--    <script >-->
+<!--        $('#submit').click((event) => {-->
+<!--            console.log("авторизация")-->
+<!--            event.preventDefault();-->
+<!--            // const login_form = new FormData();-->
+<!--            // login_form.append('username', $("#username").val());-->
+<!--            // login_form.append('password', $("#password").val());-->
+
+<!--            $.ajax({-->
+<!--                url: '{{auth_url}}',-->
+<!--                headers: {-->
+<!--                    "Accept": "application/json, text/plain, */*",-->
+<!--                    "Authorization": "Basic Og==",-->
+<!--                    "Content-Type": "application/x-www-form-urlencoded",-->
+<!--                    "X-Requested-With": "XMLHttpRequest",-->
+<!--                },-->
+<!--                type: 'post',-->
+<!--                dataType: 'json',-->
+<!--                contentType: false,-->
+<!--                processData: false,-->
+<!--                data: $("#username, #password").serialize(),-->
+
+<!--                success: data => {-->
+<!--                    console.log(data);-->
+<!--                    if (data["access_token"]){-->
+<!--                        localStorage.setItem('token', data["access_token"]);-->
+<!--                    }-->
+
+
+<!--                }-->
+<!--            });-->
+<!--        });-->
+
+<!--        console.log("{{who}}")-->
+<!--        send_form_as_ajax();-->
+<!--        urls_as_ajax();-->
+<!--        set_fixed_position_event();-->
+<!--    </script>-->

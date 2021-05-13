@@ -128,6 +128,8 @@ def html_text(param: DbDocs) -> str:
     return text
 
 
+def html_password(param: DbDocs) -> str:
+    return ""
 
 
 def html_select(param: DbDocs) -> str:

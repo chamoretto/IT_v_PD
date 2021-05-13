@@ -23,8 +23,6 @@ function change_html_from_ajax(json_data){
         help_to_change_html_from_ajax("#main", data.main);
         help_to_change_html_from_ajax("#alert", data.alert);
         help_to_change_html_from_ajax("#admin_shell", data.admin_shell);
-
-
     }
 }
 
@@ -47,4 +45,20 @@ function url_processing(event){
     urls_as_ajax();
     send_form_as_ajax();
     set_fixed_position_event();
+}
+
+function authorization_response_processing(event){
+    const xhr = event.target;
+    if (xhr.readyState === 2){
+        // получены загаловки
+    }
+    if (xhr.readyState !== 4) return;
+
+    if (xhr.status === 200) {
+        console.log(data);
+        if (data["access_token"]){
+            localStorage.setItem('token', data["access_token"]);
+        }
+        url_processing(event);
+    }
 }

@@ -4,7 +4,8 @@ function send_ajax(url,
                    },
                    data = JSON.stringify({}),
                    x_part=false,
-                   is_form = false) {
+                   is_form = false,
+                   authorization=false) {
     setTimeout(() => {
         const xhr = new XMLHttpRequest();
         xhr.open(method, url, true);
@@ -20,9 +21,13 @@ function send_ajax(url,
             "Accept": "application/json",
             "X-Requested-With": "XMLHttpRequest"
         }
-        const token = localStorage.getItem('token')
-        if (token) {
-            headers['Authorization'] = 'Bearer ' + token;
+        if (authorization){
+            headers['Authorization'] = "Basic Og==";
+        } else {
+            const token = localStorage.getItem('token')
+            if (token) {
+                headers['Authorization'] = 'Bearer ' + token;
+            }
         }
         if (is_form) {
             headers['Content-Type'] = "application/x-www-form-urlencoded";
