@@ -38,6 +38,9 @@ function url_processing(event){
         // document.querySelectorAll("main")[0].innerHTML = " " + xhr.responseText;
     } else if (xhr.status === 201){
         document.querySelectorAll("main")[0].innerHTML = " " + xhr.responseText;
+    } else if (xhr.status === 401){
+        change_html_from_ajax(xhr.responseText);
+        // document.querySelectorAll("main")[0].innerHTML = " " + xhr.responseText;
     } else if (xhr.status === 404){
         change_html_from_ajax(xhr.responseText);
         // document.querySelectorAll("main")[0].innerHTML = " " + xhr.responseText;

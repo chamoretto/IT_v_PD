@@ -97,7 +97,9 @@ def custom_http_exception_handler(request: Request, exc: HTTPException):
                 {
                     "request": request,
                     "current_url": request.url,
-                    "current_method": request.method
+                    "current_method": request.method,
+                    "alert": Alert("Вы не обладаете достаточными правами для просмотра этой страницы!"
+                                   "Возможно, вам надо авторизоваться...", Alert.ERROR)
                 },
                 status_code=401,
             )

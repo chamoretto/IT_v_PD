@@ -114,7 +114,7 @@ class MyJinja2Templates:
                     media_type=media_type,
                     background=background)
             print('987654567890')
-            context = local_context
+            context = local_context | {"response_status_code": status_code}
             skeleton_template = template
 
         else:
@@ -131,7 +131,8 @@ class MyJinja2Templates:
                 admin_shell_context=admin_shell_context,
                 request=local_context['request'],
                 header=[SitePageMenu(name=i) for i in ["Новатор_WEB", "События", "Новости", "Результы"]],
-                title=local_context.get('title', None)
+                title=local_context.get('title', None),
+                response_status_code = status_code,
             )
         return _MyTemplateResponse(
             skeleton_template,
