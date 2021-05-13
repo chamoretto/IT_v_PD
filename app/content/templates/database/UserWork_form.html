@@ -7,6 +7,10 @@
 {% if disabled is not defined or not disabled %}<form id="{entity_name.lower()}" action="{{(action_url if action_url is defined else "/db/UserWork/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
 {% endif %}<fieldset class="margin-bottom-md">
 <legend class="form-legend">UserWork</legend>
+<label class="form-label margin-bottom-xxxs" for="UserWork_task">task <span class="color-error">*</span></label><div class="select"><select class="select__input form-control text-sm" name="task" id="UserWork_task" required<option disabled {"" if userwork is defined  and bool(userwork.task) else "selected"}></option>
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+work имеет тип url, который еще не поддерживается...
+</label></div>
 </fieldset>{% if disabled is not defined or not disabled %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>

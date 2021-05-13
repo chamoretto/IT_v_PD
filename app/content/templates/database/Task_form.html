@@ -7,6 +7,33 @@
 {% if disabled is not defined or not disabled %}<form id="{entity_name.lower()}" action="{{(action_url if action_url is defined else "/db/Task/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
 {% endif %}<fieldset class="margin-bottom-md">
 <legend class="form-legend">Task</legend>
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+id имеет тип number, который еще не поддерживается...
+</label></div>
+
+<label class="form-label margin-bottom-xxxs" for="Task_competition_direction">competition_direction <span class="color-error">*</span></label><div class="select"><select class="select__input form-control text-sm" name="competition_direction" id="Task_competition_direction" required<option disabled {"" if task is defined  and bool(task.competition_direction) else "selected"}></option>
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+task_document имеет тип file, который еще не поддерживается...
+</label></div>
+
+{% if (task is defined and task.description != Undefined) or task is not defined %}<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Task_description">description
+</label>
+<input class="form-control width-100% text-sm" placeholder="" type="text" name="description" id="Task_description" 
+        {{
+                ('value="' + task.description + '"'
+                if task is defined
+                else
+                "")|safe
+        }} {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
+<div id="Task_description_error"></div></div>{% endif %}
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+start имеет тип datetime, который еще не поддерживается...
+</label></div>
+
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+end имеет тип datetime, который еще не поддерживается...
+</label></div>
 </fieldset>{% if disabled is not defined or not disabled %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>

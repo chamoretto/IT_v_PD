@@ -7,7 +7,37 @@
 {% if disabled is not defined or not disabled %}<form id="{entity_name.lower()}" action="{{(action_url if action_url is defined else "/db/HumanContacts/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
 {% endif %}<fieldset class="margin-bottom-md">
 <legend class="form-legend">HumanContacts</legend>
-</fieldset>{% if disabled is not defined or not disabled %}<div>
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+phone имеет тип phone_number, который еще не поддерживается...
+</label></div>
+
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+vk имеет тип url, который еще не поддерживается...
+</label></div>
+
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+insagramm имеет тип url, который еще не поддерживается...
+</label></div>
+
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+facebook имеет тип url, который еще не поддерживается...
+</label></div>
+
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+telegram имеет тип url, который еще не поддерживается...
+</label></div>
+
+{% if (humancontacts is defined and humancontacts.home_adress != Undefined) or humancontacts is not defined %}<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="HumanContacts_home_adress">home_adress
+</label>
+<input class="form-control width-100% text-sm" placeholder="" type="text" name="home_adress" id="HumanContacts_home_adress" 
+        {{
+                ('value="' + humancontacts.home_adress + '"'
+                if humancontacts is defined
+                else
+                "")|safe
+        }} {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
+<div id="HumanContacts_home_adress_error"></div></div>{% endif %}</fieldset>{% if disabled is not defined or not disabled %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
 </div></form>{% endif %}</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>

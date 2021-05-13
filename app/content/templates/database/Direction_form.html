@@ -7,6 +7,24 @@
 {% if disabled is not defined or not disabled %}<form id="{entity_name.lower()}" action="{{(action_url if action_url is defined else "/db/Direction/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
 {% endif %}<fieldset class="margin-bottom-md">
 <legend class="form-legend">Direction</legend>
+{% if (direction is defined and direction.name != Undefined) or direction is not defined %}<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Direction_name">name
+<span class="color-error">*</span></label>
+<input class="form-control width-100% text-sm" placeholder="" type="text" name="name" id="Direction_name" 
+        {{
+                ('value="' + direction.name + '"'
+                if direction is defined
+                else
+                "")|safe
+        }} required {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
+<div id="Direction_name_error"></div></div>{% endif %}
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+icon имеет тип image, который еще не поддерживается...
+</label></div>
+
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+video_lessons имеет тип video_lessons, который еще не поддерживается...
+</label></div>
 </fieldset>{% if disabled is not defined or not disabled %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>

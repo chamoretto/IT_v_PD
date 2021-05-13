@@ -22,17 +22,10 @@ id имеет тип number, который еще не поддерживает
                 "")|safe
         }} required {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
 <div id="Developer_username_error"></div></div>{% endif %}
-{% if (developer is defined and developer.password != Undefined) or developer is not defined %}<div class="margin-bottom-sm">
-<label class="form-label margin-bottom-xxs" for="Developer_password">password
-<span class="color-error">*</span></label>
-<input class="form-control width-100% text-sm" placeholder="" type="text" name="password" id="Developer_password" 
-        {{
-                ('value="' + developer.password + '"'
-                if developer is defined
-                else
-                "")|safe
-        }} required {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
-<div id="Developer_password_error"></div></div>{% endif %}
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+password имеет тип password, который еще не поддерживается...
+</label></div>
+
 {% if (developer is defined and developer.name != Undefined) or developer is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Developer_name">name
 <span class="color-error">*</span></label>
@@ -66,6 +59,14 @@ id имеет тип number, который еще не поддерживает
                 "")|safe
         }} required {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
 <div id="Developer_email_error"></div></div>{% endif %}
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+human_contacts имеет тип adding_field, который еще не поддерживается...
+</label></div>
+
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+photo имеет тип image, который еще не поддерживается...
+</label></div>
+
 {% if (developer is defined and developer.status != Undefined) or developer is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Developer_status">status
 </label>

@@ -7,6 +7,36 @@
 {% if disabled is not defined or not disabled %}<form id="{entity_name.lower()}" action="{{(action_url if action_url is defined else "/db/Criterion/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
 {% endif %}<fieldset class="margin-bottom-md">
 <legend class="form-legend">Criterion</legend>
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+id имеет тип number, который еще не поддерживается...
+</label></div>
+
+<label class="form-label margin-bottom-xxxs" for="Criterion_task">task <span class="color-error">*</span></label><div class="select"><select class="select__input form-control text-sm" name="task" id="Criterion_task" required<option disabled {"" if criterion is defined  and bool(criterion.task) else "selected"}></option>
+{% if (criterion is defined and criterion.name != Undefined) or criterion is not defined %}<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Criterion_name">name
+<span class="color-error">*</span></label>
+<input class="form-control width-100% text-sm" placeholder="" type="text" name="name" id="Criterion_name" 
+        {{
+                ('value="' + criterion.name + '"'
+                if criterion is defined
+                else
+                "")|safe
+        }} required {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
+<div id="Criterion_name_error"></div></div>{% endif %}
+{% if (criterion is defined and criterion.description != Undefined) or criterion is not defined %}<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Criterion_description">description
+</label>
+<input class="form-control width-100% text-sm" placeholder="" type="text" name="description" id="Criterion_description" 
+        {{
+                ('value="' + criterion.description + '"'
+                if criterion is defined
+                else
+                "")|safe
+        }} {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
+<div id="Criterion_description_error"></div></div>{% endif %}
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+max_value имеет тип number, который еще не поддерживается...
+</label></div>
 </fieldset>{% if disabled is not defined or not disabled %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>

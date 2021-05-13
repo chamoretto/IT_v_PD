@@ -7,6 +7,48 @@
 {% if disabled is not defined or not disabled %}<form id="{entity_name.lower()}" action="{{(action_url if action_url is defined else "/db/News/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
 {% endif %}<fieldset class="margin-bottom-md">
 <legend class="form-legend">News</legend>
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+id имеет тип number, который еще не поддерживается...
+</label></div>
+
+{% if (news is defined and news.page_url != Undefined) or news is not defined %}<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="News_page_url">page_url
+</label>
+<input class="form-control width-100% text-sm" placeholder="" type="text" name="page_url" id="News_page_url" 
+        {{
+                ('value="' + news.page_url + '"'
+                if news is defined
+                else
+                "")|safe
+        }} {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
+<div id="News_page_url_error"></div></div>{% endif %}
+{% if (news is defined and news.page_path != Undefined) or news is not defined %}<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="News_page_path">page_path
+</label>
+<input class="form-control width-100% text-sm" placeholder="" type="text" name="page_path" id="News_page_path" 
+        {{
+                ('value="' + news.page_path + '"'
+                if news is defined
+                else
+                "")|safe
+        }} {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
+<div id="News_page_path_error"></div></div>{% endif %}
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+is_header имеет тип bool, который еще не поддерживается...
+</label></div>
+
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+visible имеет тип bool, который еще не поддерживается...
+</label></div>
+
+<label class="form-label margin-bottom-xxxs" for="News_root_page">root_page </label><div class="select"><select class="select__input form-control text-sm" name="root_page" id="News_root_page"<option disabled {"" if news is defined  and bool(news.root_page) else "selected"}></option>
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+title имеет тип number, который еще не поддерживается...
+</label></div>
+
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+questions имеет тип multi_select, который еще не поддерживается...
+</label></div>
 </fieldset>{% if disabled is not defined or not disabled %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>

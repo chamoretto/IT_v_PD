@@ -8,6 +8,32 @@
 {% endif %}<fieldset class="margin-bottom-md">
 <legend class="form-legend">User</legend>
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+date_of_birth имеет тип date, который еще не поддерживается...
+</label></div>
+
+{% if (user is defined and user.about_program != Undefined) or user is not defined %}<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="User_about_program">about_program
+</label>
+<input class="form-control width-100% text-sm" placeholder="" type="text" name="about_program" id="User_about_program" 
+        {{
+                ('value="' + user.about_program + '"'
+                if user is defined
+                else
+                "")|safe
+        }} {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
+<div id="User_about_program_error"></div></div>{% endif %}
+{% if (user is defined and user.direction != Undefined) or user is not defined %}<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="User_direction">direction
+</label>
+<input class="form-control width-100% text-sm" placeholder="" type="text" name="direction" id="User_direction" 
+        {{
+                ('value="' + user.direction + '"'
+                if user is defined
+                else
+                "")|safe
+        }} {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
+<div id="User_direction_error"></div></div>{% endif %}
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
 id имеет тип number, который еще не поддерживается...
 </label></div>
 
@@ -22,17 +48,10 @@ id имеет тип number, который еще не поддерживает
                 "")|safe
         }} required {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
 <div id="User_username_error"></div></div>{% endif %}
-{% if (user is defined and user.password != Undefined) or user is not defined %}<div class="margin-bottom-sm">
-<label class="form-label margin-bottom-xxs" for="User_password">password
-<span class="color-error">*</span></label>
-<input class="form-control width-100% text-sm" placeholder="" type="text" name="password" id="User_password" 
-        {{
-                ('value="' + user.password + '"'
-                if user is defined
-                else
-                "")|safe
-        }} required {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
-<div id="User_password_error"></div></div>{% endif %}
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+password имеет тип password, который еще не поддерживается...
+</label></div>
+
 {% if (user is defined and user.name != Undefined) or user is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_name">name
 <span class="color-error">*</span></label>
@@ -66,6 +85,14 @@ id имеет тип number, который еще не поддерживает
                 "")|safe
         }} required {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
 <div id="User_email_error"></div></div>{% endif %}
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+human_contacts имеет тип adding_field, который еще не поддерживается...
+</label></div>
+
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+photo имеет тип image, который еще не поддерживается...
+</label></div>
+
 {% if (user is defined and user.status != Undefined) or user is not defined %}<div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_status">status
 </label>

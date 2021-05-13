@@ -7,6 +7,43 @@
 {% if disabled is not defined or not disabled %}<form id="{entity_name.lower()}" action="{{(action_url if action_url is defined else "/db/Competition/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
 {% endif %}<fieldset class="margin-bottom-md">
 <legend class="form-legend">Competition</legend>
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+id имеет тип number, который еще не поддерживается...
+</label></div>
+
+{% if (competition is defined and competition.name != Undefined) or competition is not defined %}<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Competition_name">name
+<span class="color-error">*</span></label>
+<input class="form-control width-100% text-sm" placeholder="" type="text" name="name" id="Competition_name" 
+        {{
+                ('value="' + competition.name + '"'
+                if competition is defined
+                else
+                "")|safe
+        }} required {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
+<div id="Competition_name_error"></div></div>{% endif %}
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+start имеет тип datetime, который еще не поддерживается...
+</label></div>
+
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+end имеет тип datetime, который еще не поддерживается...
+</label></div>
+
+{% if (competition is defined and competition.description != Undefined) or competition is not defined %}<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Competition_description">description
+</label>
+<input class="form-control width-100% text-sm" placeholder="" type="text" name="description" id="Competition_description" 
+        {{
+                ('value="' + competition.description + '"'
+                if competition is defined
+                else
+                "")|safe
+        }} {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
+<div id="Competition_description_error"></div></div>{% endif %}
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+document имеет тип file, который еще не поддерживается...
+</label></div>
 </fieldset>{% if disabled is not defined or not disabled %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
