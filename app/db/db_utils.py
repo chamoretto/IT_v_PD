@@ -181,6 +181,7 @@ def connect_with_db(db_path=DB_PATH, deep=0, db_l=db):
                         date_of_birth=date(2004, 4, 4)
                     )
                     commit()
+            print('роли для теста созданы')
         except Exception as e:
             print("При создании стартовых сущностей возникла непредвиденная ошибка", e)
             # models.Pam(id=1, id_2="3")

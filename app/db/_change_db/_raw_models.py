@@ -2,7 +2,6 @@ from datetime import date
 from datetime import datetime
 from pony.orm import *
 
-
 db = Database()
 
 
@@ -125,7 +124,7 @@ class DirectionExpert(Human):
     """
         Проверяет работы детей на конкурсе
 
-    """
+   """
     competition_directions = Set('CompetitionDirection')  # один эксперт может быть экспертом в нескольких направлениях
 
 
@@ -362,4 +361,3 @@ class News(Page):
     image = Optional(str)
     author = Optional(str)
     description = Optional(str)  # краткое описание новости
-

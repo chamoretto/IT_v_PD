@@ -134,7 +134,7 @@ function send_form_as_ajax() {
                 });
                 send_data = JSON.stringify(send_data);
             }
-            
+
             send_ajax(action, method, authorization_response_processing, send_data, true, true, authorization)
         });
     });

@@ -58,10 +58,17 @@ function authorization_response_processing(event){
     if (xhr.readyState !== 4) return;
 
     if (xhr.status === 200) {
-        console.log(data);
-        if (data["access_token"]){
-            localStorage.setItem('token', data["access_token"]);
+
+        const json_data = JSON.parse(xhr.responseText);
+        console.log(json_data);
+        if (json_data["access_token"]){
+            console.log('записываем токен');
+            localStorage.setItem('token', json_data["access_token"]);
+            console.log('записывали токен');
         }
-        url_processing(event);
+        // url_processing(event);
     }
+    urls_as_ajax();
+    send_form_as_ajax();
+    set_fixed_position_event();
 }

@@ -117,23 +117,6 @@ def create_pages():
 
     commit()
 
-    SimpleEntity(key="partner", data={
-        1: dict(name="Минестерство промышленности, транспорта и иннавационной политики Пензенской области",
-                image="img/partners/MinesterstvoPromPO.jpg"),
-        2: dict(name="Минестерство образования Пензенской области", image="img/partners/MinesterstvoPromPO.jpg"),
-        3: dict(name="ГКУ “Пензенское региональное объеденение бизнес-инкубаторов”",
-                image="img/partners/BisnesIncubatorGroup.jpg"),
-        4: dict(name="Молодежный отряд “Новатор”", image="img/partners/MO_Novator.jpg")
-    })
-
-    SimpleEntity(key="socials", data={
-        1: dict(name="facebook", icon="img/socials/f_book.png", link="https://www.facebook.com/1000listnick/"),
-        2: dict(name="instagram", icon="img/socials/insta.png", link="https://www.instagram.com/1000listnick/"),
-        3: dict(name="youtube", icon="img/socials/youtube.png",
-                link="https://www.youtube.com/channel/UC21S9sVTzKc0__CgifzJlow"),
-        4: dict(name="Вконтакте", icon="img/socials/Vk.png", link="https://vk.com/official1000listnick"),
-    })
-
     News(
         page_url="/news/mediaForum",
         page_path="content/templates/news/mediaForum.html",

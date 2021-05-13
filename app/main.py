@@ -11,7 +11,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import StreamingResponse
-from pony.orm.core import TransactionIntegrityError
+from pony.orm.core import TransactionIntegrityError, db_session, show
 
 from app.dependencies import *
 from app.public_routers.routers import public_router
@@ -31,6 +31,7 @@ from app.utils.html_utils import Alert
 from app.db.create_db_content import create_pages
 from app.db_router.routers import db_route
 from app.pydantic_models.standart_methhods_redefinition import BaseModel
+from app.db import models as m
 
 app = FastAPI()
 # app.add_middleware(HTTPSRedirectMiddleware)  # Устанавливаем https
@@ -137,6 +138,6 @@ if __name__ == "__main__":
         create_pages()
     except TransactionIntegrityError:
         pass
-    # with db_session:
-    #     print(Human.get(username="developer").__class__)
+    with db_session:
+        show(m.Human.select().show())
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=False)
