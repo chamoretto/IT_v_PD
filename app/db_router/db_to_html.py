@@ -1,6 +1,6 @@
 from typing import Optional, Dict, Any, Callable
 from collections import defaultdict
-from fast_enum import FastEnum
+import enum
 
 from app.db import models as m
 from app.pydantic_models import db_models as pd
@@ -10,17 +10,60 @@ from app.pydantic_models.create_pydantic_models import create_pd_models
 from app.settings.config import HOME_DIR, join
 
 
-# class HtmlInputTemplates(metaclass=FastEnum):
-#    text = '<div class="margin-bottom-sm">' \
-#           '<label class="form-label margin-bottom-xxs" for="{{id}}">' \
-#           '{{"<span class="color-error">*</span>"|safe if required else ""}}</label>'
-#    B = 2
+@enum.unique
+class AccessType(enum.Enum):
+    PUBLIC = "public"
+    USER = "user"
+    SMMER = "smm"
+    DIRECTION_EXPERT = "expert"
+    ADMIN = "admin"
+    DEVELOPER = "dev"
+
+    @classmethod
+    def get_obj(cls, val: str):
+        if val in cls._value2member_map_:
+            return cls._value2member_map_[val]
+        print(val)
+        raise AttributeError
+
+    def __str__(self):
+        return self.value
+
+
+@enum.unique
+class FieldHtmlType(enum.Enum):
+    TEXT = "text"
+    NUMBER = "number"
+    SELECT = "select"
+    MULTI_SELECT = "multi_select"
+    FILE = "file"
+    IMAGE = "image"
+    DATE = "date"
+    TIME = "time"
+    DATETIME = "datetime"
+    BOOL = "bool"
+    PASSWORD = "password"
+    ADDING_FIELD = "adding_field"
+    PHONE_NUMBER = "phone_number"
+    URL = "url"
+    VIDEO_LESSONS = "video_lessons"
+
+    def __str__(self):
+        return self.value
+
+    @classmethod
+    def get_obj(cls, val: str):
+        if val in cls._value2member_map_:
+            return cls._value2member_map_[val]
+        print(val)
+        raise AttributeError
 
 
 class DbDocs(BaseModel):
     name: str
     description: Optional[str]
-    html_type: Optional[str]
+    html_type: Optional[FieldHtmlType]
+    access: list[AccessType] = [AccessType.DEVELOPER]
     required: bool = False
     class_name: str
     placeholder: str = ""
@@ -85,6 +128,8 @@ def html_text(param: DbDocs) -> str:
     return text
 
 
+
+
 def html_select(param: DbDocs) -> str:
     # language=HTML
     text = f'<label class="form-label margin-bottom-xxxs" for="{param.class_name}_{param.name}">{param.name} ' \
@@ -106,31 +151,49 @@ def get_doc(ent):
     return ""
 
 
-type_to_html: dict[str, Callable[[DbDocs], str]] = defaultdict(
-    lambda: default_html,
-    text=html_text,
-    no_supported_select=html_select
-)
+type_to_html: dict[FieldHtmlType, Callable[[DbDocs], str]] = defaultdict(lambda: default_html)
+type_to_html.update({
+    FieldHtmlType.TEXT: html_text,
+    FieldHtmlType.SELECT: html_select
+})
 
 
 def create_html_file(ent: m.db.Entity):
+
+    keys_convertor: dict[str, str] = {
+        "type": "html_type",
+        "param": "description"
+    }
+    vals_convertor: dict[str, Callable] = defaultdict(
+        lambda: str,
+        type=FieldHtmlType.get_obj,
+        mod=AccessType.get_obj
+    )
+
+    good_start: list[str] = [":param", ":type", ":mod"]
+
     pd_ent = getattr(pd, ent.__name__)
-    all_ent_docs: Dict[str, DbDocs] = {}
+    # print(pd_ent)
+    all_ent_docs: dict[str, DbDocs] = defaultdict(lambda: DbDocs(name=n.strip(), class_name=ent.__name__))
+
     all_docs = [i.strip() for i in get_doc(ent).split("\n")]
-    print(all_docs)
-    all_docs = (i[1:].split(":") for i in all_docs if bool(i) and (i.startswith(":param") or i.startswith(":type")))
+    # print(*all_docs, sep="\n")
+    all_docs = (i[1:].split(":") for i in all_docs if bool(i) and any(i.startswith(j) for j in good_start))
     all_docs = (t.split() + [d.strip()] for [t, d] in all_docs)
+
     code, pk = db_ent_to_dict(ent)
+
     for [t, n, d] in all_docs:
-        obj = all_ent_docs.get(n.strip(), DbDocs(name=n.strip(), class_name=ent.__name__))
-        setattr(obj, ("html_type" if t.strip() == "type" else "description"), d)
-        all_ent_docs[n.strip()] = obj
+        obj: DbDocs = all_ent_docs[n.strip()]
+        all_ent_docs[n.strip()] = DbDocs(**(obj.dict(exclude_unset=True) |
+                                            {keys_convertor[t]: vals_convertor[t](d)}))
+
     for name, doc in all_ent_docs.items():
         if code.get(name):
             doc.required = code[name].db_type in ["PrimaryKey", "Required"]
             doc.is_set = not doc.required and code[name].db_type in ["Set"]
             doc.default = getattr(pd_ent.__fields__[name], "default")
-            print(ent.__name__, name, doc.default)
+            # print(ent.__name__, name, doc.default)
             doc.is_entity = any(i in code[name].param_type for i in m.db.entities)
         else:
             doc.required = code.get(name, True)
@@ -138,7 +201,6 @@ def create_html_file(ent: m.db.Entity):
             doc.default = None
             doc.is_entity = False
 
-            # print(*all_ent_docs.items(), sep="\n")
     html_form = [type_to_html[val.html_type](val) for key, val in all_ent_docs.items()]
     html_form = all_html_form("\n".join(html_form), ent.__name__)
     html_form = "{# =======!!! ВНИМАНИЕ !!!======= #}\n" \
@@ -153,5 +215,9 @@ def create_html_file(ent: m.db.Entity):
 if __name__ == '__main__':
     create_pd_models()
     for name, ent in m.db.entities.items():
+        print(name)
         create_html_file(ent)
+    # print(type(FieldHtmlType.get_obj("text")))
+
+
 

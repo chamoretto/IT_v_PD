@@ -249,7 +249,6 @@ class CompetitionDirection(BaseModel):
 	competition: Union[int, Competition]
 	tasks: Set[Union[int, Task]] = []
 	direction_experts: Set[Union[int, DirectionExpert]] = []
-	criterions: Set[Union[int, Criterion]] = []
 
 	class Config:
 		orm_mode = True
@@ -258,6 +257,7 @@ class CompetitionDirection(BaseModel):
 class Task(BaseModel):
 	id: int
 	competition_direction: Union[Tuple[str, int], CompetitionDirection]
+	criterions: Set[Union[int, Criterion]] = []
 	task_document: Optional[str] = ''
 	description: Optional[str] = ''
 	start: datetime
@@ -281,8 +281,8 @@ class UserWork(BaseModel):
 
 
 class Criterion(BaseModel):
+	task: Union[int, Task]
 	id: int
-	competition_direction: Union[Tuple[str, int], CompetitionDirection]
 	name: str
 	description: Optional[str] = ''
 	max_value: Optional[float] = None
