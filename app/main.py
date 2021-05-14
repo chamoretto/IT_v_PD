@@ -126,6 +126,7 @@ class TestQuery(BaseModel):
     a: int
     b: int
 
+
 @app.get("/t")
 async def root(request: Request, item: TestQuery = None):
     print([request.query_params.items()], item)
