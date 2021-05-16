@@ -4,28 +4,46 @@
 {# =======! Ни одно изменение в этом файле не будет сохранено! !======= #}
 
 <div class="container max-width-lg">
-{% if disabled is not defined or not disabled %}<form id="{entity_name.lower()}" action="{{(action_url if action_url is defined else "/db/Direction/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
-{% endif %}<fieldset class="margin-bottom-md">
+{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
+{#{access_mode}#}
+<form id="direction" action="{{(action_url if action_url is defined else "/db/Direction/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
+{% endif %}
+<fieldset class="margin-bottom-md">
 <legend class="form-legend">Direction</legend>
-{% if (direction is defined and direction.name != Undefined) or direction is not defined %}<div class="margin-bottom-sm">
-<label class="form-label margin-bottom-xxs" for="Direction_name">name
+{% if access_mode is defined and access is defined %}
+{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'self': []} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
+{{"=-09876543"}}      {% if (direction is defined and direction.name != Undefined) or direction is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Direction_name">Название направления (что-то вроде "Design" или "IT")
 <span class="color-error">*</span></label>
-<input class="form-control width-100% text-sm" placeholder="" type="text" name="name" id="Direction_name" 
-        {{
-                ('value="' + direction.name + '"'
-                if direction is defined
-                else
-                "")|safe
-        }} required {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
-<div id="Direction_name_error"></div></div>{% endif %}
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-icon имеет тип image, который еще не поддерживается...
-</label></div>
-
+<input class="form-control width-100% text-sm" type="text" name="name" id="Direction_name" placeholder="" {{('value="' + (direction.name if direction.name else "") + '"' 
+        if direction is defined
+        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="Direction_name_error"></div>{% endif %}{% endif %}{% endif %}
+{% if access_mode is defined and access is defined %}
+{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
+{{"=-09876543"}}      {% if (direction is defined and direction.icon != Undefined) or direction is not defined %}
+<fieldset class="file-upload margin-bottom-sm"><label class="form-label margin-bottom-xxs" for="Direction_icon">Картинка направления
+<span class="color-error">*</span></label>
+<br><label for="Direction_icon" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text">Картинка направления</span></span> </label> <input type="file" accept="image/x-tiff,image/pjpeg,image/x-quicktime,image/x-xpixmap,image/x-pict,image/gif,image/x-windows-bmp,image/pict,image/bmp,image/x-jps,image/x-dwg,image/vnd.dwg,image/jpeg,image/x-jg,image/tiff,image/png,image/x-icon,image/x-pcx" class="file-upload__input" name="icon" id="Direction_icon" placeholder="" {{('value="' + (direction.icon if direction.icon else "") + '"' 
+        if direction is defined
+        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  value tabindex="-1"></fieldset><div id="Direction_icon_error"></div>{% endif %}{% endif %}{% endif %}
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
 video_lessons имеет тип video_lessons, который еще не поддерживается...
 </label></div>
-</fieldset>{% if disabled is not defined or not disabled %}<div>
+</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
-</div></form>{% endif %}</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>
+</div></form>
+{% endif %}
+</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>

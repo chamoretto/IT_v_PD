@@ -218,7 +218,7 @@
         if (token){
             setTimeout( () => {
                 const xhr = new XMLHttpRequest();
-                xhr.open('{{current_method}}', '{{current_url}}', true);
+                xhr.open('{{request.method}}', '{{request.url}}', true);
                 xhr.setRequestHeader('accept', 'application/json');
                 // xhr.setRequestHeader("Accept-Encoding", "gzip, deflate, br");
                 xhr.setRequestHeader("Accept-Language", "ru,en;q=0.9,la;q=0.8");

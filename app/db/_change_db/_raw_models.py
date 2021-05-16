@@ -90,40 +90,40 @@ class Admin(Human):
         Админ
 
         :access id: dev admin
-        :mod id admin: edit look
+        :mod id admin dev: edit look
 
         :access username: dev admin
-        :mod username admin: create edit look
+        :mod username admin dev: create edit look
 
         :access password: dev admin
-        :mod password admin: create
+        :mod password admin dev: create
 
         :access name: dev admin
-        :mod name admin: create edit look
+        :mod name admin dev: create edit look
 
         :access surname: dev admin
-        :mod surname admin: create edit look
+        :mod surname admin dev: create edit look
 
         :access email: dev admin
-        :mod email admin: create edit look
+        :mod email admin dev: create edit look
 
         :access human_contacts: dev admin
-        :mod human_contacts admin: create edit look
+        :mod human_contacts admin dev: create edit look
 
         :access photo: dev admin
-        :mod photo admin: create edit look
+        :mod photo admin dev: create edit look
 
         :access status: dev admin
-        :mod status admin: create edit look
+        :mod status admin dev: create edit look
 
         :access description: dev admin
-        :mod description admin: create edit look
+        :mod description admin dev: create edit look
 
         :access scopes: dev admin
-        :mod scopes admin: create edit look
+        :mod scopes admin dev: create edit look
 
         :access questions: dev admin
-        :mod questions admin: create edit look
+        :mod questions admin dev: create edit look
 
 
     """
@@ -135,47 +135,59 @@ class User(Human):
         Участник, который может отправлять работы на конкурс
 
         :access id: dev admin self
-        :mod id user: edit look
+        :mod id user admin dev: edit look
 
-        :access username: dev admin self
-        :mod username user: create edit look
+        :access username: dev admin self public
+        :mod username user admin dev: create edit look
+        :mod questions public: create
 
-        :access password: dev admin self
-        :mod password user: create
 
-        :access name: dev admin self
-        :mod name user: create edit look
+        :access password: dev admin self public
+        :mod password user admin dev: create
+        :mod questions public: create
 
-        :access surname: dev admin self
-        :mod surname user: create edit look
 
-        :access email: dev admin self
-        :mod email user: create edit look
+        :access name: dev admin self public
+        :mod name user admin dev: create edit look
+        :mod questions public: create
+
+
+        :access surname: dev admin self public
+        :mod surname user admin dev: create edit look
+        :mod questions public: create
+
+        :access email: dev admin self public
+        :mod email user admin dev: create edit look
+        :mod questions public: create
 
         :access human_contacts: dev admin self
-        :mod human_contacts user: create edit look
+        :mod human_contacts user admin dev: create edit look
 
-        :access photo: dev admin self
-        :mod photo user: create edit look
+        :access photo: dev admin self public
+        :mod photo user admin dev: create edit look
+        :mod questions public: create
 
-        :access status: dev admin self
-        :mod status user: create edit look
+        :access status: dev admin self public
+        :mod status user admin dev: create edit look
+        :mod questions public: create
 
-        :access description: dev admin self
-        :mod description user: create edit look
+        :access description: dev admin self public
+        :mod description user admin dev: create edit look
+        :mod questions public: create
 
         :access scopes: dev admin self
-        :mod scopes user: create edit look
+        :mod scopes user admin dev: create edit look
 
         :access questions: dev admin self
-        :mod questions user: create edit look
-
+        :mod questions user admin dev: create edit look
 
 
         :param date_of_birth: Дата рождения
         :type date_of_birth: date
-        :access date_of_birth: dev admin self
+        :access date_of_birth: dev admin self public
         :mod date_of_birth user dev admin: create edit look
+        :mod questions public: create
+
 
         :param about_program: Что для вас программа?
         :type about_program: text
@@ -203,40 +215,40 @@ class Smm(Human):
         Пишет посты, занимается контентом сайта
 
         :access id: dev admin smm
-        :mod id smm: edit look
+        :mod id smm admin dev: edit look
 
         :access username: dev admin smm
-        :mod username smm: create edit look
+        :mod username smm admin dev: create edit look
 
         :access password: dev admin smm
-        :mod password smm: create
+        :mod password smm admin dev: create
 
         :access name: dev admin smm
-        :mod name smm: create edit look
+        :mod name smm admin dev: create edit look
 
         :access surname: dev admin smm
-        :mod surname smm: create edit look
+        :mod surname smm admin dev: create edit look
 
         :access email: dev admin smm
-        :mod email smm: create edit look
+        :mod email smm admin dev: create edit look
 
         :access human_contacts: dev admin smm
-        :mod human_contacts smm: create edit look
+        :mod human_contacts smm admin dev: create edit look
 
         :access photo: dev admin smm
-        :mod photo smm: create edit look
+        :mod photo smm admin dev: create edit look
 
         :access status: dev admin smm
-        :mod status smm: create edit look
+        :mod status smm admin dev: create edit look
 
         :access description: dev admin smm
-        :mod description smm: create edit look
+        :mod description smm admin dev: create edit look
 
         :access scopes: dev admin smm
-        :mod scopes smm: create edit look
+        :mod scopes smm admin dev: create edit look
 
         :access questions: dev admin smm
-        :mod questions smm: create edit look
+        :mod questions smm admin dev: create edit look
 
 
         но не обладает правами админа
@@ -355,40 +367,40 @@ class DirectionExpert(Human):
         Проверяет работы детей на конкурсе
 
         :access id: dev admin smm
-        :mod id expert: edit look
+        :mod id expert admin dev: edit look
 
         :access username: dev admin smm
-        :mod username expert: create edit look
+        :mod username expert admin dev: create edit look
 
         :access password: dev admin smm
-        :mod password expert: create
+        :mod password expert admin dev: create
 
         :access name: dev admin smm
-        :mod name expert: create edit look
+        :mod name expert admin dev: create edit look
 
         :access surname: dev admin smm
-        :mod surname expert: create edit look
+        :mod surname expert admin dev: create edit look
 
         :access email: dev admin smm
-        :mod email expert: create edit look
+        :mod email expert admin dev: create edit look
 
         :access human_contacts: dev admin smm
-        :mod human_contacts expert: create edit look
+        :mod human_contacts expert admin dev: create edit look
 
         :access photo: dev admin smm
-        :mod photo expert: create edit look
+        :mod photo expert admin dev: create edit look
 
         :access status: dev admin smm
-        :mod status expert: create edit look
+        :mod status expert admin dev: create edit look
 
         :access description: dev admin smm
-        :mod description expert: create edit look
+        :mod description expert admin dev: create edit look
 
         :access scopes: dev admin smm
-        :mod scopes expert: create edit look
+        :mod scopes expert admin dev: create edit look
 
         :access questions: dev admin smm
-        :mod questions expert: create edit look
+        :mod questions expert admin dev: create edit look
 
    """
     competition_directions = Set('CompetitionDirection')  # один эксперт может быть экспертом в нескольких направлениях
@@ -721,7 +733,7 @@ class Page(db.Entity):
         :param questions: выберите вопросы, которые будут отображаться внизу этой страницы
         :type questions: multi_select
         :access questions: dev admin smm
-        :mod questions dev admin : edit look smm
+        :mod questions dev admin smm: create edit look
 
         пока что будет использоваться только для заголовков
     """

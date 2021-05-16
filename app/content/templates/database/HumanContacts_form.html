@@ -4,8 +4,11 @@
 {# =======! Ни одно изменение в этом файле не будет сохранено! !======= #}
 
 <div class="container max-width-lg">
-{% if disabled is not defined or not disabled %}<form id="{entity_name.lower()}" action="{{(action_url if action_url is defined else "/db/HumanContacts/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
-{% endif %}<fieldset class="margin-bottom-md">
+{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
+{#{access_mode}#}
+<form id="humancontacts" action="{{(action_url if action_url is defined else "/db/HumanContacts/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
+{% endif %}
+<fieldset class="margin-bottom-md">
 <legend class="form-legend">HumanContacts</legend>
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
 phone имеет тип phone_number, который еще не поддерживается...
@@ -27,17 +30,23 @@ facebook имеет тип url, который еще не поддержива�
 telegram имеет тип url, который еще не поддерживается...
 </label></div>
 
-{% if (humancontacts is defined and humancontacts.home_adress != Undefined) or humancontacts is not defined %}<div class="margin-bottom-sm">
-<label class="form-label margin-bottom-xxs" for="HumanContacts_home_adress">home_adress
+{% if access_mode is defined and access is defined %}
+{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['look'], 'admin': ['look'], 'self': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
+{{"=-09876543"}}      {% if (humancontacts is defined and humancontacts.home_adress != Undefined) or humancontacts is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="HumanContacts_home_adress">Ваш домашний адрес
 </label>
-<input class="form-control width-100% text-sm" placeholder="" type="text" name="home_adress" id="HumanContacts_home_adress" 
-        {{
-                ('value="' + humancontacts.home_adress + '"'
-                if humancontacts is defined
-                else
-                "")|safe
-        }} {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
-<div id="HumanContacts_home_adress_error"></div></div>{% endif %}</fieldset>{% if disabled is not defined or not disabled %}<div>
+<input class="form-control width-100% text-sm" type="text" name="home_adress" id="HumanContacts_home_adress" placeholder="" {{('value="' + (humancontacts.home_adress if humancontacts.home_adress else "") + '"' 
+        if humancontacts is defined
+        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="HumanContacts_home_adress_error"></div>{% endif %}{% endif %}{% endif %}</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
-</div></form>{% endif %}</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>
+</div></form>
+{% endif %}
+</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>

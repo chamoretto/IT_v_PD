@@ -106,7 +106,7 @@ def entity_screen(request: Request,
             headers={"WWW-Authenticate": 'Bearer Basic realm="Restricted Area"'},
         )
 
-    return db_templates.TemplateResponse(f"{class_entity_name.value}_form.html", {"request": request})
+    return db_templates.TemplateResponse(f"{class_entity_name.value}_form.html", {"request": request, 'access_mode': 'create'})
 
 
 # @as_form
@@ -196,7 +196,8 @@ def edit_entity(
         return db_templates.TemplateResponse(
             f"{name}_form.html", {"request": request, name.lower(): pd_entity,
                                   "action_url": f"/db/{name}/edit/save?{entity.key_as_part_query()}",
-                                  "send_method": "POST"})
+                                  "send_method": "POST",
+                                  'access_mode': 'edit'})
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Сущность для редактирования в базе данных не найдена..."
@@ -265,7 +266,7 @@ def look_entity(
             f"{name}_form.html", {"request": request, name.lower(): pd_entity,
                                   "action_url": f"/db/{name}/look/",
                                   "send_method": "POST",
-                                  "disabled": True})
+                                  "disabled": True, 'access_mode': 'look'})
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Сущность для редактирования в базе данных не найдена..."

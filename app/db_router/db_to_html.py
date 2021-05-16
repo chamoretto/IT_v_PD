@@ -19,6 +19,24 @@ class AccessType(enum.Enum):
     DIRECTION_EXPERT = "expert"
     ADMIN = "admin"
     DEVELOPER = "dev"
+    SELF = "self"
+
+    @classmethod
+    def get_obj(cls, val: str):
+        if val in cls._value2member_map_:
+            return cls._value2member_map_[val]
+        print(val)
+        raise AttributeError
+
+    def __str__(self):
+        return self.value
+
+
+@enum.unique
+class AccessMode(enum.Enum):
+    CREATE = "create"
+    EDIT = "edit"
+    LOOK = "look"
 
     @classmethod
     def get_obj(cls, val: str):
@@ -48,6 +66,10 @@ class FieldHtmlType(enum.Enum):
     PHONE_NUMBER = "phone_number"
     URL = "url"
     VIDEO_LESSONS = "video_lessons"
+    SCOPES = "scopes"
+    QUESTION_SELECT = "qu_select"
+    EMAIL = "email"
+    DB_JSON = "db_json"
 
     def __str__(self):
         return self.value
@@ -64,7 +86,7 @@ class DbDocs(BaseModel):
     name: str
     description: Optional[str]
     html_type: Optional[FieldHtmlType]
-    access: list[AccessType] = [AccessType.DEVELOPER]
+    access: dict[AccessType, list[AccessMode]] = dict()
     required: bool = False
     class_name: str
     placeholder: str = ""
@@ -75,23 +97,27 @@ class DbDocs(BaseModel):
 
 def all_html_form(content: str, entity_name: str) -> str:
     # langua ge=HTML
-    text = f'<div class="container max-width-lg">\n' \
-           f'{"{%"} if disabled is not defined or not disabled {"%}"}' \
-           f'<form id="{{entity_name.lower()}}"' \
+    text = f'' \
+           f'<div class="container max-width-lg">\n' \
+           f'{"{%"} if (disabled is not defined or not disabled) or' \
+           f' (access_mode is defined and access_mode != "look") {"%}"}\n' \
+           f'{"{#{"}access_mode{"}#}"}\n' \
+           f'<form id="{entity_name.lower()}"' \
            f' action="{"{{"}(action_url if action_url is defined else "/db/{entity_name}/new")|safe {"}}"}"' \
            f' method="{"{{"} (send_method if send_method is defined else "post")|safe {"}}"}"' \
            f' enctype="multipart/form-data" onsubmit="return false">\n' \
-           f'{"{%"} endif {"%}"}' \
+           f'{"{%"} endif {"%}"}\n' \
            f'<fieldset class="margin-bottom-md">\n' \
            f'<legend class="form-legend">{entity_name}</legend>\n' \
            f'{content}' \
            f'</fieldset>' \
-           f'{"{%"} if disabled is not defined or not disabled {"%}"}' \
+           f'{"{%"} if (disabled is not defined or not disabled) or' \
+           f' (access_mode is defined and access_mode != "look")  {"%}"}' \
            f'<div>\n' \
            f'<button class="btn btn--primary" type="submit" id="submit">Отправить</button>\n' \
            f'<button class="btn btn--subtle" type="reset">Сбросить</button>\n' \
-           f'</div></form>' \
-           f'{"{%"} endif {"%}"}' \
+           f'</div></form>\n' \
+           f'{"{%"} endif {"%}"}\n' \
            f'</div>' \
            f'<script src="{"{{"}url_for("scripts", path="/async_forms_and_redirects.js"){"}}"}"></script>'
     return text
@@ -99,12 +125,23 @@ def all_html_form(content: str, entity_name: str) -> str:
 
 def field_decorator(func: Callable) -> Callable:
     def _decorator(param: DbDocs, *args, **kwargs) -> str:
-        text = f'{"{%"} if ({param.class_name.lower()} is defined and' \
+        text = f'' \
+               f'{"{%"} if access_mode is defined and access is defined {"%}"}\n' \
+               f'{"{{"}access_mode{"}}"}{"{{"}access{"}}"}' \
+               f'   {"{%"} set ns = namespace(good_modes=[]) {"%}"}\n' \
+               f'   {"{%"} set access_dict = {str({str(key): [str(i) for i in val] for key, val in param.access.items()})} {"%}"}\n' \
+               f'   {"{%"} for a in access {"%}"}\n' \
+               f'       {"{%"} set ns.good_modes = ns.good_modes + access_dict.get(a, []) {"%}"}\n' \
+               '    {% endfor %}\n' \
+               f'{"{{"}ns.good_modes{"}}"}{"{{"}access_dict{"}}"}{"{{"} access_dict.get("dev", []){"}}"}' \
+               f'   {"{%"} if access_mode in ns.good_modes {"%}"}\n' \
+               f'{"{{"}"=-09876543"{"}}"}'
+        text += f'      {"{%"} if ({param.class_name.lower()} is defined and' \
                f' {param.class_name.lower()}.{param.name} != Undefined)' \
-               f' or {param.class_name.lower()} is not defined {"%}"}'
+               f' or {param.class_name.lower()} is not defined {"%}"}\n'
         text += func(param, *args, **kwargs)
         text += f'<div id="{param.class_name}_{param.name}_error"></div>'
-        text += '{% endif %}'
+        text += '{% endif %}{% endif %}{% endif %}'
         return text
 
     return _decorator
@@ -129,7 +166,7 @@ def _get_raw_id(param: DbDocs) -> str:
 
 
 def _get_id(param: DbDocs) -> str:
-    return f'id="{_get_raw_id(param)}'
+    return f'id="{_get_raw_id(param)}"'
 
 
 def _get_placeholder(param: DbDocs) -> str:
@@ -141,18 +178,19 @@ def _required_field(param: DbDocs) -> str:
 
 
 def _disabled_field(param: DbDocs) -> str:
-    return f'{"{{"} ("disabled" if disabled is defined and disabled else "")|safe {"}}"}'
+    return f'{"{{"} ("disabled" if (disabled is defined and disabled) or ' \
+           f'(access_mode is defined and access_mode == "look")  else "")|safe {"}}"}'
 
 
 def _get_value_code(param: DbDocs) -> str:
-    return f'''{'{{'}('value="' + {param.class_name.lower()}.{param.name} + '"'
+    return f'''{'{{'}('value="' + ({param.class_name.lower()}.{param.name} if {param.class_name.lower()}.{param.name} else "") + '"' 
         if {param.class_name.lower()} is defined
         else {(("'" + 'value="' + str(param.default) + '"' + "'|safe") if (
             param.default is not None and bool(param.default)) else '""')})|safe {'}}'}'''
 
 
 def get_text_label(param: DbDocs, l_class="form-label margin-bottom-xxs") -> str:
-    return f'<label class="{l_class}" for="{_get_raw_id(param)}">{param.name}\n' \
+    return f'<label class="{l_class}" for="{_get_raw_id(param)}">{param.description}\n' \
            f'{"""<span class="color-error">*</span>""" if param.required else ""}</label>\n'
 
 
@@ -182,10 +220,12 @@ def html_text(param: DbDocs) -> str:
 
 @field_decorator
 def html_password(param: DbDocs) -> str:
+    # language=HTML
     text = f'<div class="margin-bottom-sm">' \
            f'<div class="flex justify-between margin-bottom-xxxs">' \
            f'{get_text_label(param)}' \
-           f'</div><div class="password js-password">' \
+           f'</div>' \
+           f'<div class="password js-password">' \
            f'<input class="form-control width-100% password__input js-password__input"' \
            f' type="password" {required_options_into_input(param)} >' \
            f'<button class="password__btn flex flex-center js-password__btn" aria-hidden="true">' \
@@ -211,7 +251,8 @@ def html_password(param: DbDocs) -> str:
            f'</path><path d="M21.923,15a6.005,6.005,0,0,1-5.917,7A6.061,6.061,0,0,1,15,21.916"' \
            f' stroke-miterlimit="10"></path>' \
            f'<line x1="2" y1="30" x2="30" y2="2" fill="none" stroke-miterlimit="10"></line></g></svg>' \
-           f'</span></button> </div></div>' \
+           f'</span></button>' \
+           f'</div>' \
            f'</div>'
     return text
 
@@ -222,7 +263,6 @@ def _base_html_file(
         file_type: Union[str, list[str], None] = None,
         file_filter=lambda f: True  # Фильтр, который оставляет только нужные типы файлов
 ) -> str:
-
     from app.settings.mime_types import mime_types
 
     _dict: dict[str, list[str]] = {
@@ -238,11 +278,11 @@ def _base_html_file(
            f'{get_text_label(param)}<br>' \
            f'<label for="{_get_raw_id(param)}" class="file-upload__label btn btn--primary">' \
            f'<span class="flex items-center">' \
-           f'<span class="file-upload__text">{{obj.get(id) or _type.TEXT}}</span>' \
+           f'<span class="file-upload__text">{param.description}</span>' \
            f'</span> </label> ' \
            f'<input type="file" accept=' \
-           f'"{ ",".join(file_type for type_group in (mime_types[key] for key in groups if mime_types.get(key))  for file_type in filter(file_filter, type_group))}" ' \
-           f'class="file-upload__input" {required_options_into_input(param)} {" multiple" if multiple else ""}>' \
+           f'"{",".join(file_type for type_group in (mime_types[key] for key in groups if mime_types.get(key)) for file_type in filter(file_filter, type_group))}" ' \
+           f'class="file-upload__input" {required_options_into_input(param)} {" multiple" if multiple else ""} value tabindex="-1">' \
            f'</fieldset>'
 
 
@@ -255,6 +295,10 @@ def html_image(param: DbDocs):
 def html_text_file(param: DbDocs):
     return _base_html_file(param, file_type='document')
 
+
+def html_bool(param: DbDocs):
+    text = ""
+    return text
 
 @field_decorator
 def html_select(param: DbDocs) -> str:
@@ -273,51 +317,86 @@ def html_select(param: DbDocs) -> str:
 
 def get_doc(ent):
     if ent.__doc__:
-        return ent.__doc__ + "\n".join(
-            [get_doc(parent) for parent in ent.__bases__ if parent.__name__ in m.db.entities])
+        return "\n".join(
+            [get_doc(parent) for parent in ent.__bases__ if parent.__name__ in m.db.entities]) + "\n" + ent.__doc__
     return ""
 
 
 type_to_html: dict[FieldHtmlType, Callable[[DbDocs], str]] = defaultdict(lambda: default_html)
 type_to_html.update({
     FieldHtmlType.TEXT: html_text,
-    FieldHtmlType.SELECT: html_select,
+    # FieldHtmlType.SELECT: html_select,
     FieldHtmlType.PASSWORD: html_password,
     FieldHtmlType.IMAGE: html_image,
     FieldHtmlType.FILE: html_text_file
 })
 
 
+def get_access_dict(role_list: list[str]):
+    if type(role_list) != list:
+        role_list = [role_list]
+    return {AccessType.get_obj(i): [] for i in role_list}
+
+
+def full_access_dict(role_list: list[str], mode_list: list[str]):
+    if type(mode_list) != list:
+        mode_list = [mode_list]
+    if type(role_list) != list:
+        role_list = [role_list]
+    mode_list = [AccessMode.get_obj(i) for i in mode_list]
+    return {AccessType.get_obj(i): mode_list[:] for i in role_list}
+
+
+def get_new_access(new_access: dict[AccessType, list[AccessMode]],
+                   old_access: dict[AccessType, list[AccessMode]] = dict()):
+    return old_access | new_access
+
+
 def create_html_file(ent: m.db.Entity):
     keys_convertor: dict[str, str] = {
         "type": "html_type",
-        "param": "description"
+        "param": "description",
+        "access": "access",
+        "mod": "access",
     }
-    vals_convertor: dict[str, Callable] = defaultdict(
-        lambda: str,
+    vals_convertor: dict[str, Callable] = defaultdict(lambda: str)
+    vals_convertor.update(dict(
         type=FieldHtmlType.get_obj,
-        mod=AccessType.get_obj
-    )
+        access=get_access_dict,
+        mod=get_new_access,
+    ))
 
-    good_start: list[str] = [":param", ":type", ":mod"]
-
+    good_start: list[str] = [":mod" ":access", ":param", ":type"]
     pd_ent = getattr(pd, ent.__name__)
     # print(pd_ent)
     all_ent_docs: dict[str, DbDocs] = defaultdict(lambda: DbDocs(name=n.strip(), class_name=ent.__name__))
 
     all_docs = [i.strip() for i in get_doc(ent).split("\n")]
     # print(*all_docs, sep="\n")
-    all_docs = (i[1:].split(":") for i in all_docs if bool(i) and any(i.startswith(j) for j in good_start))
-    all_docs = (t.split() + [d.strip()] for [t, d] in all_docs)
+    all_docs = [i[1:].split(":") for i in all_docs if not print(i) and bool(i) and not print(i) and any(i.strip().startswith(j) or i.strip().startswith(":mod") or i.strip().startswith(":access") for j in good_start) and not print(i)]
+    # print(*all_docs, sep="\n")
+    all_docs = ([t.split()] + [i for i in d.strip().split()] for [t, d] in all_docs)
 
     code, pk = db_ent_to_dict(ent)
 
-    for [t, n, d] in all_docs:
+    for [[t, n, *other], *d] in all_docs:
         obj: DbDocs = all_ent_docs[n.strip()]
-        all_ent_docs[n.strip()] = DbDocs(**(obj.dict(exclude_unset=True) |
-                                            {keys_convertor[t]: vals_convertor[t](d)}))
+        # print(t, n, other, d)
+        if t not in ["access", "mod"]:
+            d = ' '.join(d)
+        if bool(other):  # mod
+            print(other)
+            d = full_access_dict(other, d)
+            old_access = obj.access
+            all_ent_docs[n.strip()] = DbDocs(**(obj.dict(exclude_unset=True) |
+                                                {keys_convertor[t]: vals_convertor[t](d, old_access)}))
+        else:  # type, param, access
+            all_ent_docs[n.strip()] = DbDocs(**(obj.dict(exclude_unset=True) |
+                                                {keys_convertor[t]: vals_convertor[t](d)}))
 
     for name, doc in all_ent_docs.items():
+        # print(name, *doc.dict().items(), sep='\n')
+        # print()
         if code.get(name):
             doc.required = code[name].db_type in ["PrimaryKey", "Required"]
             doc.is_set = not doc.required and code[name].db_type in ["Set"]
@@ -345,6 +424,6 @@ def create_html_file(ent: m.db.Entity):
 if __name__ == '__main__':
     create_pd_models()
     for name, ent in m.db.entities.items():
-        print(name)
+        # print(name)
         create_html_file(ent)
     # print(type(FieldHtmlType.get_obj("text")))

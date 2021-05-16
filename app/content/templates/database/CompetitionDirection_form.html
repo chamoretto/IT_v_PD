@@ -4,15 +4,30 @@
 {# =======! Ни одно изменение в этом файле не будет сохранено! !======= #}
 
 <div class="container max-width-lg">
-{% if disabled is not defined or not disabled %}<form id="{entity_name.lower()}" action="{{(action_url if action_url is defined else "/db/CompetitionDirection/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
-{% endif %}<fieldset class="margin-bottom-md">
+{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
+{#{access_mode}#}
+<form id="competitiondirection" action="{{(action_url if action_url is defined else "/db/CompetitionDirection/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
+{% endif %}
+<fieldset class="margin-bottom-md">
 <legend class="form-legend">CompetitionDirection</legend>
-<label class="form-label margin-bottom-xxxs" for="CompetitionDirection_directions">directions <span class="color-error">*</span></label><div class="select"><select class="select__input form-control text-sm" name="directions" id="CompetitionDirection_directions" required<option disabled {"" if competitiondirection is defined  and bool(competitiondirection.directions) else "selected"}></option>
-<label class="form-label margin-bottom-xxxs" for="CompetitionDirection_competition">competition <span class="color-error">*</span></label><div class="select"><select class="select__input form-control text-sm" name="competition" id="CompetitionDirection_competition" required<option disabled {"" if competitiondirection is defined  and bool(competitiondirection.competition) else "selected"}></option>
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+directions имеет тип select, который еще не поддерживается...
+</label></div>
+
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+questions имеет тип None, который еще не поддерживается...
+</label></div>
+
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+competition имеет тип select, который еще не поддерживается...
+</label></div>
+
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
 direction_experts имеет тип multi_select, который еще не поддерживается...
 </label></div>
-</fieldset>{% if disabled is not defined or not disabled %}<div>
+</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
-</div></form>{% endif %}</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>
+</div></form>
+{% endif %}
+</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>

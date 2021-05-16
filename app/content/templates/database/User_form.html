@@ -4,117 +4,180 @@
 {# =======! Ни одно изменение в этом файле не будет сохранено! !======= #}
 
 <div class="container max-width-lg">
-{% if disabled is not defined or not disabled %}<form id="{entity_name.lower()}" action="{{(action_url if action_url is defined else "/db/User/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
-{% endif %}<fieldset class="margin-bottom-md">
+{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
+{#{access_mode}#}
+<form id="user" action="{{(action_url if action_url is defined else "/db/User/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
+{% endif %}
+<fieldset class="margin-bottom-md">
 <legend class="form-legend">User</legend>
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-date_of_birth имеет тип date, который еще не поддерживается...
-</label></div>
-
-{% if (user is defined and user.about_program != Undefined) or user is not defined %}<div class="margin-bottom-sm">
-<label class="form-label margin-bottom-xxs" for="User_about_program">about_program
-</label>
-<input class="form-control width-100% text-sm" placeholder="" type="text" name="about_program" id="User_about_program" 
-        {{
-                ('value="' + user.about_program + '"'
-                if user is defined
-                else
-                "")|safe
-        }} {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
-<div id="User_about_program_error"></div></div>{% endif %}
-{% if (user is defined and user.direction != Undefined) or user is not defined %}<div class="margin-bottom-sm">
-<label class="form-label margin-bottom-xxs" for="User_direction">direction
-</label>
-<input class="form-control width-100% text-sm" placeholder="" type="text" name="direction" id="User_direction" 
-        {{
-                ('value="' + user.direction + '"'
-                if user is defined
-                else
-                "")|safe
-        }} {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
-<div id="User_direction_error"></div></div>{% endif %}
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
 id имеет тип number, который еще не поддерживается...
 </label></div>
 
-{% if (user is defined and user.username != Undefined) or user is not defined %}<div class="margin-bottom-sm">
-<label class="form-label margin-bottom-xxs" for="User_username">username
+{% if access_mode is defined and access is defined %}
+{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'self': [], 'public': [], 'user': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
+{{"=-09876543"}}      {% if (user is defined and user.username != Undefined) or user is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="User_username">Логин
 <span class="color-error">*</span></label>
-<input class="form-control width-100% text-sm" placeholder="" type="text" name="username" id="User_username" 
-        {{
-                ('value="' + user.username + '"'
-                if user is defined
-                else
-                "")|safe
-        }} required {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
-<div id="User_username_error"></div></div>{% endif %}
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-password имеет тип password, который еще не поддерживается...
-</label></div>
-
-{% if (user is defined and user.name != Undefined) or user is not defined %}<div class="margin-bottom-sm">
-<label class="form-label margin-bottom-xxs" for="User_name">name
+<input class="form-control width-100% text-sm" type="text" name="username" id="User_username" placeholder="" {{('value="' + (user.username if user.username else "") + '"' 
+        if user is defined
+        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="User_username_error"></div>{% endif %}{% endif %}{% endif %}
+{% if access_mode is defined and access is defined %}
+{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create'], 'admin': ['create'], 'self': [], 'public': [], 'user': ['create']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
+{{"=-09876543"}}      {% if (user is defined and user.password != Undefined) or user is not defined %}
+<div class="margin-bottom-sm"><div class="flex justify-between margin-bottom-xxxs"><label class="form-label margin-bottom-xxs" for="User_password">Пароль
 <span class="color-error">*</span></label>
-<input class="form-control width-100% text-sm" placeholder="" type="text" name="name" id="User_name" 
-        {{
-                ('value="' + user.name + '"'
-                if user is defined
-                else
-                "")|safe
-        }} required {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
-<div id="User_name_error"></div></div>{% endif %}
-{% if (user is defined and user.surname != Undefined) or user is not defined %}<div class="margin-bottom-sm">
-<label class="form-label margin-bottom-xxs" for="User_surname">surname
+</div><div class="password js-password"><input class="form-control width-100% password__input js-password__input" type="password" name="password" id="User_password" placeholder="" {{('value="' + (user.password if user.password else "") + '"' 
+        if user is defined
+        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }} ><button class="password__btn flex flex-center js-password__btn" aria-hidden="true"><span class="password__btn-label" title="Show Password"><svg class="icon block" viewBox="0 0 32 32"><g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" stroke="currentColor" fill="none"><path d="M1.409,17.182a1.936,1.936,0,0,1-.008-2.37C3.422,12.162,8.886,6,16,6c7.02,0,12.536,6.158,14.585,8.81a1.937,1.937,0,0,1,0,2.38C28.536,19.842,23.02,26,16,26S3.453,19.828,1.409,17.182Z" stroke-miterlimit="10"></path><circle cx="16" cy="16" r="6" stroke-miterlimit="10"></circle></g></svg></span><span class="password__btn-label" title="Hide Password"><svg class="icon block" viewBox="0 0 32 32"><g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" stroke="currentColor" fill="none"><path data-cap="butt" d="M8.373,23.627a27.659,27.659,0,0,1-6.958-6.445,1.938,1.938,0,0,1-.008-2.37C3.428,12.162,8.892,6,16.006,6a14.545,14.545,0,0,1,7.626,2.368" stroke-miterlimit="10" stroke-linecap="butt"></path><path d="M27,10.923a30.256,30.256,0,0,1,3.591,3.887,1.937,1.937,0,0,1,0,2.38C28.542,19.842,23.026,26,16.006,26A12.843,12.843,0,0,1,12,25.341" stroke-miterlimit="10"></path><path data-cap="butt" d="M11.764,20.243a6,6,0,0,1,8.482-8.489" stroke-miterlimit="10" stroke-linecap="butt"></path><path d="M21.923,15a6.005,6.005,0,0,1-5.917,7A6.061,6.061,0,0,1,15,21.916" stroke-miterlimit="10"></path><line x1="2" y1="30" x2="30" y2="2" fill="none" stroke-miterlimit="10"></line></g></svg></span></button></div></div><div id="User_password_error"></div>{% endif %}{% endif %}{% endif %}
+{% if access_mode is defined and access is defined %}
+{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'self': [], 'public': [], 'user': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
+{{"=-09876543"}}      {% if (user is defined and user.name != Undefined) or user is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="User_name">Имя пользователя
 <span class="color-error">*</span></label>
-<input class="form-control width-100% text-sm" placeholder="" type="text" name="surname" id="User_surname" 
-        {{
-                ('value="' + user.surname + '"'
-                if user is defined
-                else
-                "")|safe
-        }} required {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
-<div id="User_surname_error"></div></div>{% endif %}
-{% if (user is defined and user.email != Undefined) or user is not defined %}<div class="margin-bottom-sm">
-<label class="form-label margin-bottom-xxs" for="User_email">email
+<input class="form-control width-100% text-sm" type="text" name="name" id="User_name" placeholder="" {{('value="' + (user.name if user.name else "") + '"' 
+        if user is defined
+        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="User_name_error"></div>{% endif %}{% endif %}{% endif %}
+{% if access_mode is defined and access is defined %}
+{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'self': [], 'public': [], 'user': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
+{{"=-09876543"}}      {% if (user is defined and user.surname != Undefined) or user is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="User_surname">Фамилия пользователя
 <span class="color-error">*</span></label>
-<input class="form-control width-100% text-sm" placeholder="" type="text" name="email" id="User_email" 
-        {{
-                ('value="' + user.email + '"'
-                if user is defined
-                else
-                "")|safe
-        }} required {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
-<div id="User_email_error"></div></div>{% endif %}
+<input class="form-control width-100% text-sm" type="text" name="surname" id="User_surname" placeholder="" {{('value="' + (user.surname if user.surname else "") + '"' 
+        if user is defined
+        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="User_surname_error"></div>{% endif %}{% endif %}{% endif %}
+{% if access_mode is defined and access is defined %}
+{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'self': [], 'public': [], 'user': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
+{{"=-09876543"}}      {% if (user is defined and user.email != Undefined) or user is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="User_email">Почта
+<span class="color-error">*</span></label>
+<input class="form-control width-100% text-sm" type="text" name="email" id="User_email" placeholder="" {{('value="' + (user.email if user.email else "") + '"' 
+        if user is defined
+        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="User_email_error"></div>{% endif %}{% endif %}{% endif %}
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
 human_contacts имеет тип adding_field, который еще не поддерживается...
 </label></div>
 
+{% if access_mode is defined and access is defined %}
+{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'self': [], 'public': [], 'user': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
+{{"=-09876543"}}      {% if (user is defined and user.photo != Undefined) or user is not defined %}
+<fieldset class="file-upload margin-bottom-sm"><label class="form-label margin-bottom-xxs" for="User_photo">Ваша фотография
+</label>
+<br><label for="User_photo" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text">Ваша фотография</span></span> </label> <input type="file" accept="image/x-tiff,image/pjpeg,image/x-quicktime,image/x-xpixmap,image/x-pict,image/gif,image/x-windows-bmp,image/pict,image/bmp,image/x-jps,image/x-dwg,image/vnd.dwg,image/jpeg,image/x-jg,image/tiff,image/png,image/x-icon,image/x-pcx" class="file-upload__input" name="photo" id="User_photo" placeholder="" {{('value="' + (user.photo if user.photo else "") + '"' 
+        if user is defined
+        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  value tabindex="-1"></fieldset><div id="User_photo_error"></div>{% endif %}{% endif %}{% endif %}
+{% if access_mode is defined and access is defined %}
+{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'self': [], 'public': [], 'user': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
+{{"=-09876543"}}      {% if (user is defined and user.status != Undefined) or user is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="User_status">Статус
+</label>
+<input class="form-control width-100% text-sm" type="text" name="status" id="User_status" placeholder="" {{('value="' + (user.status if user.status else "") + '"' 
+        if user is defined
+        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="User_status_error"></div>{% endif %}{% endif %}{% endif %}
+{% if access_mode is defined and access is defined %}
+{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'self': [], 'public': [], 'user': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
+{{"=-09876543"}}      {% if (user is defined and user.description != Undefined) or user is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="User_description">Пару слов о себе
+</label>
+<input class="form-control width-100% text-sm" type="text" name="description" id="User_description" placeholder="" {{('value="' + (user.description if user.description else "") + '"' 
+        if user is defined
+        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="User_description_error"></div>{% endif %}{% endif %}{% endif %}
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-photo имеет тип image, который еще не поддерживается...
+scopes имеет тип scopes, который еще не поддерживается...
 </label></div>
 
-{% if (user is defined and user.status != Undefined) or user is not defined %}<div class="margin-bottom-sm">
-<label class="form-label margin-bottom-xxs" for="User_status">status
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+questions имеет тип qu_select, который еще не поддерживается...
+</label></div>
+
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+date_of_birth имеет тип date, который еще не поддерживается...
+</label></div>
+
+{% if access_mode is defined and access is defined %}
+{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'self': [], 'user': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
+{{"=-09876543"}}      {% if (user is defined and user.about_program != Undefined) or user is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="User_about_program">Что для вас программа?
 </label>
-<input class="form-control width-100% text-sm" placeholder="" type="text" name="status" id="User_status" 
-        {{
-                ('value="' + user.status + '"'
-                if user is defined
-                else
-                "")|safe
-        }} {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
-<div id="User_status_error"></div></div>{% endif %}
-{% if (user is defined and user.description != Undefined) or user is not defined %}<div class="margin-bottom-sm">
-<label class="form-label margin-bottom-xxs" for="User_description">description
+<input class="form-control width-100% text-sm" type="text" name="about_program" id="User_about_program" placeholder="" {{('value="' + (user.about_program if user.about_program else "") + '"' 
+        if user is defined
+        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="User_about_program_error"></div>{% endif %}{% endif %}{% endif %}
+{% if access_mode is defined and access is defined %}
+{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'self': [], 'user': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
+{{"=-09876543"}}      {% if (user is defined and user.direction != Undefined) or user is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="User_direction">Какое направление прогшраммы вы считаете главным для себя?
 </label>
-<input class="form-control width-100% text-sm" placeholder="" type="text" name="description" id="User_description" 
-        {{
-                ('value="' + user.description + '"'
-                if user is defined
-                else
-                "")|safe
-        }} {{ ("disabled" if disabled is defined and disabled else "")|safe }}>
-<div id="User_description_error"></div></div>{% endif %}</fieldset>{% if disabled is not defined or not disabled %}<div>
+<input class="form-control width-100% text-sm" type="text" name="direction" id="User_direction" placeholder="" {{('value="' + (user.direction if user.direction else "") + '"' 
+        if user is defined
+        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="User_direction_error"></div>{% endif %}{% endif %}{% endif %}</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
-</div></form>{% endif %}</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>
+</div></form>
+{% endif %}
+</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>

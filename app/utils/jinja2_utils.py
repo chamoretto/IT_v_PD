@@ -1,5 +1,5 @@
 import typing
-from typing import Union
+from typing import Union, Optional
 
 try:
     import jinja2
@@ -56,10 +56,11 @@ class MyJinja2Templates:
     return templates.TemplateResponse("index.html", {"request": request})
     """
 
-    def __init__(self, directory: str, admin_shell: dict[str, str] = dict()) -> None:
+    def __init__(self, directory: str, admin_shell: dict[str, str] = dict(), access: Optional[list[str]] = None) -> None:
         assert jinja2 is not None, "jinja2 must be installed to use Jinja2Templates"
         self.env = self.get_env(directory)
         self.admin_shell = admin_shell
+        self.access = access
 
     def get_env(self, directory: str) -> "jinja2.Environment":
         @jinja2.contextfunction
@@ -88,6 +89,12 @@ class MyJinja2Templates:
 
         if "request" not in local_context:
             raise ValueError('context must include a "request" key')
+
+        local_context['access'] = local_context.get('access') or self.access or ["public"]
+        local_context['access_mode'] = local_context.get('access_mode') or "look"
+        if type(local_context['access']) == str:
+            local_context['access'] = [local_context['access']]
+        local_context['access'] += ['self']
 
         template = self.get_template(name)
         layout_env = self.get_env("content/templates/layout")
@@ -132,7 +139,8 @@ class MyJinja2Templates:
                 request=local_context['request'],
                 header=[SitePageMenu(name=i) for i in ["Новатор_WEB", "События", "Новости", "Результы"]],
                 title=local_context.get('title', None),
-                response_status_code = status_code,
+                response_status_code=status_code,
+                current_method="POST"
             )
         return _MyTemplateResponse(
             skeleton_template,
@@ -148,7 +156,7 @@ _admin_shell = {"Управление БД": "/db", "Мой профиль": "/d
 
 login_templates = MyJinja2Templates(directory="content/templates/login")
 error_templates = MyJinja2Templates(directory="content/templates/errors")
-db_templates = MyJinja2Templates(directory="content/templates/database", admin_shell=_admin_shell)
+db_templates = MyJinja2Templates(directory="content/templates/database", admin_shell=_admin_shell, access=['dev'])
 public_templates = MyJinja2Templates(directory="content/templates/public_temp")
 
-developer_templates = MyJinja2Templates(directory="content/templates/developers", admin_shell=_admin_shell)
+developer_templates = MyJinja2Templates(directory="content/templates/developers", admin_shell=_admin_shell, access=['dev'])

@@ -4,10 +4,94 @@
 {# =======! Ни одно изменение в этом файле не будет сохранено! !======= #}
 
 <div class="container max-width-lg">
-{% if disabled is not defined or not disabled %}<form id="{entity_name.lower()}" action="{{(action_url if action_url is defined else "/db/Question/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
-{% endif %}<fieldset class="margin-bottom-md">
+{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
+{#{access_mode}#}
+<form id="question" action="{{(action_url if action_url is defined else "/db/Question/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
+{% endif %}
+<fieldset class="margin-bottom-md">
 <legend class="form-legend">Question</legend>
-</fieldset>{% if disabled is not defined or not disabled %}<div>
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+id имеет тип number, который еще не поддерживается...
+</label></div>
+
+{% if access_mode is defined and access is defined %}
+{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'public': ['create', 'look'], 'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
+{{"=-09876543"}}      {% if (question is defined and question.question_title != Undefined) or question is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Question_question_title">О чем вопрос в двух словах?
+</label>
+<input class="form-control width-100% text-sm" type="text" name="question_title" id="Question_question_title" placeholder="" {{('value="' + (question.question_title if question.question_title else "") + '"' 
+        if question is defined
+        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="Question_question_title_error"></div>{% endif %}{% endif %}{% endif %}
+{% if access_mode is defined and access is defined %}
+{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'public': ['create', 'look'], 'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
+{{"=-09876543"}}      {% if (question is defined and question.question != Undefined) or question is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Question_question">Текст вопроса
+<span class="color-error">*</span></label>
+<input class="form-control width-100% text-sm" type="text" name="question" id="Question_question" placeholder="" {{('value="' + (question.question if question.question else "") + '"' 
+        if question is defined
+        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="Question_question_error"></div>{% endif %}{% endif %}{% endif %}
+{% if access_mode is defined and access is defined %}
+{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'public': [], 'dev': [], 'admin': []} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
+{{"=-09876543"}}      {% if (question is defined and question.answer != Undefined) or question is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Question_answer">Ответ
+</label>
+<input class="form-control width-100% text-sm" type="text" name="answer" id="Question_answer" placeholder="" {{('value="' + (question.answer if question.answer else "") + '"' 
+        if question is defined
+        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="Question_answer_error"></div>{% endif %}{% endif %}{% endif %}
+{% if access_mode is defined and access is defined %}
+{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'public': ['look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
+{{"=-09876543"}}      {% if (question is defined and question.pages != Undefined) or question is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Question_pages">Страницы, на которых будет отображаться этот вопрос в разделе "частозадаваемые вопросы"
+</label>
+<input class="form-control width-100% text-sm" type="text" name="pages" id="Question_pages" placeholder="" {{('value="' + (question.pages if question.pages else "") + '"' 
+        if question is defined
+        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="Question_pages_error"></div>{% endif %}{% endif %}{% endif %}
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+answer_email имеет тип email, который еще не поддерживается...
+</label></div>
+
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+human имеет тип select, который еще не поддерживается...
+</label></div>
+
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+was_read имеет тип bool, который еще не поддерживается...
+</label></div>
+
+<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
+was_answered имеет тип bool, который еще не поддерживается...
+</label></div>
+</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
-</div></form>{% endif %}</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>
+</div></form>
+{% endif %}
+</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>
