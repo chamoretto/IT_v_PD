@@ -45,9 +45,10 @@ function url_processing(event){
         change_html_from_ajax(xhr.responseText);
         // document.querySelectorAll("main")[0].innerHTML = " " + xhr.responseText;
     }
-    urls_as_ajax();
-    send_form_as_ajax();
-    set_fixed_position_event();
+    after_load_funcs_run();
+    // urls_as_ajax();
+    // send_form_as_ajax();
+    // set_fixed_position_event();
 }
 
 function authorization_response_processing(event){
@@ -68,7 +69,8 @@ function authorization_response_processing(event){
         }
         // url_processing(event);
     }
-    urls_as_ajax();
-    send_form_as_ajax();
-    set_fixed_position_event();
+    // urls_as_ajax();
+    // send_form_as_ajax();
+    // set_fixed_position_event();
+    after_load_funcs_run()
 }

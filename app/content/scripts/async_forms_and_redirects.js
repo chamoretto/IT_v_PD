@@ -130,10 +130,18 @@ function send_form_as_ajax() {
             } else {
 
                 [...form_fields].map(i => {
-                    send_data[$(i).attr('name')] = $(i).val();
+                    const el = $(i);
+                    if (el.attr("type") === "radio" || el.attr("type") === "checkbox"){
+                        send_data[el.attr('name')] = el.prop('checked')? true: false;
+                    } else {
+                        send_data[el.attr('name')] = el.val();
+                    }
+
                 });
+                console.log(send_data);
                 send_data = JSON.stringify(send_data);
             }
+            console.log(send_data);
 
             send_ajax(action, method, authorization_response_processing, send_data, true, true, authorization)
         });
@@ -141,4 +149,4 @@ function send_form_as_ajax() {
 }
 
 
-send_form_as_ajax();
+// send_form_as_ajax();

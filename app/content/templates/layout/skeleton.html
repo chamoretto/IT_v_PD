@@ -55,6 +55,8 @@
       <div class="header__nav-inner">
 
         <ul class="f-header__list flex-grow flex-basis-0 justify-center@md">
+
+        
 <!--        {#%-->
 <!--        _dict = {#-->
 <!--            "about": ("""<li class="f-header__item margin-x-sm"><a href="/about" class="f-header__link">О нас </a></li>""", True),-->
@@ -140,6 +142,12 @@
 <script src="{{url_for('scripts', path='/callback_ajax_funcs.js')}}"></script>
 <script src="{{url_for('scripts', path='/location_control.js')}}"></script>
 <script src="{{url_for('scripts', path='/async_forms_and_redirects.js')}}"></script>
+<script src="{{url_for('scripts', path='/form_processing_controller.js')}}"></script>
+
+<script src="{{url_for('scripts', path='/after_load_funcs.js')}}"></script>
+
+
+
 
 
 <div class="aside_and_menu_flex_box">
@@ -147,7 +155,6 @@
 
 
     {% if admin_shell is defined and admin_shell_context is defined%}
-      {#{admin_shell.render(admin_shell_context)|safe}#}
       {{admin_shell.render(admin_shell_context)|safe}}
     {% else %}
   <aside id="admin_shell">
@@ -210,6 +217,7 @@
 <script>
     initButtons();
     lazyLoadInstance.update();
+
 </script>
 <script src="{{url_for('scripts', path='/scripts.js')}}"></script> <!--/js/scripts.js-->
 {% if response_status_code == 401 %}
@@ -256,9 +264,7 @@
     </script>
 {% endif %}
 <script>
-                      urls_as_ajax();
-                    send_form_as_ajax();
-                    set_fixed_position_event();
+                      after_load_funcs_run()
 </script>
 </body>
 </html>

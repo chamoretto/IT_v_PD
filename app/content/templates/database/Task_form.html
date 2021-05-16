@@ -19,26 +19,28 @@ competition_direction имеет тип select, который еще не по�
 </label></div>
 
 {% if access_mode is defined and access is defined %}
-{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set ns = namespace(good_modes=[]) %}
    {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'expert': ['create', 'edit', 'look']} %}
    {% for a in access %}
        {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
     {% endfor %}
-{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
-{{"=-09876543"}}      {% if (task is defined and task.task_document != Undefined) or task is not defined %}
+   {% if access_mode in ns.good_modes %}
+      {% if (task is defined and task.task_document != Undefined) or task is not defined %}
 <fieldset class="file-upload margin-bottom-sm"><label class="form-label margin-bottom-xxs" for="Task_task_document">документ с заданием
 </label>
-<br><label for="Task_task_document" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text">документ с заданием</span></span> </label> <input type="file" accept="application/pdf,application/x-zip-compressed,application/zip,multipart/x-zip,application/x-compressed,application/msword,application/msword,application/msword" class="file-upload__input" name="task_document" id="Task_task_document" placeholder="" {{('value="' + (task.task_document if task.task_document else "") + '"' 
+<br><label for="Task_task_document" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text" id="Task_task_document_span">документ с заданием</span></span> </label> <input type="file" accept="application/pdf,application/x-zip-compressed,application/zip,multipart/x-zip,application/x-compressed,application/msword,application/msword,application/msword" class="file-upload__input"  name="task_document" id="Task_task_document" placeholder="" {{('value="' + (task.task_document if task.task_document else "") + '"' 
         if task is defined
-        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  value tabindex="-1"></fieldset><div id="Task_task_document_error"></div>{% endif %}{% endif %}{% endif %}
+        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  {{('value="' + (task.task_document if task.task_document else "") + '"' 
+        if task is defined
+        else "")|safe }} tabindex="-1"></fieldset><div id="Task_task_document_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
-{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set ns = namespace(good_modes=[]) %}
    {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'expert': ['create', 'edit', 'look']} %}
    {% for a in access %}
        {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
     {% endfor %}
-{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
-{{"=-09876543"}}      {% if (task is defined and task.description != Undefined) or task is not defined %}
+   {% if access_mode in ns.good_modes %}
+      {% if (task is defined and task.description != Undefined) or task is not defined %}
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Task_description">Краткое описание задания
 </label>

@@ -15,13 +15,13 @@ id имеет тип number, который еще не поддерживает
 </label></div>
 
 {% if access_mode is defined and access is defined %}
-{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set ns = namespace(good_modes=[]) %}
    {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'smm': ['create', 'edit', 'look']} %}
    {% for a in access %}
        {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
     {% endfor %}
-{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
-{{"=-09876543"}}      {% if (page is defined and page.page_url != Undefined) or page is not defined %}
+   {% if access_mode in ns.good_modes %}
+      {% if (page is defined and page.page_url != Undefined) or page is not defined %}
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Page_page_url">Ссылка, по которой будет распологаться страница
 </label>
@@ -30,13 +30,13 @@ id имеет тип number, который еще не поддерживает
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Page_page_url_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
-{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set ns = namespace(good_modes=[]) %}
    {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'smm': ['create', 'edit', 'look']} %}
    {% for a in access %}
        {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
     {% endfor %}
-{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
-{{"=-09876543"}}      {% if (page is defined and page.page_path != Undefined) or page is not defined %}
+   {% if access_mode in ns.good_modes %}
+      {% if (page is defined and page.page_path != Undefined) or page is not defined %}
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Page_page_path">имя файла страницы
 </label>
@@ -44,14 +44,38 @@ id имеет тип number, который еще не поддерживает
         if page is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Page_page_path_error"></div>{% endif %}{% endif %}{% endif %}
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-is_header имеет тип bool, который еще не поддерживается...
-</label></div>
-
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-visible имеет тип bool, который еще не поддерживается...
-</label></div>
-
+<div class="col-6@md">
+                        <fieldset class="margin-bottom-md">
+                            <h4 class="text-start margin-bottom-sm"> Отображать ли страницу в верхнем меню? </h4>
+                            <div class="margin-bottom-sm" style="display: flex;">
+                                <div class="switch margin-left-sm">
+                                    <input class="switch__input" type="checkbox"
+                                    name="is_header" id="Page_is_header" placeholder=""  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}
+                                    {{ (( "checked" if page.is_header else "" )|safe 
+    if page is defined else
+            ""|safe )}}>
+                                    <label aria-hidden="true" class="switch__label" for="Page_is_header">is_header</label>
+                                    <div aria-hidden="true" class="switch__marker"></div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+<div class="col-6@md">
+                        <fieldset class="margin-bottom-md">
+                            <h4 class="text-start margin-bottom-sm"> Смогут ли пользователи видеть страницу (эту, как и всю прочую, информациб потом можно отредактировать)? </h4>
+                            <div class="margin-bottom-sm" style="display: flex;">
+                                <div class="switch margin-left-sm">
+                                    <input class="switch__input" type="checkbox"
+                                    name="visible" id="Page_visible" placeholder=""  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}
+                                    {{ (( "checked" if page.visible else "" )|safe 
+    if page is defined else
+            ""|safe )}}>
+                                    <label aria-hidden="true" class="switch__label" for="Page_visible">visible</label>
+                                    <div aria-hidden="true" class="switch__marker"></div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
 root_page имеет тип select, который еще не поддерживается...
 </label></div>

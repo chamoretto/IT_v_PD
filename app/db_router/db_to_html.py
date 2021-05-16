@@ -127,15 +127,12 @@ def field_decorator(func: Callable) -> Callable:
     def _decorator(param: DbDocs, *args, **kwargs) -> str:
         text = f'' \
                f'{"{%"} if access_mode is defined and access is defined {"%}"}\n' \
-               f'{"{{"}access_mode{"}}"}{"{{"}access{"}}"}' \
                f'   {"{%"} set ns = namespace(good_modes=[]) {"%}"}\n' \
                f'   {"{%"} set access_dict = {str({str(key): [str(i) for i in val] for key, val in param.access.items()})} {"%}"}\n' \
                f'   {"{%"} for a in access {"%}"}\n' \
                f'       {"{%"} set ns.good_modes = ns.good_modes + access_dict.get(a, []) {"%}"}\n' \
                '    {% endfor %}\n' \
-               f'{"{{"}ns.good_modes{"}}"}{"{{"}access_dict{"}}"}{"{{"} access_dict.get("dev", []){"}}"}' \
-               f'   {"{%"} if access_mode in ns.good_modes {"%}"}\n' \
-               f'{"{{"}"=-09876543"{"}}"}'
+               f'   {"{%"} if access_mode in ns.good_modes {"%}"}\n'
         text += f'      {"{%"} if ({param.class_name.lower()} is defined and' \
                f' {param.class_name.lower()}.{param.name} != Undefined)' \
                f' or {param.class_name.lower()} is not defined {"%}"}\n'
@@ -189,12 +186,17 @@ def _get_value_code(param: DbDocs) -> str:
             param.default is not None and bool(param.default)) else '""')})|safe {'}}'}'''
 
 
+def _get_checkbox_value(param: DbDocs) -> str:
+    return f'''{"{{"} (( "checked" if {param.class_name.lower()}.{param.name} else "" )|safe 
+    if {param.class_name.lower()} is defined else
+            {'"checked"' if param.default is not None and param.default else '""'}|safe ){'}}'}'''
+
 def get_text_label(param: DbDocs, l_class="form-label margin-bottom-xxs") -> str:
     return f'<label class="{l_class}" for="{_get_raw_id(param)}">{param.description}\n' \
            f'{"""<span class="color-error">*</span>""" if param.required else ""}</label>\n'
 
 
-def required_options_into_input(param: DbDocs) -> str:
+def required_options_into_input(param: DbDocs, black_list=[]) -> str:
     _data = [
         _get_name,
         _get_id,
@@ -203,7 +205,7 @@ def required_options_into_input(param: DbDocs) -> str:
         _required_field,
         _disabled_field
     ]
-    return " ".join([i(param) for i in _data])
+    return " ".join([i(param) for i in _data if i not in black_list])
 
 
 @field_decorator
@@ -278,11 +280,11 @@ def _base_html_file(
            f'{get_text_label(param)}<br>' \
            f'<label for="{_get_raw_id(param)}" class="file-upload__label btn btn--primary">' \
            f'<span class="flex items-center">' \
-           f'<span class="file-upload__text">{param.description}</span>' \
+           f'<span class="file-upload__text" id="{_get_raw_id(param)}_span">{param.description}</span>' \
            f'</span> </label> ' \
            f'<input type="file" accept=' \
            f'"{",".join(file_type for type_group in (mime_types[key] for key in groups if mime_types.get(key)) for file_type in filter(file_filter, type_group))}" ' \
-           f'class="file-upload__input" {required_options_into_input(param)} {" multiple" if multiple else ""} value tabindex="-1">' \
+           f'class="file-upload__input"  {required_options_into_input(param)} {" multiple" if multiple else ""} {_get_value_code(param)} tabindex="-1">' \
            f'</fieldset>'
 
 
@@ -297,7 +299,21 @@ def html_text_file(param: DbDocs):
 
 
 def html_bool(param: DbDocs):
-    text = ""
+    text = f"""<div class="col-6@md">
+                        <fieldset class="margin-bottom-md">
+                            <h4 class="text-start margin-bottom-sm"> {param.description} </h4>
+                            <div class="margin-bottom-sm" style="display: flex;">
+                                <div class="switch margin-left-sm">
+                                    <input class="switch__input" type="checkbox"
+                                    {required_options_into_input(param, black_list=[_get_value_code])}
+                                    {_get_checkbox_value(param)}>
+                                    <label aria-hidden="true" class="switch__label" for="{_get_raw_id(param)}">{param.name}</label>
+                                    <div aria-hidden="true" class="switch__marker"></div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>"""
+    # text = f""" <fieldset class="margin-bottom-md"> <input type="checkbox" {required_options_into_input(param, black_list=[_get_value_code])} value="true" ></fieldset>"""
     return text
 
 @field_decorator
@@ -328,7 +344,8 @@ type_to_html.update({
     # FieldHtmlType.SELECT: html_select,
     FieldHtmlType.PASSWORD: html_password,
     FieldHtmlType.IMAGE: html_image,
-    FieldHtmlType.FILE: html_text_file
+    FieldHtmlType.FILE: html_text_file,
+    FieldHtmlType.BOOL: html_bool,
 })
 
 

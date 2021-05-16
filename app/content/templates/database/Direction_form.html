@@ -11,13 +11,13 @@
 <fieldset class="margin-bottom-md">
 <legend class="form-legend">Direction</legend>
 {% if access_mode is defined and access is defined %}
-{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set ns = namespace(good_modes=[]) %}
    {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'self': []} %}
    {% for a in access %}
        {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
     {% endfor %}
-{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
-{{"=-09876543"}}      {% if (direction is defined and direction.name != Undefined) or direction is not defined %}
+   {% if access_mode in ns.good_modes %}
+      {% if (direction is defined and direction.name != Undefined) or direction is not defined %}
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Direction_name">Название направления (что-то вроде "Design" или "IT")
 <span class="color-error">*</span></label>
@@ -26,18 +26,20 @@
         else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Direction_name_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
-{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set ns = namespace(good_modes=[]) %}
    {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look']} %}
    {% for a in access %}
        {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
     {% endfor %}
-{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
-{{"=-09876543"}}      {% if (direction is defined and direction.icon != Undefined) or direction is not defined %}
+   {% if access_mode in ns.good_modes %}
+      {% if (direction is defined and direction.icon != Undefined) or direction is not defined %}
 <fieldset class="file-upload margin-bottom-sm"><label class="form-label margin-bottom-xxs" for="Direction_icon">Картинка направления
 <span class="color-error">*</span></label>
-<br><label for="Direction_icon" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text">Картинка направления</span></span> </label> <input type="file" accept="image/x-tiff,image/pjpeg,image/x-quicktime,image/x-xpixmap,image/x-pict,image/gif,image/x-windows-bmp,image/pict,image/bmp,image/x-jps,image/x-dwg,image/vnd.dwg,image/jpeg,image/x-jg,image/tiff,image/png,image/x-icon,image/x-pcx" class="file-upload__input" name="icon" id="Direction_icon" placeholder="" {{('value="' + (direction.icon if direction.icon else "") + '"' 
+<br><label for="Direction_icon" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text" id="Direction_icon_span">Картинка направления</span></span> </label> <input type="file" accept="image/x-tiff,image/pjpeg,image/x-quicktime,image/x-xpixmap,image/x-pict,image/gif,image/x-windows-bmp,image/pict,image/bmp,image/x-jps,image/x-dwg,image/vnd.dwg,image/jpeg,image/x-jg,image/tiff,image/png,image/x-icon,image/x-pcx" class="file-upload__input"  name="icon" id="Direction_icon" placeholder="" {{('value="' + (direction.icon if direction.icon else "") + '"' 
         if direction is defined
-        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  value tabindex="-1"></fieldset><div id="Direction_icon_error"></div>{% endif %}{% endif %}{% endif %}
+        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  {{('value="' + (direction.icon if direction.icon else "") + '"' 
+        if direction is defined
+        else "")|safe }} tabindex="-1"></fieldset><div id="Direction_icon_error"></div>{% endif %}{% endif %}{% endif %}
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
 video_lessons имеет тип video_lessons, который еще не поддерживается...
 </label></div>

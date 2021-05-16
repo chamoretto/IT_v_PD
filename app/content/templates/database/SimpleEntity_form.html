@@ -11,13 +11,13 @@
 <fieldset class="margin-bottom-md">
 <legend class="form-legend">SimpleEntity</legend>
 {% if access_mode is defined and access is defined %}
-{{access_mode}}{{access}}   {% set ns = namespace(good_modes=[]) %}
+   {% set ns = namespace(good_modes=[]) %}
    {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look']} %}
    {% for a in access %}
        {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
     {% endfor %}
-{{ns.good_modes}}{{access_dict}}{{ access_dict.get("dev", [])}}   {% if access_mode in ns.good_modes %}
-{{"=-09876543"}}      {% if (simpleentity is defined and simpleentity.key != Undefined) or simpleentity is not defined %}
+   {% if access_mode in ns.good_modes %}
+      {% if (simpleentity is defined and simpleentity.key != Undefined) or simpleentity is not defined %}
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="SimpleEntity_key">Название новой колонки в базе данных
 <span class="color-error">*</span></label>

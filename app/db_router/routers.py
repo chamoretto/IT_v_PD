@@ -216,6 +216,7 @@ def save_edited_entity(
     class_entity = m.db.entities[name]
     old_ent_model = getattr(only_pk, name)(**request.query_params)
     new_ent_data = getattr(op_pd, name)(**new_ent_data)
+    print(new_ent_data.dict(exclude_unset=True))
     if class_entity.exists(**old_ent_model.dict(exclude_unset=True)):
         entity = class_entity.get(**old_ent_model.dict(exclude_unset=True))
         try:
