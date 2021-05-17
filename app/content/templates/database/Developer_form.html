@@ -10,10 +10,22 @@
 {% endif %}
 <fieldset class="margin-bottom-md">
 <legend class="form-legend">Developer</legend>
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-id имеет тип number, который еще не поддерживается...
-</label></div>
-
+{% if access_mode is defined and access is defined %}
+   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['edit', 'look'], 'self': ['look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+   {% if access_mode in ns.good_modes %}
+      {% if (developer is defined and developer.id != Undefined) or developer is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Developer_id">Идентификатор
+<span class="color-error">*</span></label>
+<input class="form-control width-100% text-sm" type="number" name="id" id="Developer_id" placeholder="" {{
+    ('value="%s"' % (developer.id if developer.id else "")
+        if developer is defined
+        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="Developer_id_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
    {% set ns = namespace(good_modes=[]) %}
    {% set access_dict = {'dev': ['look'], 'self': ['create', 'edit', 'look']} %}
@@ -25,7 +37,8 @@ id имеет тип number, который еще не поддерживает
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Developer_username">Логин
 <span class="color-error">*</span></label>
-<input class="form-control width-100% text-sm" type="text" name="username" id="Developer_username" placeholder="" {{('value="' + (developer.username if developer.username else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="username" id="Developer_username" placeholder="" {{
+    ('value="%s"' % (developer.username if developer.username else "")
         if developer is defined
         else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Developer_username_error"></div>{% endif %}{% endif %}{% endif %}
@@ -39,7 +52,8 @@ id имеет тип number, который еще не поддерживает
       {% if (developer is defined and developer.password != Undefined) or developer is not defined %}
 <div class="margin-bottom-sm"><div class="flex justify-between margin-bottom-xxxs"><label class="form-label margin-bottom-xxs" for="Developer_password">Пароль
 <span class="color-error">*</span></label>
-</div><div class="password js-password"><input class="form-control width-100% password__input js-password__input" type="password" name="password" id="Developer_password" placeholder="" {{('value="' + (developer.password if developer.password else "") + '"' 
+</div><div class="password js-password"><input class="form-control width-100% password__input js-password__input" type="password" name="password" id="Developer_password" placeholder="" {{
+    ('value="%s"' % (developer.password if developer.password else "")
         if developer is defined
         else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }} ><button class="password__btn flex flex-center js-password__btn" aria-hidden="true"><span class="password__btn-label" title="Show Password"><svg class="icon block" viewBox="0 0 32 32"><g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" stroke="currentColor" fill="none"><path d="M1.409,17.182a1.936,1.936,0,0,1-.008-2.37C3.422,12.162,8.886,6,16,6c7.02,0,12.536,6.158,14.585,8.81a1.937,1.937,0,0,1,0,2.38C28.536,19.842,23.02,26,16,26S3.453,19.828,1.409,17.182Z" stroke-miterlimit="10"></path><circle cx="16" cy="16" r="6" stroke-miterlimit="10"></circle></g></svg></span><span class="password__btn-label" title="Hide Password"><svg class="icon block" viewBox="0 0 32 32"><g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" stroke="currentColor" fill="none"><path data-cap="butt" d="M8.373,23.627a27.659,27.659,0,0,1-6.958-6.445,1.938,1.938,0,0,1-.008-2.37C3.428,12.162,8.892,6,16.006,6a14.545,14.545,0,0,1,7.626,2.368" stroke-miterlimit="10" stroke-linecap="butt"></path><path d="M27,10.923a30.256,30.256,0,0,1,3.591,3.887,1.937,1.937,0,0,1,0,2.38C28.542,19.842,23.026,26,16.006,26A12.843,12.843,0,0,1,12,25.341" stroke-miterlimit="10"></path><path data-cap="butt" d="M11.764,20.243a6,6,0,0,1,8.482-8.489" stroke-miterlimit="10" stroke-linecap="butt"></path><path d="M21.923,15a6.005,6.005,0,0,1-5.917,7A6.061,6.061,0,0,1,15,21.916" stroke-miterlimit="10"></path><line x1="2" y1="30" x2="30" y2="2" fill="none" stroke-miterlimit="10"></line></g></svg></span></button></div></div><div id="Developer_password_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
@@ -53,7 +67,8 @@ id имеет тип number, который еще не поддерживает
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Developer_name">Имя пользователя
 <span class="color-error">*</span></label>
-<input class="form-control width-100% text-sm" type="text" name="name" id="Developer_name" placeholder="" {{('value="' + (developer.name if developer.name else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="name" id="Developer_name" placeholder="" {{
+    ('value="%s"' % (developer.name if developer.name else "")
         if developer is defined
         else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Developer_name_error"></div>{% endif %}{% endif %}{% endif %}
@@ -68,7 +83,8 @@ id имеет тип number, который еще не поддерживает
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Developer_surname">Фамилия пользователя
 <span class="color-error">*</span></label>
-<input class="form-control width-100% text-sm" type="text" name="surname" id="Developer_surname" placeholder="" {{('value="' + (developer.surname if developer.surname else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="surname" id="Developer_surname" placeholder="" {{
+    ('value="%s"' % (developer.surname if developer.surname else "")
         if developer is defined
         else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Developer_surname_error"></div>{% endif %}{% endif %}{% endif %}
@@ -83,7 +99,8 @@ id имеет тип number, который еще не поддерживает
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Developer_email">Почта
 <span class="color-error">*</span></label>
-<input class="form-control width-100% text-sm" type="text" name="email" id="Developer_email" placeholder="" {{('value="' + (developer.email if developer.email else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="email" id="Developer_email" placeholder="" {{
+    ('value="%s"' % (developer.email if developer.email else "")
         if developer is defined
         else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Developer_email_error"></div>{% endif %}{% endif %}{% endif %}
@@ -101,9 +118,14 @@ human_contacts имеет тип adding_field, который еще не под
       {% if (developer is defined and developer.photo != Undefined) or developer is not defined %}
 <fieldset class="file-upload margin-bottom-sm"><label class="form-label margin-bottom-xxs" for="Developer_photo">Ваша фотография
 </label>
-<br><label for="Developer_photo" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text" id="Developer_photo_span">Ваша фотография</span></span> </label> <input type="file" accept="image/x-tiff,image/pjpeg,image/x-quicktime,image/x-xpixmap,image/x-pict,image/gif,image/x-windows-bmp,image/pict,image/bmp,image/x-jps,image/x-dwg,image/vnd.dwg,image/jpeg,image/x-jg,image/tiff,image/png,image/x-icon,image/x-pcx" class="file-upload__input"  name="photo" id="Developer_photo" placeholder="" {{('value="' + (developer.photo if developer.photo else "") + '"' 
+<br><label for="Developer_photo" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text" id="Developer_photo_span">{% set value = 
+    ('value="%s"' % (developer.photo if developer.photo else "")
         if developer is defined
-        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  {{('value="' + (developer.photo if developer.photo else "") + '"' 
+        else "")|safe  %}{{ value | replace("value=", "") | replace('"', "") if "value" in value and value | replace("value=", "") | replace('"', "") != '""' else "Загрузить" }}</span></span> </label> <input type="file" accept="image/x-tiff,image/pjpeg,image/x-quicktime,image/x-xpixmap,image/x-pict,image/gif,image/x-windows-bmp,image/pict,image/bmp,image/x-jps,image/x-dwg,image/vnd.dwg,image/jpeg,image/x-jg,image/tiff,image/png,image/x-icon,image/x-pcx" class="file-upload__input"  name="photo" id="Developer_photo" placeholder="" {{
+    ('value="%s"' % (developer.photo if developer.photo else "")
+        if developer is defined
+        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  {{
+    ('value="%s"' % (developer.photo if developer.photo else "")
         if developer is defined
         else "")|safe }} tabindex="-1"></fieldset><div id="Developer_photo_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
@@ -117,7 +139,8 @@ human_contacts имеет тип adding_field, который еще не под
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Developer_status">Статус
 </label>
-<input class="form-control width-100% text-sm" type="text" name="status" id="Developer_status" placeholder="" {{('value="' + (developer.status if developer.status else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="status" id="Developer_status" placeholder="" {{
+    ('value="%s"' % (developer.status if developer.status else "")
         if developer is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Developer_status_error"></div>{% endif %}{% endif %}{% endif %}
@@ -132,7 +155,8 @@ human_contacts имеет тип adding_field, который еще не под
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Developer_description">Пару слов о себе
 </label>
-<input class="form-control width-100% text-sm" type="text" name="description" id="Developer_description" placeholder="" {{('value="' + (developer.description if developer.description else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="description" id="Developer_description" placeholder="" {{
+    ('value="%s"' % (developer.description if developer.description else "")
         if developer is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Developer_description_error"></div>{% endif %}{% endif %}{% endif %}

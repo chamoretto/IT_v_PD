@@ -10,10 +10,22 @@
 {% endif %}
 <fieldset class="margin-bottom-md">
 <legend class="form-legend">Page</legend>
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-id имеет тип number, который еще не поддерживается...
-</label></div>
-
+{% if access_mode is defined and access is defined %}
+   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['edit', 'look'], 'admin': ['edit', 'look'], 'smm': ['edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+   {% if access_mode in ns.good_modes %}
+      {% if (page is defined and page.id != Undefined) or page is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Page_id">id
+<span class="color-error">*</span></label>
+<input class="form-control width-100% text-sm" type="number" name="id" id="Page_id" placeholder="" {{
+    ('value="%s"' % (page.id if page.id else "")
+        if page is defined
+        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="Page_id_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
    {% set ns = namespace(good_modes=[]) %}
    {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'smm': ['create', 'edit', 'look']} %}
@@ -25,7 +37,8 @@ id имеет тип number, который еще не поддерживает
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Page_page_url">Ссылка, по которой будет распологаться страница
 </label>
-<input class="form-control width-100% text-sm" type="text" name="page_url" id="Page_page_url" placeholder="" {{('value="' + (page.page_url if page.page_url else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="page_url" id="Page_page_url" placeholder="" {{
+    ('value="%s"' % (page.page_url if page.page_url else "")
         if page is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Page_page_url_error"></div>{% endif %}{% endif %}{% endif %}
@@ -40,7 +53,8 @@ id имеет тип number, который еще не поддерживает
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Page_page_path">имя файла страницы
 </label>
-<input class="form-control width-100% text-sm" type="text" name="page_path" id="Page_page_path" placeholder="" {{('value="' + (page.page_path if page.page_path else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="page_path" id="Page_page_path" placeholder="" {{
+    ('value="%s"' % (page.page_path if page.page_path else "")
         if page is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Page_page_path_error"></div>{% endif %}{% endif %}{% endif %}
@@ -84,10 +98,22 @@ root_page имеет тип select, который еще не поддержи�
 child_pages имеет тип select, который еще не поддерживается...
 </label></div>
 
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-title имеет тип number, который еще не поддерживается...
-</label></div>
-
+{% if access_mode is defined and access is defined %}
+   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'smm': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+   {% if access_mode in ns.good_modes %}
+      {% if (page is defined and page.title != Undefined) or page is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Page_title">Заголовок страницы
+</label>
+<input class="form-control width-100% text-sm" type="number" name="title" id="Page_title" placeholder="" {{
+    ('value="%s"' % (page.title if page.title else "")
+        if page is defined
+        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="Page_title_error"></div>{% endif %}{% endif %}{% endif %}
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
 questions имеет тип multi_select, который еще не поддерживается...
 </label></div>

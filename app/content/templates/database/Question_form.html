@@ -10,10 +10,22 @@
 {% endif %}
 <fieldset class="margin-bottom-md">
 <legend class="form-legend">Question</legend>
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-id имеет тип number, который еще не поддерживается...
-</label></div>
-
+{% if access_mode is defined and access is defined %}
+   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['edit', 'look'], 'admin': ['edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+   {% if access_mode in ns.good_modes %}
+      {% if (question is defined and question.id != Undefined) or question is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Question_id">id
+<span class="color-error">*</span></label>
+<input class="form-control width-100% text-sm" type="number" name="id" id="Question_id" placeholder="" {{
+    ('value="%s"' % (question.id if question.id else "")
+        if question is defined
+        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="Question_id_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
    {% set ns = namespace(good_modes=[]) %}
    {% set access_dict = {'public': ['create', 'look'], 'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look']} %}
@@ -25,7 +37,8 @@ id имеет тип number, который еще не поддерживает
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Question_question_title">О чем вопрос в двух словах?
 </label>
-<input class="form-control width-100% text-sm" type="text" name="question_title" id="Question_question_title" placeholder="" {{('value="' + (question.question_title if question.question_title else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="question_title" id="Question_question_title" placeholder="" {{
+    ('value="%s"' % (question.question_title if question.question_title else "")
         if question is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Question_question_title_error"></div>{% endif %}{% endif %}{% endif %}
@@ -40,7 +53,8 @@ id имеет тип number, который еще не поддерживает
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Question_question">Текст вопроса
 <span class="color-error">*</span></label>
-<input class="form-control width-100% text-sm" type="text" name="question" id="Question_question" placeholder="" {{('value="' + (question.question if question.question else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="question" id="Question_question" placeholder="" {{
+    ('value="%s"' % (question.question if question.question else "")
         if question is defined
         else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Question_question_error"></div>{% endif %}{% endif %}{% endif %}
@@ -55,7 +69,8 @@ id имеет тип number, который еще не поддерживает
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Question_answer">Ответ
 </label>
-<input class="form-control width-100% text-sm" type="text" name="answer" id="Question_answer" placeholder="" {{('value="' + (question.answer if question.answer else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="answer" id="Question_answer" placeholder="" {{
+    ('value="%s"' % (question.answer if question.answer else "")
         if question is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Question_answer_error"></div>{% endif %}{% endif %}{% endif %}
@@ -70,7 +85,8 @@ id имеет тип number, который еще не поддерживает
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Question_pages">Страницы, на которых будет отображаться этот вопрос в разделе "частозадаваемые вопросы"
 </label>
-<input class="form-control width-100% text-sm" type="text" name="pages" id="Question_pages" placeholder="" {{('value="' + (question.pages if question.pages else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="pages" id="Question_pages" placeholder="" {{
+    ('value="%s"' % (question.pages if question.pages else "")
         if question is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Question_pages_error"></div>{% endif %}{% endif %}{% endif %}

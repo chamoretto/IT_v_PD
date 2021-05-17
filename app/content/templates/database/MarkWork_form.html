@@ -18,10 +18,22 @@ criterion имеет тип select, который еще не поддержи�
 user_work имеет тип select, который еще не поддерживается...
 </label></div>
 
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-value имеет тип number, который еще не поддерживается...
-</label></div>
-</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>
+{% if access_mode is defined and access is defined %}
+   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'expert': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+   {% if access_mode in ns.good_modes %}
+      {% if (markwork is defined and markwork.value != Undefined) or markwork is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="MarkWork_value">Количество баллов
+<span class="color-error">*</span></label>
+<input class="form-control width-100% text-sm" type="number" name="value" id="MarkWork_value" placeholder="" {{
+    ('value="%s"' % (markwork.value if markwork.value else "")
+        if markwork is defined
+        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="MarkWork_value_error"></div>{% endif %}{% endif %}{% endif %}</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
 </div></form>

@@ -10,10 +10,22 @@
 {% endif %}
 <fieldset class="margin-bottom-md">
 <legend class="form-legend">News</legend>
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-id имеет тип number, который еще не поддерживается...
-</label></div>
-
+{% if access_mode is defined and access is defined %}
+   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['edit', 'look'], 'admin': ['edit', 'look'], 'smm': ['edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+   {% if access_mode in ns.good_modes %}
+      {% if (news is defined and news.id != Undefined) or news is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="News_id">id
+<span class="color-error">*</span></label>
+<input class="form-control width-100% text-sm" type="number" name="id" id="News_id" placeholder="" {{
+    ('value="%s"' % (news.id if news.id else "")
+        if news is defined
+        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="News_id_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
    {% set ns = namespace(good_modes=[]) %}
    {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'smm': ['create', 'edit', 'look']} %}
@@ -25,7 +37,8 @@ id имеет тип number, который еще не поддерживает
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="News_page_url">Ссылка, по которой будет распологаться страница
 </label>
-<input class="form-control width-100% text-sm" type="text" name="page_url" id="News_page_url" placeholder="" {{('value="' + (news.page_url if news.page_url else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="page_url" id="News_page_url" placeholder="" {{
+    ('value="%s"' % (news.page_url if news.page_url else "")
         if news is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="News_page_url_error"></div>{% endif %}{% endif %}{% endif %}
@@ -40,7 +53,8 @@ id имеет тип number, который еще не поддерживает
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="News_page_path">имя файла страницы
 </label>
-<input class="form-control width-100% text-sm" type="text" name="page_path" id="News_page_path" placeholder="" {{('value="' + (news.page_path if news.page_path else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="page_path" id="News_page_path" placeholder="" {{
+    ('value="%s"' % (news.page_path if news.page_path else "")
         if news is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="News_page_path_error"></div>{% endif %}{% endif %}{% endif %}
@@ -84,18 +98,50 @@ root_page имеет тип select, который еще не поддержи�
 child_pages имеет тип select, который еще не поддерживается...
 </label></div>
 
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-title имеет тип number, который еще не поддерживается...
-</label></div>
-
+{% if access_mode is defined and access is defined %}
+   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'smm': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+   {% if access_mode in ns.good_modes %}
+      {% if (news is defined and news.title != Undefined) or news is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="News_title">Заголовок страницы
+</label>
+<input class="form-control width-100% text-sm" type="number" name="title" id="News_title" placeholder="" {{
+    ('value="%s"' % (news.title if news.title else "")
+        if news is defined
+        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="News_title_error"></div>{% endif %}{% endif %}{% endif %}
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
 questions имеет тип multi_select, который еще не поддерживается...
 </label></div>
 
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-auto_publish имеет тип datetime, который еще не поддерживается...
-</label></div>
-
+{% if access_mode is defined and access is defined %}
+   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'smm': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+   {% if access_mode in ns.good_modes %}
+      {% if (news is defined and news.auto_publish != Undefined) or news is not defined %}
+<fieldset class="margin-bottom-md">
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="date_start">Введите время публикации новости</label>
+<input class="form-control width-100% text-sm" type="datetime-local" name="auto_publish" id="News_auto_publish" placeholder=""  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}
+{% set value = 
+    ('value="%s"' % (news.auto_publish if news.auto_publish else "")
+        if news is defined
+        else "")|safe  %}
+{% if "value" in value and value.split()|length == 2 %}
+{{value.split() | join("T")}}
+{% else %}
+{{value}}
+{% endif %}
+>
+</div></fieldset>
+<div id="News_auto_publish_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
    {% set ns = namespace(good_modes=[]) %}
    {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'smm': ['create', 'edit', 'look']} %}
@@ -106,9 +152,14 @@ auto_publish имеет тип datetime, который еще не поддер
       {% if (news is defined and news.image != Undefined) or news is not defined %}
 <fieldset class="file-upload margin-bottom-sm"><label class="form-label margin-bottom-xxs" for="News_image">Главное изображение в новости
 </label>
-<br><label for="News_image" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text" id="News_image_span">Главное изображение в новости</span></span> </label> <input type="file" accept="image/x-tiff,image/pjpeg,image/x-quicktime,image/x-xpixmap,image/x-pict,image/gif,image/x-windows-bmp,image/pict,image/bmp,image/x-jps,image/x-dwg,image/vnd.dwg,image/jpeg,image/x-jg,image/tiff,image/png,image/x-icon,image/x-pcx" class="file-upload__input"  name="image" id="News_image" placeholder="" {{('value="' + (news.image if news.image else "") + '"' 
+<br><label for="News_image" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text" id="News_image_span">{% set value = 
+    ('value="%s"' % (news.image if news.image else "")
         if news is defined
-        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  {{('value="' + (news.image if news.image else "") + '"' 
+        else "")|safe  %}{{ value | replace("value=", "") | replace('"', "") if "value" in value and value | replace("value=", "") | replace('"', "") != '""' else "Загрузить" }}</span></span> </label> <input type="file" accept="image/x-tiff,image/pjpeg,image/x-quicktime,image/x-xpixmap,image/x-pict,image/gif,image/x-windows-bmp,image/pict,image/bmp,image/x-jps,image/x-dwg,image/vnd.dwg,image/jpeg,image/x-jg,image/tiff,image/png,image/x-icon,image/x-pcx" class="file-upload__input"  name="image" id="News_image" placeholder="" {{
+    ('value="%s"' % (news.image if news.image else "")
+        if news is defined
+        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  {{
+    ('value="%s"' % (news.image if news.image else "")
         if news is defined
         else "")|safe }} tabindex="-1"></fieldset><div id="News_image_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
@@ -122,7 +173,8 @@ auto_publish имеет тип datetime, который еще не поддер
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="News_author">Автор новости
 </label>
-<input class="form-control width-100% text-sm" type="text" name="author" id="News_author" placeholder="" {{('value="' + (news.author if news.author else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="author" id="News_author" placeholder="" {{
+    ('value="%s"' % (news.author if news.author else "")
         if news is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="News_author_error"></div>{% endif %}{% endif %}{% endif %}
@@ -137,7 +189,8 @@ auto_publish имеет тип datetime, который еще не поддер
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="News_description">Краткое описание новост
 </label>
-<input class="form-control width-100% text-sm" type="text" name="description" id="News_description" placeholder="" {{('value="' + (news.description if news.description else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="description" id="News_description" placeholder="" {{
+    ('value="%s"' % (news.description if news.description else "")
         if news is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="News_description_error"></div>{% endif %}{% endif %}{% endif %}</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>

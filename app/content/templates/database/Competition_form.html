@@ -10,10 +10,22 @@
 {% endif %}
 <fieldset class="margin-bottom-md">
 <legend class="form-legend">Competition</legend>
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-id имеет тип number, который еще не поддерживается...
-</label></div>
-
+{% if access_mode is defined and access is defined %}
+   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+   {% if access_mode in ns.good_modes %}
+      {% if (competition is defined and competition.id != Undefined) or competition is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Competition_id">id
+<span class="color-error">*</span></label>
+<input class="form-control width-100% text-sm" type="number" name="id" id="Competition_id" placeholder="" {{
+    ('value="%s"' % (competition.id if competition.id else "")
+        if competition is defined
+        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="Competition_id_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
    {% set ns = namespace(good_modes=[]) %}
    {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look']} %}
@@ -25,18 +37,59 @@ id имеет тип number, который еще не поддерживает
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Competition_name">Название конкурса
 <span class="color-error">*</span></label>
-<input class="form-control width-100% text-sm" type="text" name="name" id="Competition_name" placeholder="" {{('value="' + (competition.name if competition.name else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="name" id="Competition_name" placeholder="" {{
+    ('value="%s"' % (competition.name if competition.name else "")
         if competition is defined
         else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Competition_name_error"></div>{% endif %}{% endif %}{% endif %}
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-start имеет тип datetime, который еще не поддерживается...
-</label></div>
-
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-end имеет тип datetime, который еще не поддерживается...
-</label></div>
-
+{% if access_mode is defined and access is defined %}
+   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+   {% if access_mode in ns.good_modes %}
+      {% if (competition is defined and competition.start != Undefined) or competition is not defined %}
+<fieldset class="margin-bottom-md">
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="date_start">дата и время начала</label>
+<input class="form-control width-100% text-sm" type="datetime-local" name="start" id="Competition_start" placeholder=""  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}
+{% set value = 
+    ('value="%s"' % (competition.start if competition.start else "")
+        if competition is defined
+        else "")|safe  %}
+{% if "value" in value and value.split()|length == 2 %}
+{{value.split() | join("T")}}
+{% else %}
+{{value}}
+{% endif %}
+>
+</div></fieldset>
+<div id="Competition_start_error"></div>{% endif %}{% endif %}{% endif %}
+{% if access_mode is defined and access is defined %}
+   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+   {% if access_mode in ns.good_modes %}
+      {% if (competition is defined and competition.end != Undefined) or competition is not defined %}
+<fieldset class="margin-bottom-md">
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="date_start">дата и время окончания приёма работ на конкурс</label>
+<input class="form-control width-100% text-sm" type="datetime-local" name="end" id="Competition_end" placeholder=""  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}
+{% set value = 
+    ('value="%s"' % (competition.end if competition.end else "")
+        if competition is defined
+        else "")|safe  %}
+{% if "value" in value and value.split()|length == 2 %}
+{{value.split() | join("T")}}
+{% else %}
+{{value}}
+{% endif %}
+>
+</div></fieldset>
+<div id="Competition_end_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
    {% set ns = namespace(good_modes=[]) %}
    {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look']} %}
@@ -48,7 +101,8 @@ end имеет тип datetime, который еще не поддержива�
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Competition_description">Описание конкурса
 </label>
-<input class="form-control width-100% text-sm" type="text" name="description" id="Competition_description" placeholder="" {{('value="' + (competition.description if competition.description else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="description" id="Competition_description" placeholder="" {{
+    ('value="%s"' % (competition.description if competition.description else "")
         if competition is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Competition_description_error"></div>{% endif %}{% endif %}{% endif %}
@@ -62,9 +116,14 @@ end имеет тип datetime, который еще не поддержива�
       {% if (competition is defined and competition.document != Undefined) or competition is not defined %}
 <fieldset class="file-upload margin-bottom-sm"><label class="form-label margin-bottom-xxs" for="Competition_document">Ркгламент проведения конкурса
 </label>
-<br><label for="Competition_document" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text" id="Competition_document_span">Ркгламент проведения конкурса</span></span> </label> <input type="file" accept="application/pdf,application/x-zip-compressed,application/zip,multipart/x-zip,application/x-compressed,application/msword,application/msword,application/msword" class="file-upload__input"  name="document" id="Competition_document" placeholder="" {{('value="' + (competition.document if competition.document else "") + '"' 
+<br><label for="Competition_document" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text" id="Competition_document_span">{% set value = 
+    ('value="%s"' % (competition.document if competition.document else "")
         if competition is defined
-        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  {{('value="' + (competition.document if competition.document else "") + '"' 
+        else "")|safe  %}{{ value | replace("value=", "") | replace('"', "") if "value" in value and value | replace("value=", "") | replace('"', "") != '""' else "Загрузить" }}</span></span> </label> <input type="file" accept="application/msword,application/msword,application/msword,application/pdf,application/x-zip-compressed,application/zip,multipart/x-zip,application/x-compressed" class="file-upload__input"  name="document" id="Competition_document" placeholder="" {{
+    ('value="%s"' % (competition.document if competition.document else "")
+        if competition is defined
+        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  {{
+    ('value="%s"' % (competition.document if competition.document else "")
         if competition is defined
         else "")|safe }} tabindex="-1"></fieldset><div id="Competition_document_error"></div>{% endif %}{% endif %}{% endif %}</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>

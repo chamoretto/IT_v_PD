@@ -10,10 +10,22 @@
 {% endif %}
 <fieldset class="margin-bottom-md">
 <legend class="form-legend">Task</legend>
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-id имеет тип number, который еще не поддерживается...
-</label></div>
-
+{% if access_mode is defined and access is defined %}
+   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['edit', 'look'], 'admin': ['edit', 'look'], 'expert': ['look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+   {% if access_mode in ns.good_modes %}
+      {% if (task is defined and task.id != Undefined) or task is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Task_id">id
+<span class="color-error">*</span></label>
+<input class="form-control width-100% text-sm" type="number" name="id" id="Task_id" placeholder="" {{
+    ('value="%s"' % (task.id if task.id else "")
+        if task is defined
+        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="Task_id_error"></div>{% endif %}{% endif %}{% endif %}
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
 competition_direction имеет тип select, который еще не поддерживается...
 </label></div>
@@ -28,9 +40,14 @@ competition_direction имеет тип select, который еще не по�
       {% if (task is defined and task.task_document != Undefined) or task is not defined %}
 <fieldset class="file-upload margin-bottom-sm"><label class="form-label margin-bottom-xxs" for="Task_task_document">документ с заданием
 </label>
-<br><label for="Task_task_document" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text" id="Task_task_document_span">документ с заданием</span></span> </label> <input type="file" accept="application/pdf,application/x-zip-compressed,application/zip,multipart/x-zip,application/x-compressed,application/msword,application/msword,application/msword" class="file-upload__input"  name="task_document" id="Task_task_document" placeholder="" {{('value="' + (task.task_document if task.task_document else "") + '"' 
+<br><label for="Task_task_document" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text" id="Task_task_document_span">{% set value = 
+    ('value="%s"' % (task.task_document if task.task_document else "")
         if task is defined
-        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  {{('value="' + (task.task_document if task.task_document else "") + '"' 
+        else "")|safe  %}{{ value | replace("value=", "") | replace('"', "") if "value" in value and value | replace("value=", "") | replace('"', "") != '""' else "Загрузить" }}</span></span> </label> <input type="file" accept="application/msword,application/msword,application/msword,application/pdf,application/x-zip-compressed,application/zip,multipart/x-zip,application/x-compressed" class="file-upload__input"  name="task_document" id="Task_task_document" placeholder="" {{
+    ('value="%s"' % (task.task_document if task.task_document else "")
+        if task is defined
+        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  {{
+    ('value="%s"' % (task.task_document if task.task_document else "")
         if task is defined
         else "")|safe }} tabindex="-1"></fieldset><div id="Task_task_document_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
@@ -44,18 +61,59 @@ competition_direction имеет тип select, который еще не по�
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Task_description">Краткое описание задания
 </label>
-<input class="form-control width-100% text-sm" type="text" name="description" id="Task_description" placeholder="" {{('value="' + (task.description if task.description else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="description" id="Task_description" placeholder="" {{
+    ('value="%s"' % (task.description if task.description else "")
         if task is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Task_description_error"></div>{% endif %}{% endif %}{% endif %}
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-start имеет тип datetime, который еще не поддерживается...
-</label></div>
-
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-end имеет тип datetime, который еще не поддерживается...
-</label></div>
-</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>
+{% if access_mode is defined and access is defined %}
+   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'expert': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+   {% if access_mode in ns.good_modes %}
+      {% if (task is defined and task.start != Undefined) or task is not defined %}
+<fieldset class="margin-bottom-md">
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="date_start">дата и время начала проведения этапа</label>
+<input class="form-control width-100% text-sm" type="datetime-local" name="start" id="Task_start" placeholder=""  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}
+{% set value = 
+    ('value="%s"' % (task.start if task.start else "")
+        if task is defined
+        else "")|safe  %}
+{% if "value" in value and value.split()|length == 2 %}
+{{value.split() | join("T")}}
+{% else %}
+{{value}}
+{% endif %}
+>
+</div></fieldset>
+<div id="Task_start_error"></div>{% endif %}{% endif %}{% endif %}
+{% if access_mode is defined and access is defined %}
+   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'expert': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+   {% if access_mode in ns.good_modes %}
+      {% if (task is defined and task.end != Undefined) or task is not defined %}
+<fieldset class="margin-bottom-md">
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="date_start">дата и время окончания приёма работ на этот этап</label>
+<input class="form-control width-100% text-sm" type="datetime-local" name="end" id="Task_end" placeholder=""  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}
+{% set value = 
+    ('value="%s"' % (task.end if task.end else "")
+        if task is defined
+        else "")|safe  %}
+{% if "value" in value and value.split()|length == 2 %}
+{{value.split() | join("T")}}
+{% else %}
+{{value}}
+{% endif %}
+>
+</div></fieldset>
+<div id="Task_end_error"></div>{% endif %}{% endif %}{% endif %}</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
 </div></form>

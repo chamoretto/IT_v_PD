@@ -21,7 +21,8 @@
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Direction_name">Название направления (что-то вроде "Design" или "IT")
 <span class="color-error">*</span></label>
-<input class="form-control width-100% text-sm" type="text" name="name" id="Direction_name" placeholder="" {{('value="' + (direction.name if direction.name else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="name" id="Direction_name" placeholder="" {{
+    ('value="%s"' % (direction.name if direction.name else "")
         if direction is defined
         else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Direction_name_error"></div>{% endif %}{% endif %}{% endif %}
@@ -35,9 +36,14 @@
       {% if (direction is defined and direction.icon != Undefined) or direction is not defined %}
 <fieldset class="file-upload margin-bottom-sm"><label class="form-label margin-bottom-xxs" for="Direction_icon">Картинка направления
 <span class="color-error">*</span></label>
-<br><label for="Direction_icon" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text" id="Direction_icon_span">Картинка направления</span></span> </label> <input type="file" accept="image/x-tiff,image/pjpeg,image/x-quicktime,image/x-xpixmap,image/x-pict,image/gif,image/x-windows-bmp,image/pict,image/bmp,image/x-jps,image/x-dwg,image/vnd.dwg,image/jpeg,image/x-jg,image/tiff,image/png,image/x-icon,image/x-pcx" class="file-upload__input"  name="icon" id="Direction_icon" placeholder="" {{('value="' + (direction.icon if direction.icon else "") + '"' 
+<br><label for="Direction_icon" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text" id="Direction_icon_span">{% set value = 
+    ('value="%s"' % (direction.icon if direction.icon else "")
         if direction is defined
-        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  {{('value="' + (direction.icon if direction.icon else "") + '"' 
+        else "")|safe  %}{{ value | replace("value=", "") | replace('"', "") if "value" in value and value | replace("value=", "") | replace('"', "") != '""' else "Загрузить" }}</span></span> </label> <input type="file" accept="image/x-tiff,image/pjpeg,image/x-quicktime,image/x-xpixmap,image/x-pict,image/gif,image/x-windows-bmp,image/pict,image/bmp,image/x-jps,image/x-dwg,image/vnd.dwg,image/jpeg,image/x-jg,image/tiff,image/png,image/x-icon,image/x-pcx" class="file-upload__input"  name="icon" id="Direction_icon" placeholder="" {{
+    ('value="%s"' % (direction.icon if direction.icon else "")
+        if direction is defined
+        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  {{
+    ('value="%s"' % (direction.icon if direction.icon else "")
         if direction is defined
         else "")|safe }} tabindex="-1"></fieldset><div id="Direction_icon_error"></div>{% endif %}{% endif %}{% endif %}
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">

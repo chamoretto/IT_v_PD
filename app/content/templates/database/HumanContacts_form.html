@@ -41,7 +41,8 @@ telegram имеет тип url, который еще не поддержива�
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="HumanContacts_home_adress">Ваш домашний адрес
 </label>
-<input class="form-control width-100% text-sm" type="text" name="home_adress" id="HumanContacts_home_adress" placeholder="" {{('value="' + (humancontacts.home_adress if humancontacts.home_adress else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="home_adress" id="HumanContacts_home_adress" placeholder="" {{
+    ('value="%s"' % (humancontacts.home_adress if humancontacts.home_adress else "")
         if humancontacts is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="HumanContacts_home_adress_error"></div>{% endif %}{% endif %}{% endif %}</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>

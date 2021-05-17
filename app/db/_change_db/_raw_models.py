@@ -726,7 +726,7 @@ class Page(db.Entity):
         :mod child_pages dev admin smm: look
 
         :param title: Заголовок страницы
-        :type title: number
+        :type title: text
         :access title: dev admin smm
         :mod title dev admin smm: create edit look
 

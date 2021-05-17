@@ -180,7 +180,8 @@ def _disabled_field(param: DbDocs) -> str:
 
 
 def _get_value_code(param: DbDocs) -> str:
-    return f'''{'{{'}('value="' + ({param.class_name.lower()}.{param.name} if {param.class_name.lower()}.{param.name} else "") + '"' 
+    return f'''{'{{'}
+    ('value="%s"' % ({param.class_name.lower()}.{param.name} if {param.class_name.lower()}.{param.name} else "")
         if {param.class_name.lower()} is defined
         else {(("'" + 'value="' + str(param.default) + '"' + "'|safe") if (
             param.default is not None and bool(param.default)) else '""')})|safe {'}}'}'''
@@ -190,6 +191,7 @@ def _get_checkbox_value(param: DbDocs) -> str:
     return f'''{"{{"} (( "checked" if {param.class_name.lower()}.{param.name} else "" )|safe 
     if {param.class_name.lower()} is defined else
             {'"checked"' if param.default is not None and param.default else '""'}|safe ){'}}'}'''
+
 
 def get_text_label(param: DbDocs, l_class="form-label margin-bottom-xxs") -> str:
     return f'<label class="{l_class}" for="{_get_raw_id(param)}">{param.description}\n' \
@@ -209,15 +211,18 @@ def required_options_into_input(param: DbDocs, black_list=[]) -> str:
 
 
 @field_decorator
-def html_text(param: DbDocs) -> str:
+def html_text(param: DbDocs, html_input_type="text") -> str:
     # la nguage=HTML
 
     text = f'<div class="margin-bottom-sm">\n' \
            f'{get_text_label(param)}' \
            f'<input class="form-control width-100% text-sm"' \
-           f' type="text" {required_options_into_input(param)}>\n' \
+           f' type="{html_input_type}" {required_options_into_input(param)}>\n' \
            f'</div>'
     return text
+
+def html_number(param: DbDocs)-> str:
+    return html_text(param, html_input_type='number')
 
 
 @field_decorator
@@ -280,7 +285,11 @@ def _base_html_file(
            f'{get_text_label(param)}<br>' \
            f'<label for="{_get_raw_id(param)}" class="file-upload__label btn btn--primary">' \
            f'<span class="flex items-center">' \
-           f'<span class="file-upload__text" id="{_get_raw_id(param)}_span">{param.description}</span>' \
+           f'<span class="file-upload__text" id="{_get_raw_id(param)}_span">' \
+           f'{"{% set value = " + _get_value_code(param).replace("{{", "").replace("}}", "") + " %}"}' \
+           f'{"{{"} value | replace("value=", "") | replace(\'"\', "")' \
+           f' if "value" in value and value | replace("value=", "") | replace(\'"\', "") != \'""\' ' \
+           f'else "Загрузить" {"}}"}</span>' \
            f'</span> </label> ' \
            f'<input type="file" accept=' \
            f'"{",".join(file_type for type_group in (mime_types[key] for key in groups if mime_types.get(key)) for file_type in filter(file_filter, type_group))}" ' \
@@ -316,6 +325,7 @@ def html_bool(param: DbDocs):
     # text = f""" <fieldset class="margin-bottom-md"> <input type="checkbox" {required_options_into_input(param, black_list=[_get_value_code])} value="true" ></fieldset>"""
     return text
 
+
 @field_decorator
 def html_select(param: DbDocs) -> str:
     # langu age=HTML
@@ -329,6 +339,31 @@ def html_select(param: DbDocs) -> str:
            f'<option disabled {{"" if {param.class_name.lower()} is defined ' \
            f' and bool({param.class_name.lower()}.{param.name}) else "selected"}}>{param.placeholder}</option>'
     return text
+
+
+@field_decorator
+def datetime_html(param: DbDocs, html_input_type="datetime-local") -> str:
+    return f'<fieldset class="margin-bottom-md">\n' \
+           f'<div class="margin-bottom-sm">\n' \
+           f'<label class="form-label margin-bottom-xxs" for="date_start">{param.description}</label>\n' \
+           f'<input class="form-control width-100% text-sm"' \
+           f' type="{html_input_type}" {required_options_into_input(param, black_list=[_get_value_code])}\n' \
+           f'{"{% set value = " + _get_value_code(param).replace("{{", "").replace("}}", "") + " %}"}\n' \
+           f'{"{%"} if "value" in value and value.split()|length == 2 {"%}"}\n' \
+           f'{"{{"}value.split() | join("T"){"}}"}\n' \
+           f'{"{%"} else {"%}"}\n' \
+           f'{"{{"}value{"}}"}\n' \
+           f'{"{%"} endif {"%}"}\n' \
+           f'>\n' \
+           f'</div></fieldset>\n'
+
+
+def date_html(param: DbDocs) -> str:
+    return datetime_html(param, html_input_type='date')
+
+
+def time_html(param: DbDocs) -> str:
+    return datetime_html(param, html_input_type='time')
 
 
 def get_doc(ent):
@@ -346,6 +381,10 @@ type_to_html.update({
     FieldHtmlType.IMAGE: html_image,
     FieldHtmlType.FILE: html_text_file,
     FieldHtmlType.BOOL: html_bool,
+    FieldHtmlType.NUMBER: html_number,
+    FieldHtmlType.DATE: date_html,
+    FieldHtmlType.TIME: time_html,
+    FieldHtmlType.DATETIME: datetime_html,
 })
 
 

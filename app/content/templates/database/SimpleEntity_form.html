@@ -21,7 +21,8 @@
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="SimpleEntity_key">Название новой колонки в базе данных
 <span class="color-error">*</span></label>
-<input class="form-control width-100% text-sm" type="text" name="key" id="SimpleEntity_key" placeholder="" {{('value="' + (simpleentity.key if simpleentity.key else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="key" id="SimpleEntity_key" placeholder="" {{
+    ('value="%s"' % (simpleentity.key if simpleentity.key else "")
         if simpleentity is defined
         else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="SimpleEntity_key_error"></div>{% endif %}{% endif %}{% endif %}

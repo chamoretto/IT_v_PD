@@ -10,10 +10,22 @@
 {% endif %}
 <fieldset class="margin-bottom-md">
 <legend class="form-legend">Criterion</legend>
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-id имеет тип number, который еще не поддерживается...
-</label></div>
-
+{% if access_mode is defined and access is defined %}
+   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['edit', 'look'], 'admin': ['look'], 'expert': ['look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+   {% if access_mode in ns.good_modes %}
+      {% if (criterion is defined and criterion.id != Undefined) or criterion is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Criterion_id">id
+<span class="color-error">*</span></label>
+<input class="form-control width-100% text-sm" type="number" name="id" id="Criterion_id" placeholder="" {{
+    ('value="%s"' % (criterion.id if criterion.id else "")
+        if criterion is defined
+        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="Criterion_id_error"></div>{% endif %}{% endif %}{% endif %}
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
 task имеет тип select, который еще не поддерживается...
 </label></div>
@@ -29,7 +41,8 @@ task имеет тип select, который еще не поддерживае
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Criterion_name">Название критерия
 <span class="color-error">*</span></label>
-<input class="form-control width-100% text-sm" type="text" name="name" id="Criterion_name" placeholder="" {{('value="' + (criterion.name if criterion.name else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="name" id="Criterion_name" placeholder="" {{
+    ('value="%s"' % (criterion.name if criterion.name else "")
         if criterion is defined
         else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Criterion_name_error"></div>{% endif %}{% endif %}{% endif %}
@@ -44,14 +57,27 @@ task имеет тип select, который еще не поддерживае
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Criterion_description">Описание критерия
 </label>
-<input class="form-control width-100% text-sm" type="text" name="description" id="Criterion_description" placeholder="" {{('value="' + (criterion.description if criterion.description else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="description" id="Criterion_description" placeholder="" {{
+    ('value="%s"' % (criterion.description if criterion.description else "")
         if criterion is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Criterion_description_error"></div>{% endif %}{% endif %}{% endif %}
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-max_value имеет тип number, который еще не поддерживается...
-</label></div>
-
+{% if access_mode is defined and access is defined %}
+   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'expert': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+   {% if access_mode in ns.good_modes %}
+      {% if (criterion is defined and criterion.max_value != Undefined) or criterion is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Criterion_max_value">Максимальное количество баллов за критерий
+</label>
+<input class="form-control width-100% text-sm" type="number" name="max_value" id="Criterion_max_value" placeholder="" {{
+    ('value="%s"' % (criterion.max_value if criterion.max_value else "")
+        if criterion is defined
+        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="Criterion_max_value_error"></div>{% endif %}{% endif %}{% endif %}
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
 mark_works имеет тип select, который еще не поддерживается...
 </label></div>

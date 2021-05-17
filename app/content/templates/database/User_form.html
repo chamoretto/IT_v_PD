@@ -10,10 +10,22 @@
 {% endif %}
 <fieldset class="margin-bottom-md">
 <legend class="form-legend">User</legend>
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-id имеет тип number, который еще не поддерживается...
-</label></div>
-
+{% if access_mode is defined and access is defined %}
+   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['edit', 'look'], 'admin': ['edit', 'look'], 'self': [], 'user': ['edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+   {% if access_mode in ns.good_modes %}
+      {% if (user is defined and user.id != Undefined) or user is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="User_id">Идентификатор
+<span class="color-error">*</span></label>
+<input class="form-control width-100% text-sm" type="number" name="id" id="User_id" placeholder="" {{
+    ('value="%s"' % (user.id if user.id else "")
+        if user is defined
+        else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="User_id_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
    {% set ns = namespace(good_modes=[]) %}
    {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'self': [], 'public': [], 'user': ['create', 'edit', 'look']} %}
@@ -25,7 +37,8 @@ id имеет тип number, который еще не поддерживает
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_username">Логин
 <span class="color-error">*</span></label>
-<input class="form-control width-100% text-sm" type="text" name="username" id="User_username" placeholder="" {{('value="' + (user.username if user.username else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="username" id="User_username" placeholder="" {{
+    ('value="%s"' % (user.username if user.username else "")
         if user is defined
         else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="User_username_error"></div>{% endif %}{% endif %}{% endif %}
@@ -39,7 +52,8 @@ id имеет тип number, который еще не поддерживает
       {% if (user is defined and user.password != Undefined) or user is not defined %}
 <div class="margin-bottom-sm"><div class="flex justify-between margin-bottom-xxxs"><label class="form-label margin-bottom-xxs" for="User_password">Пароль
 <span class="color-error">*</span></label>
-</div><div class="password js-password"><input class="form-control width-100% password__input js-password__input" type="password" name="password" id="User_password" placeholder="" {{('value="' + (user.password if user.password else "") + '"' 
+</div><div class="password js-password"><input class="form-control width-100% password__input js-password__input" type="password" name="password" id="User_password" placeholder="" {{
+    ('value="%s"' % (user.password if user.password else "")
         if user is defined
         else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }} ><button class="password__btn flex flex-center js-password__btn" aria-hidden="true"><span class="password__btn-label" title="Show Password"><svg class="icon block" viewBox="0 0 32 32"><g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" stroke="currentColor" fill="none"><path d="M1.409,17.182a1.936,1.936,0,0,1-.008-2.37C3.422,12.162,8.886,6,16,6c7.02,0,12.536,6.158,14.585,8.81a1.937,1.937,0,0,1,0,2.38C28.536,19.842,23.02,26,16,26S3.453,19.828,1.409,17.182Z" stroke-miterlimit="10"></path><circle cx="16" cy="16" r="6" stroke-miterlimit="10"></circle></g></svg></span><span class="password__btn-label" title="Hide Password"><svg class="icon block" viewBox="0 0 32 32"><g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" stroke="currentColor" fill="none"><path data-cap="butt" d="M8.373,23.627a27.659,27.659,0,0,1-6.958-6.445,1.938,1.938,0,0,1-.008-2.37C3.428,12.162,8.892,6,16.006,6a14.545,14.545,0,0,1,7.626,2.368" stroke-miterlimit="10" stroke-linecap="butt"></path><path d="M27,10.923a30.256,30.256,0,0,1,3.591,3.887,1.937,1.937,0,0,1,0,2.38C28.542,19.842,23.026,26,16.006,26A12.843,12.843,0,0,1,12,25.341" stroke-miterlimit="10"></path><path data-cap="butt" d="M11.764,20.243a6,6,0,0,1,8.482-8.489" stroke-miterlimit="10" stroke-linecap="butt"></path><path d="M21.923,15a6.005,6.005,0,0,1-5.917,7A6.061,6.061,0,0,1,15,21.916" stroke-miterlimit="10"></path><line x1="2" y1="30" x2="30" y2="2" fill="none" stroke-miterlimit="10"></line></g></svg></span></button></div></div><div id="User_password_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
@@ -53,7 +67,8 @@ id имеет тип number, который еще не поддерживает
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_name">Имя пользователя
 <span class="color-error">*</span></label>
-<input class="form-control width-100% text-sm" type="text" name="name" id="User_name" placeholder="" {{('value="' + (user.name if user.name else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="name" id="User_name" placeholder="" {{
+    ('value="%s"' % (user.name if user.name else "")
         if user is defined
         else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="User_name_error"></div>{% endif %}{% endif %}{% endif %}
@@ -68,7 +83,8 @@ id имеет тип number, который еще не поддерживает
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_surname">Фамилия пользователя
 <span class="color-error">*</span></label>
-<input class="form-control width-100% text-sm" type="text" name="surname" id="User_surname" placeholder="" {{('value="' + (user.surname if user.surname else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="surname" id="User_surname" placeholder="" {{
+    ('value="%s"' % (user.surname if user.surname else "")
         if user is defined
         else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="User_surname_error"></div>{% endif %}{% endif %}{% endif %}
@@ -83,7 +99,8 @@ id имеет тип number, который еще не поддерживает
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_email">Почта
 <span class="color-error">*</span></label>
-<input class="form-control width-100% text-sm" type="text" name="email" id="User_email" placeholder="" {{('value="' + (user.email if user.email else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="email" id="User_email" placeholder="" {{
+    ('value="%s"' % (user.email if user.email else "")
         if user is defined
         else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="User_email_error"></div>{% endif %}{% endif %}{% endif %}
@@ -101,9 +118,14 @@ human_contacts имеет тип adding_field, который еще не под
       {% if (user is defined and user.photo != Undefined) or user is not defined %}
 <fieldset class="file-upload margin-bottom-sm"><label class="form-label margin-bottom-xxs" for="User_photo">Ваша фотография
 </label>
-<br><label for="User_photo" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text" id="User_photo_span">Ваша фотография</span></span> </label> <input type="file" accept="image/x-tiff,image/pjpeg,image/x-quicktime,image/x-xpixmap,image/x-pict,image/gif,image/x-windows-bmp,image/pict,image/bmp,image/x-jps,image/x-dwg,image/vnd.dwg,image/jpeg,image/x-jg,image/tiff,image/png,image/x-icon,image/x-pcx" class="file-upload__input"  name="photo" id="User_photo" placeholder="" {{('value="' + (user.photo if user.photo else "") + '"' 
+<br><label for="User_photo" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text" id="User_photo_span">{% set value = 
+    ('value="%s"' % (user.photo if user.photo else "")
         if user is defined
-        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  {{('value="' + (user.photo if user.photo else "") + '"' 
+        else "")|safe  %}{{ value | replace("value=", "") | replace('"', "") if "value" in value and value | replace("value=", "") | replace('"', "") != '""' else "Загрузить" }}</span></span> </label> <input type="file" accept="image/x-tiff,image/pjpeg,image/x-quicktime,image/x-xpixmap,image/x-pict,image/gif,image/x-windows-bmp,image/pict,image/bmp,image/x-jps,image/x-dwg,image/vnd.dwg,image/jpeg,image/x-jg,image/tiff,image/png,image/x-icon,image/x-pcx" class="file-upload__input"  name="photo" id="User_photo" placeholder="" {{
+    ('value="%s"' % (user.photo if user.photo else "")
+        if user is defined
+        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  {{
+    ('value="%s"' % (user.photo if user.photo else "")
         if user is defined
         else "")|safe }} tabindex="-1"></fieldset><div id="User_photo_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
@@ -117,7 +139,8 @@ human_contacts имеет тип adding_field, который еще не под
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_status">Статус
 </label>
-<input class="form-control width-100% text-sm" type="text" name="status" id="User_status" placeholder="" {{('value="' + (user.status if user.status else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="status" id="User_status" placeholder="" {{
+    ('value="%s"' % (user.status if user.status else "")
         if user is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="User_status_error"></div>{% endif %}{% endif %}{% endif %}
@@ -132,7 +155,8 @@ human_contacts имеет тип adding_field, который еще не под
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_description">Пару слов о себе
 </label>
-<input class="form-control width-100% text-sm" type="text" name="description" id="User_description" placeholder="" {{('value="' + (user.description if user.description else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="description" id="User_description" placeholder="" {{
+    ('value="%s"' % (user.description if user.description else "")
         if user is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="User_description_error"></div>{% endif %}{% endif %}{% endif %}
@@ -144,10 +168,30 @@ scopes имеет тип scopes, который еще не поддержива
 questions имеет тип qu_select, который еще не поддерживается...
 </label></div>
 
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-date_of_birth имеет тип date, который еще не поддерживается...
-</label></div>
-
+{% if access_mode is defined and access is defined %}
+   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'self': [], 'public': [], 'user': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+   {% if access_mode in ns.good_modes %}
+      {% if (user is defined and user.date_of_birth != Undefined) or user is not defined %}
+<fieldset class="margin-bottom-md">
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="date_start">Дата рождения</label>
+<input class="form-control width-100% text-sm" type="date" name="date_of_birth" id="User_date_of_birth" placeholder=""  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}
+{% set value = 
+    ('value="%s"' % (user.date_of_birth if user.date_of_birth else "")
+        if user is defined
+        else "")|safe  %}
+{% if "value" in value and value.split()|length == 2 %}
+{{value.split() | join("T")}}
+{% else %}
+{{value}}
+{% endif %}
+>
+</div></fieldset>
+<div id="User_date_of_birth_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
    {% set ns = namespace(good_modes=[]) %}
    {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'self': [], 'user': ['create', 'edit', 'look']} %}
@@ -159,7 +203,8 @@ date_of_birth имеет тип date, который еще не поддерж�
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_about_program">Что для вас программа?
 </label>
-<input class="form-control width-100% text-sm" type="text" name="about_program" id="User_about_program" placeholder="" {{('value="' + (user.about_program if user.about_program else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="about_program" id="User_about_program" placeholder="" {{
+    ('value="%s"' % (user.about_program if user.about_program else "")
         if user is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="User_about_program_error"></div>{% endif %}{% endif %}{% endif %}
@@ -174,7 +219,8 @@ date_of_birth имеет тип date, который еще не поддерж�
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="User_direction">Какое направление прогшраммы вы считаете главным для себя?
 </label>
-<input class="form-control width-100% text-sm" type="text" name="direction" id="User_direction" placeholder="" {{('value="' + (user.direction if user.direction else "") + '"' 
+<input class="form-control width-100% text-sm" type="text" name="direction" id="User_direction" placeholder="" {{
+    ('value="%s"' % (user.direction if user.direction else "")
         if user is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="User_direction_error"></div>{% endif %}{% endif %}{% endif %}</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>

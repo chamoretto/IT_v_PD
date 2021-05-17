@@ -26,10 +26,30 @@ mark_works имеет тип select, который еще не поддержи
 user имеет тип select, который еще не поддерживается...
 </label></div>
 
-<div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
-upload_date имеет тип datetime, который еще не поддерживается...
-</label></div>
-</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>
+{% if access_mode is defined and access is defined %}
+   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['edit', 'look'], 'admin': ['edit', 'look'], 'expert': ['edit', 'look'], 'user': ['look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+   {% if access_mode in ns.good_modes %}
+      {% if (userwork is defined and userwork.upload_date != Undefined) or userwork is not defined %}
+<fieldset class="margin-bottom-md">
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="date_start">Время последнего обновления</label>
+<input class="form-control width-100% text-sm" type="datetime-local" name="upload_date" id="UserWork_upload_date" placeholder=""  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}
+{% set value = 
+    ('value="%s"' % (userwork.upload_date if userwork.upload_date else "")
+        if userwork is defined
+        else "")|safe  %}
+{% if "value" in value and value.split()|length == 2 %}
+{{value.split() | join("T")}}
+{% else %}
+{{value}}
+{% endif %}
+>
+</div></fieldset>
+<div id="UserWork_upload_date_error"></div>{% endif %}{% endif %}{% endif %}</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
 </div></form>
