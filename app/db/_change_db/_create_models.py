@@ -130,7 +130,8 @@ def create_db_models():
                   "from app.pydantic_models import unique_db_field_models as pk_pd\n" \
                   "from app.pydantic_models import input_ent as inp_pd\n" \
                   "from app.pydantic_models import output_ent as out_pd\n" \
-                  "from app.pydantic_models import only_primarykey_fields_model as only_pk\n\n" + header_file
+                  "from app.pydantic_models import only_primarykey_fields_model as only_pk\n" \
+                  "from app.utils.html_utils import nice_table_page\n\n" + header_file
 
     classes: Dict[str: str] = {}
     for name, ent in db.entities.items():

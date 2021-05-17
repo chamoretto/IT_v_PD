@@ -4,7 +4,7 @@
 {# =======! Ни одно изменение в этом файле не будет сохранено! !======= #}
 
 <div class="container max-width-lg">
-{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
+<h3 class="margin-bottom-sm"><a href="/db/Task" class="no-effect" title="Вернуться к просмотру объектов БД"><i class="fa fa-long-arrow-alt-left"></i></a>Вернуться ко всем объектам Task</h3>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
 {#{access_mode}#}
 <form id="task" action="{{(action_url if action_url is defined else "/db/Task/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
 {% endif %}
@@ -43,7 +43,7 @@ competition_direction имеет тип select, который еще не по�
 <br><label for="Task_task_document" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text" id="Task_task_document_span">{% set value = 
     ('value="%s"' % (task.task_document if task.task_document else "")
         if task is defined
-        else "")|safe  %}{{ value | replace("value=", "") | replace('"', "") if "value" in value and value | replace("value=", "") | replace('"', "") != '""' else "Загрузить" }}</span></span> </label> <input type="file" accept="application/msword,application/msword,application/msword,application/pdf,application/x-zip-compressed,application/zip,multipart/x-zip,application/x-compressed" class="file-upload__input"  name="task_document" id="Task_task_document" placeholder="" {{
+        else "")|safe  %}{{ value | replace("value=", "") | replace('"', "") if "value" in value and value | replace("value=", "") | replace('"', "") != '""' else "Загрузить" }}</span></span> </label> <input type="file" accept="application/msword,application/msword,application/x-zip-compressed,application/zip,multipart/x-zip,application/x-compressed,application/pdf,application/msword" class="file-upload__input"  name="task_document" id="Task_task_document" placeholder="" {{
     ('value="%s"' % (task.task_document if task.task_document else "")
         if task is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  {{

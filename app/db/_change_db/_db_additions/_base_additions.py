@@ -1,10 +1,12 @@
 from typing import List
+from functools import reduce
 
 from pony.orm import db_session, show, select
 
 from app.db._change_db import _raw_models as _raw_m
 from app.db._change_db._db_additions._tools_for_addition import AddArrtInDbClass
 from app.pydantic_models import only_primarykey_fields_model as only_pk
+from app.utils.html_utils import nice_table_page
 
 _start = set(globals())
 
@@ -18,10 +20,10 @@ def important_field_for_print(cls):
 def get_entity_html(self, keys):
     # language=H TML
     data =  f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-           f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
-           f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
-           f'<i class="far fa-trash-alt"></i></a></td>' \
-           f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+           f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
+           f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+           f'<i class="far fa-trash-alt"></i></a>' \
+           f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
     # print(data)
     return data
 
@@ -34,6 +36,7 @@ def key_as_part_query(self):
 
 
 @classmethod
+@nice_table_page
 def get_entities_html(cls, *keys):
     try:
         keys = list(keys)
@@ -44,8 +47,14 @@ def get_entities_html(cls, *keys):
         data = list(select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
         print('----', data)
         # data = data.to_dict(with_collections=False, only=keys).keys()
+    except IndexError as e:
+        print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
+        # language=HTML
+        return f"<table><caption>{cls.__name__}</caption>" \
+           f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+           f"<tbody></tbody></table>"
     except Exception as e:
-        print(e)
+        print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
                f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
@@ -56,7 +65,7 @@ def get_entities_html(cls, *keys):
     print(data)
     # language=HTML
     return f"<table><caption>{cls.__name__}</caption>" \
-           f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
+           f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
            f"<tbody>{body_table}</tbody></table>"
 
 

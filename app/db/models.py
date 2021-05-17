@@ -6,6 +6,7 @@ from app.pydantic_models import unique_db_field_models as pk_pd
 from app.pydantic_models import input_ent as inp_pd
 from app.pydantic_models import output_ent as out_pd
 from app.pydantic_models import only_primarykey_fields_model as only_pk
+from app.utils.html_utils import nice_table_page
 
 from datetime import date
 from datetime import datetime
@@ -100,14 +101,15 @@ class Human(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
-               f'<i class="far fa-trash-alt"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
     @classmethod
+    @nice_table_page
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -119,8 +121,14 @@ class Human(db.Entity):
                 select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
             print('----', data)
             # data = data.to_dict(with_collections=False, only=keys).keys()
+        except IndexError as e:
+            print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
+            # language=HTML
+            return f"<table><caption>{cls.__name__}</caption>" \
+                   f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+                   f"<tbody></tbody></table>"
         except Exception as e:
-            print(e)
+            print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
@@ -131,7 +139,7 @@ class Human(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
 
     def key_as_part_query(self):
@@ -191,14 +199,15 @@ class Admin(Human):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
-               f'<i class="far fa-trash-alt"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
     @classmethod
+    @nice_table_page
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -210,8 +219,14 @@ class Admin(Human):
                 select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
             print('----', data)
             # data = data.to_dict(with_collections=False, only=keys).keys()
+        except IndexError as e:
+            print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
+            # language=HTML
+            return f"<table><caption>{cls.__name__}</caption>" \
+                   f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+                   f"<tbody></tbody></table>"
         except Exception as e:
-            print(e)
+            print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
@@ -222,7 +237,7 @@ class Admin(Human):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
 
     def key_as_part_query(self):
@@ -317,14 +332,15 @@ class User(Human):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
-               f'<i class="far fa-trash-alt"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
     @classmethod
+    @nice_table_page
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -336,8 +352,14 @@ class User(Human):
                 select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
             print('----', data)
             # data = data.to_dict(with_collections=False, only=keys).keys()
+        except IndexError as e:
+            print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
+            # language=HTML
+            return f"<table><caption>{cls.__name__}</caption>" \
+                   f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+                   f"<tbody></tbody></table>"
         except Exception as e:
-            print(e)
+            print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
@@ -348,7 +370,7 @@ class User(Human):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
 
     def key_as_part_query(self):
@@ -409,14 +431,15 @@ class Smm(Human):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
-               f'<i class="far fa-trash-alt"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
     @classmethod
+    @nice_table_page
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -428,8 +451,14 @@ class Smm(Human):
                 select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
             print('----', data)
             # data = data.to_dict(with_collections=False, only=keys).keys()
+        except IndexError as e:
+            print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
+            # language=HTML
+            return f"<table><caption>{cls.__name__}</caption>" \
+                   f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+                   f"<tbody></tbody></table>"
         except Exception as e:
-            print(e)
+            print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
@@ -440,7 +469,7 @@ class Smm(Human):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
 
     def key_as_part_query(self):
@@ -511,14 +540,15 @@ class Developer(Human):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
-               f'<i class="far fa-trash-alt"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
     @classmethod
+    @nice_table_page
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -530,8 +560,14 @@ class Developer(Human):
                 select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
             print('----', data)
             # data = data.to_dict(with_collections=False, only=keys).keys()
+        except IndexError as e:
+            print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
+            # language=HTML
+            return f"<table><caption>{cls.__name__}</caption>" \
+                   f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+                   f"<tbody></tbody></table>"
         except Exception as e:
-            print(e)
+            print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
@@ -542,7 +578,7 @@ class Developer(Human):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
 
     def key_as_part_query(self):
@@ -607,14 +643,15 @@ class HumanContacts(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
-               f'<i class="far fa-trash-alt"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
     @classmethod
+    @nice_table_page
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -626,8 +663,14 @@ class HumanContacts(db.Entity):
                 select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
             print('----', data)
             # data = data.to_dict(with_collections=False, only=keys).keys()
+        except IndexError as e:
+            print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
+            # language=HTML
+            return f"<table><caption>{cls.__name__}</caption>" \
+                   f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+                   f"<tbody></tbody></table>"
         except Exception as e:
-            print(e)
+            print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
@@ -638,7 +681,7 @@ class HumanContacts(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
 
     def key_as_part_query(self):
@@ -697,14 +740,15 @@ class DirectionExpert(Human):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
-               f'<i class="far fa-trash-alt"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
     @classmethod
+    @nice_table_page
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -716,8 +760,14 @@ class DirectionExpert(Human):
                 select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
             print('----', data)
             # data = data.to_dict(with_collections=False, only=keys).keys()
+        except IndexError as e:
+            print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
+            # language=HTML
+            return f"<table><caption>{cls.__name__}</caption>" \
+                   f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+                   f"<tbody></tbody></table>"
         except Exception as e:
-            print(e)
+            print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
@@ -728,7 +778,7 @@ class DirectionExpert(Human):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
 
     def key_as_part_query(self):
@@ -787,14 +837,15 @@ class Competition(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
-               f'<i class="far fa-trash-alt"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
     @classmethod
+    @nice_table_page
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -806,8 +857,14 @@ class Competition(db.Entity):
                 select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
             print('----', data)
             # data = data.to_dict(with_collections=False, only=keys).keys()
+        except IndexError as e:
+            print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
+            # language=HTML
+            return f"<table><caption>{cls.__name__}</caption>" \
+                   f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+                   f"<tbody></tbody></table>"
         except Exception as e:
-            print(e)
+            print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
@@ -818,7 +875,7 @@ class Competition(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
 
     def key_as_part_query(self):
@@ -859,14 +916,15 @@ class Direction(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
-               f'<i class="far fa-trash-alt"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
     @classmethod
+    @nice_table_page
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -878,8 +936,14 @@ class Direction(db.Entity):
                 select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
             print('----', data)
             # data = data.to_dict(with_collections=False, only=keys).keys()
+        except IndexError as e:
+            print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
+            # language=HTML
+            return f"<table><caption>{cls.__name__}</caption>" \
+                   f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+                   f"<tbody></tbody></table>"
         except Exception as e:
-            print(e)
+            print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
@@ -890,7 +954,7 @@ class Direction(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
 
     def key_as_part_query(self):
@@ -932,14 +996,15 @@ class CompetitionDirection(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
-               f'<i class="far fa-trash-alt"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
     @classmethod
+    @nice_table_page
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -951,8 +1016,14 @@ class CompetitionDirection(db.Entity):
                 select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
             print('----', data)
             # data = data.to_dict(with_collections=False, only=keys).keys()
+        except IndexError as e:
+            print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
+            # language=HTML
+            return f"<table><caption>{cls.__name__}</caption>" \
+                   f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+                   f"<tbody></tbody></table>"
         except Exception as e:
-            print(e)
+            print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
@@ -963,7 +1034,7 @@ class CompetitionDirection(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
 
     def key_as_part_query(self):
@@ -1035,14 +1106,15 @@ class Task(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
-               f'<i class="far fa-trash-alt"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
     @classmethod
+    @nice_table_page
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -1054,8 +1126,14 @@ class Task(db.Entity):
                 select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
             print('----', data)
             # data = data.to_dict(with_collections=False, only=keys).keys()
+        except IndexError as e:
+            print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
+            # language=HTML
+            return f"<table><caption>{cls.__name__}</caption>" \
+                   f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+                   f"<tbody></tbody></table>"
         except Exception as e:
-            print(e)
+            print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
@@ -1066,7 +1144,7 @@ class Task(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
 
     def key_as_part_query(self):
@@ -1134,14 +1212,15 @@ class UserWork(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
-               f'<i class="far fa-trash-alt"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
     @classmethod
+    @nice_table_page
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -1153,8 +1232,14 @@ class UserWork(db.Entity):
                 select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
             print('----', data)
             # data = data.to_dict(with_collections=False, only=keys).keys()
+        except IndexError as e:
+            print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
+            # language=HTML
+            return f"<table><caption>{cls.__name__}</caption>" \
+                   f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+                   f"<tbody></tbody></table>"
         except Exception as e:
-            print(e)
+            print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
@@ -1165,7 +1250,7 @@ class UserWork(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
 
     def key_as_part_query(self):
@@ -1223,14 +1308,15 @@ class Criterion(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
-               f'<i class="far fa-trash-alt"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
     @classmethod
+    @nice_table_page
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -1242,8 +1328,14 @@ class Criterion(db.Entity):
                 select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
             print('----', data)
             # data = data.to_dict(with_collections=False, only=keys).keys()
+        except IndexError as e:
+            print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
+            # language=HTML
+            return f"<table><caption>{cls.__name__}</caption>" \
+                   f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+                   f"<tbody></tbody></table>"
         except Exception as e:
-            print(e)
+            print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
@@ -1254,7 +1346,7 @@ class Criterion(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
 
     def key_as_part_query(self):
@@ -1298,14 +1390,15 @@ class MarkWork(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
-               f'<i class="far fa-trash-alt"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
     @classmethod
+    @nice_table_page
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -1317,8 +1410,14 @@ class MarkWork(db.Entity):
                 select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
             print('----', data)
             # data = data.to_dict(with_collections=False, only=keys).keys()
+        except IndexError as e:
+            print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
+            # language=HTML
+            return f"<table><caption>{cls.__name__}</caption>" \
+                   f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+                   f"<tbody></tbody></table>"
         except Exception as e:
-            print(e)
+            print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
@@ -1329,7 +1428,7 @@ class MarkWork(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
 
     def key_as_part_query(self):
@@ -1379,7 +1478,7 @@ class Page(db.Entity):
         :mod child_pages dev admin smm: look
 
         :param title: Заголовок страницы
-        :type title: number
+        :type title: text
         :access title: dev admin smm
         :mod title dev admin smm: create edit look
 
@@ -1412,14 +1511,15 @@ class Page(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
-               f'<i class="far fa-trash-alt"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
     @classmethod
+    @nice_table_page
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -1431,8 +1531,14 @@ class Page(db.Entity):
                 select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
             print('----', data)
             # data = data.to_dict(with_collections=False, only=keys).keys()
+        except IndexError as e:
+            print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
+            # language=HTML
+            return f"<table><caption>{cls.__name__}</caption>" \
+                   f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+                   f"<tbody></tbody></table>"
         except Exception as e:
-            print(e)
+            print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
@@ -1443,7 +1549,7 @@ class Page(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
 
     def key_as_part_query(self):
@@ -1536,14 +1642,15 @@ class Question(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
-               f'<i class="far fa-trash-alt"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
     @classmethod
+    @nice_table_page
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -1555,8 +1662,14 @@ class Question(db.Entity):
                 select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
             print('----', data)
             # data = data.to_dict(with_collections=False, only=keys).keys()
+        except IndexError as e:
+            print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
+            # language=HTML
+            return f"<table><caption>{cls.__name__}</caption>" \
+                   f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+                   f"<tbody></tbody></table>"
         except Exception as e:
-            print(e)
+            print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
@@ -1567,7 +1680,7 @@ class Question(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
 
     def key_as_part_query(self):
@@ -1602,14 +1715,15 @@ class SimpleEntity(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
-               f'<i class="far fa-trash-alt"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
     @classmethod
+    @nice_table_page
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -1621,8 +1735,14 @@ class SimpleEntity(db.Entity):
                 select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
             print('----', data)
             # data = data.to_dict(with_collections=False, only=keys).keys()
+        except IndexError as e:
+            print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
+            # language=HTML
+            return f"<table><caption>{cls.__name__}</caption>" \
+                   f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+                   f"<tbody></tbody></table>"
         except Exception as e:
-            print(e)
+            print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
@@ -1633,7 +1753,7 @@ class SimpleEntity(db.Entity):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
 
     def key_as_part_query(self):
@@ -1679,14 +1799,15 @@ class News(Page):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
-               f'<i class="far fa-trash-alt"></i></a></td>' \
-               f'<td><a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<i class="far fa-trash-alt"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
     @classmethod
+    @nice_table_page
     def get_entities_html(cls, *keys):
         try:
             keys = list(keys)
@@ -1698,8 +1819,14 @@ class News(Page):
                 select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
             print('----', data)
             # data = data.to_dict(with_collections=False, only=keys).keys()
+        except IndexError as e:
+            print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
+            # language=HTML
+            return f"<table><caption>{cls.__name__}</caption>" \
+                   f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+                   f"<tbody></tbody></table>"
         except Exception as e:
-            print(e)
+            print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return f"<table><caption>{cls.__name__}</caption>" \
                    f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
@@ -1710,7 +1837,7 @@ class News(Page):
         print(data)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Посмотреть</td><td>Редактировать</td><td>Удалить</td></tr></thead>" \
+               f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
                f"<tbody>{body_table}</tbody></table>"
 
     def key_as_part_query(self):

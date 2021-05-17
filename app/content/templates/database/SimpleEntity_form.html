@@ -4,7 +4,7 @@
 {# =======! Ни одно изменение в этом файле не будет сохранено! !======= #}
 
 <div class="container max-width-lg">
-{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
+<h3 class="margin-bottom-sm"><a href="/db/SimpleEntity" class="no-effect" title="Вернуться к просмотру объектов БД"><i class="fa fa-long-arrow-alt-left"></i></a>Вернуться ко всем объектам SimpleEntity</h3>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
 {#{access_mode}#}
 <form id="simpleentity" action="{{(action_url if action_url is defined else "/db/SimpleEntity/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
 {% endif %}

@@ -1,4 +1,7 @@
+from functools import reduce, wraps
+
 from app.pydantic_models.standart_methhods_redefinition import BaseModel
+
 
 
 class Alert:
@@ -37,3 +40,38 @@ class Alert:
 class SitePageMenu(BaseModel):
     name: str
     href: str = "/novator"
+
+
+def get_nice_table(data):
+    change_table = {
+        "<table>": '<table class="max-width-lg margin-x-auto table js-table table--expanded@sm width-100% margin-bottom-md table--expanded table--loaded">',
+        "<thead>": '<thead class="table__header table__header--sticky">',
+        "<tr>": '<tr class="table__row">',
+        '<th>': '<th class="table__cell text-left" scope="col">',
+        "<tbody>": '<tbody  class="table__body">',
+        "<td>": ' <td class="table__cell text-center" role="cell">',
+    }
+    data = reduce(lambda string, i: string.replace(i[0], i[1]), change_table.items(), data)
+    return data
+
+
+def get_nice_table_page(table, href="*"):
+    text = f'<div class="container max-width-adaptive-lg">' \
+           f'<h3 class="margin-bottom-sm">' \
+           f'  <a href="/db" class="no-effect" title="Вернуться к базе данных">' \
+           f'<i class="fa fa-long-arrow-alt-left"></i></a></h3><h4>' \
+           f'<a href="/db">Перейти а главную страницу БД</a></h4><br>'
+    text += get_nice_table(table)
+    text += '<div class="margin-bottom-lg' \
+            ' {{\'text-right\' if useless_human_from_old_project is defined else \'inline-block\'}}">' \
+            f'<a href="{href}" class="btn btn--primary"><i class="far fa-compass"></i>' \
+            f' Добавить объект в БД</a></div></div>'
+    return text
+
+
+def nice_table_page(func):
+    @wraps(func)
+    def decorator(cls, *a, **k):
+        return get_nice_table_page(func(cls, *a, **k), href=f'/db/{cls.__name__}/new')
+
+    return decorator

@@ -72,26 +72,7 @@ def entity_screen(request: Request,
 
 # enum.Enum('DynamicEnum', {key: key for key, val in m.db.entities.items()})
 
-"""
-        Базовый класс человека
 
-        :param id: Идентификатор
-        :type id: number
-        :param username: Логин
-        :type username: text
-        :param name: Имя пользователя
-        :type name: text
-        :param surname: Фамилия пользователя
-        :type surname: text
-        :param email: Почта
-        :type email: text
-        :param status: Почта
-        :type status: text
-        :param description: Почта
-        :type description: text
-
-        напрямую использоваться не должен
-    """
 
 
 @db_route.get('/{class_entity_name}/new')

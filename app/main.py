@@ -115,7 +115,7 @@ def custom_http_exception_handler(request: Request, exc: HTTPException):
             content={"message": f"Oops! did something. There goes a rainbow..."},
         )
     except FileExistsError as e:
-        print("-------------", e)
+        print("произошла ошибка в функции обработки ошибок:", e)
         return JSONResponse(
             status_code=exc.status_code,
             content={"message": f"Oops! did something. There goes a rainbow..."},

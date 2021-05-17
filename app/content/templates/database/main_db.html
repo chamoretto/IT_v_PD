@@ -1,7 +1,21 @@
-{% for ent in entities%}
-<div>
-    <p>
-    <a href="/db/{{ent}}">{{ent}}</a>
-    </p>
+<div class="container max-width-adaptive-lg">
+    <h3 class="margin-bottom-sm">Выберите колонку в базе данны</h3>
+
+
+    <table class="max-width-lg margin-x-auto table js-table table--expanded@sm width-100% margin-bottom-md table--loaded table--expanded">
+    <thead class="table__header table__header--sticky">
+    <tr class="table__row">
+        <th class="table__cell text-left" scope="col">БД</th>
+    </tr>
+    </thead>
+        <tbody class="table__body">
+         {% for ent in entities%}
+        <tr class="table__row">
+            <td class="table__cell" role="cell">
+                <a href="/db/{{ent}}">{{ent}}</a>
+            </td>
+        </tr>
+          {%endfor%}
+        </tbody>
+    </table>
 </div>
-{%endfor%}

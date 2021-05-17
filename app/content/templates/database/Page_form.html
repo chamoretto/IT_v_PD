@@ -4,7 +4,7 @@
 {# =======! Ни одно изменение в этом файле не будет сохранено! !======= #}
 
 <div class="container max-width-lg">
-{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
+<h3 class="margin-bottom-sm"><a href="/db/Page" class="no-effect" title="Вернуться к просмотру объектов БД"><i class="fa fa-long-arrow-alt-left"></i></a>Вернуться ко всем объектам Page</h3>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
 {#{access_mode}#}
 <form id="page" action="{{(action_url if action_url is defined else "/db/Page/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
 {% endif %}
@@ -109,7 +109,7 @@ child_pages имеет тип select, который еще не поддерж�
 <div class="margin-bottom-sm">
 <label class="form-label margin-bottom-xxs" for="Page_title">Заголовок страницы
 </label>
-<input class="form-control width-100% text-sm" type="number" name="title" id="Page_title" placeholder="" {{
+<input class="form-control width-100% text-sm" type="text" name="title" id="Page_title" placeholder="" {{
     ('value="%s"' % (page.title if page.title else "")
         if page is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
