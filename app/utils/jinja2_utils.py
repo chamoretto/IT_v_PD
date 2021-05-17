@@ -10,9 +10,13 @@ from starlette.background import BackgroundTask
 from starlette.responses import Response
 from starlette.types import Receive, Scope, Send
 from fastapi.responses import JSONResponse
+from pony.orm import db_session
 
 from app.utils.html_utils import Alert, SitePageMenu
 from app.pydantic_models.response_models import code_to_resp
+from app.pydantic_models import simple_entities as easy_ent_pd
+from app.pydantic_models import  output_ent as out_pd
+from app.db import models as m
 
 
 class _MyTemplateResponse(Response):
@@ -56,7 +60,8 @@ class MyJinja2Templates:
     return templates.TemplateResponse("index.html", {"request": request})
     """
 
-    def __init__(self, directory: str, admin_shell: dict[str, str] = dict(), access: Optional[list[str]] = None) -> None:
+    def __init__(self, directory: str, admin_shell: dict[str, str] = dict(),
+                 access: Optional[list[str]] = None) -> None:
         assert jinja2 is not None, "jinja2 must be installed to use Jinja2Templates"
         self.env = self.get_env(directory)
         self.admin_shell = admin_shell
@@ -121,27 +126,35 @@ class MyJinja2Templates:
                     media_type=media_type,
                     background=background)
             print('987654567890')
-            context = local_context | {"response_status_code": status_code}
+            context = local_context | {
+                "response_status_code": status_code,
+            }
             skeleton_template = template
 
         else:
             print('Генерируем весь сайт с нуля', admin_shell_template, )
             admin_shell_context = {"pages": self.admin_shell, "request": local_context['request']}
-            admin_shell_context = {key: val for key, val in admin_shell_context.items() if val is not None and bool(val)}
+            admin_shell_context = {key: val for key, val in admin_shell_context.items() if
+                                   val is not None and bool(val)}
             print(admin_shell_context)
-            context = dict(
-                alert=alert_template if local_context.get('alert') else None,
-                alert_context=dict(alert=local_context.pop('alert', None)),
-                current_page=template,
-                current_page_context=local_context,
-                admin_shell=admin_shell_template,
-                admin_shell_context=admin_shell_context,
-                request=local_context['request'],
-                header=[SitePageMenu(name=i) for i in ["Новатор_WEB", "События", "Новости", "Результы"]],
-                title=local_context.get('title', None),
-                response_status_code=status_code,
-                current_method="POST"
-            )
+            with db_session:
+                context = dict(
+                    alert=alert_template if local_context.get('alert') else None,
+                    alert_context=dict(alert=local_context.pop('alert', None)),
+                    current_page=template,
+                    current_page_context=local_context,
+                    admin_shell=admin_shell_template,
+                    admin_shell_context=admin_shell_context,
+                    request=local_context['request'],
+                    header=[SitePageMenu(name=i) for i in ["Новатор_WEB", "События", "Новости", "Результы"]],
+                    title=local_context.get('title', None),
+                    response_status_code=status_code,
+                    current_method="POST",
+                    socials=[easy_ent_pd.Socials(id=key, **val) for key, val in
+                             dict(m.SimpleEntity['socials'].data).items()],
+                    header_pages=[i.get_header_menu_html_code() for i in m.Page.select(lambda i: i.is_header)[:]],
+
+                )
         return _MyTemplateResponse(
             skeleton_template,
             context,
@@ -159,4 +172,5 @@ error_templates = MyJinja2Templates(directory="content/templates/errors")
 db_templates = MyJinja2Templates(directory="content/templates/database", admin_shell=_admin_shell, access=['dev'])
 public_templates = MyJinja2Templates(directory="content/templates/public_temp")
 
-developer_templates = MyJinja2Templates(directory="content/templates/developers", admin_shell=_admin_shell, access=['dev'])
+developer_templates = MyJinja2Templates(directory="content/templates/developers", admin_shell=_admin_shell,
+                                        access=['dev'])

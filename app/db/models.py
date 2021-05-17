@@ -1506,7 +1506,7 @@ class Page(db.Entity):
     child_pages = Set('Page', reverse='root_page')
     # каждая страница может иметь
     #  несколько дочерних страниц
-    # К примеру: страница "события" может иметь дочерние страницы djminno и teengrad
+    # К примеру: страница "события" может иметь дочерние страницы dominno и teengrad
     root_page = Optional('Page', reverse='child_pages')
     title = Optional(str)  # заголовок страницы
     questions = Set('Question')
@@ -1563,6 +1563,23 @@ class Page(db.Entity):
         _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
         _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
         return _dict
+
+    def get_header_menu_html_code(self):
+        if not self.is_header:
+            return ""
+        if self.child_pages.is_empty():  # если дочерних страниц нет
+            return f'<li class="f-header__item margin-x-sm">' \
+                   f'<a class="f-header__link" href="{self.page_url}">{self.title}' \
+                   f'</a>' \
+                   f'</li>'
+        options = "\n".join([f'<li><a class="f-header__dropdown-link"'
+                             f' href="{page.page_url}">{page.title}</a>'
+                             f'</li>' for page in self.child_pages.select(lambda i: i.visible)[:]])
+
+        return f'''<li class="f-header__item margin-x-sm">
+	    <a class="f-header__link">События
+	    <i class="icon text-center fa fa-caret-down"></i></a>
+	    <ul class="f-header__dropdown">{options}</ul></li>'''
 
 
 class Question(db.Entity):

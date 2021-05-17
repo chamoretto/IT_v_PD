@@ -6,8 +6,13 @@ from pydantic.fields import ModelField
 from pydantic import BaseModel
 
 
-def pydantic_from_orm(cls, db_ent):
-    data = db_ent.to_dict(related_objects=False, with_collections=True)
+def pydantic_from_orm(cls, db_ent, all_obj=False):
+    data: dict = db_ent.to_dict(related_objects=all_obj or False, with_collections=True)
+    if all_obj:
+        data |= {key: val.to_dict(related_objects=False, with_collections=True)
+                for key, val in data.items() if hasattr(val, "to_dict")}
+        data |= {key: [i.to_dict(related_objects=False, with_collections=True) for i in val]
+                 for key, val in data.items() if type(val) in [list, set, frozenset]}
     print(data)
     return cls(**data)
 

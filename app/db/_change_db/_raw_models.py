@@ -753,7 +753,7 @@ class Page(db.Entity):
     child_pages = Set('Page', reverse='root_page')
     # каждая страница может иметь
     #  несколько дочерних страниц
-    # К примеру: страница "события" может иметь дочерние страницы djminno и teengrad
+    # К примеру: страница "события" может иметь дочерние страницы dominno и teengrad
     root_page = Optional('Page', reverse='child_pages')
     title = Optional(str)  # заголовок страницы
     questions = Set('Question')
