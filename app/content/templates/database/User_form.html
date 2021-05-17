@@ -223,7 +223,23 @@ questions имеет тип qu_select, который еще не поддерж
     ('value="%s"' % (user.direction if user.direction else "")
         if user is defined
         else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
-</div><div id="User_direction_error"></div>{% endif %}{% endif %}{% endif %}</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>
+</div><div id="User_direction_error"></div>{% endif %}{% endif %}{% endif %}
+<div class="col-6@md">
+                        <fieldset class="margin-bottom-md">
+                            <h4 class="text-start margin-bottom-sm"> Показывать этот отзыв на главной странице в разделе "Выпускники"? </h4>
+                            <div class="margin-bottom-sm" style="display: flex;">
+                                <div class="switch margin-left-sm">
+                                    <input class="switch__input" type="checkbox"
+                                    name="visible_about_program_field" id="User_visible_about_program_field" placeholder=""  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}
+                                    {{ (( "checked" if user.visible_about_program_field else "" )|safe 
+    if user is defined else
+            ""|safe )}}>
+                                    <label aria-hidden="true" class="switch__label" for="User_visible_about_program_field">visible_about_program_field</label>
+                                    <div aria-hidden="true" class="switch__marker"></div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div></fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
 </div></form>

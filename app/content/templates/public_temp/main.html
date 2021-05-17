@@ -2,18 +2,20 @@
 <section class="margin-y-md">
     <div class="parent grid gap-md justify-between">
         <div class="col-1 text-center">
-
-            <a class="block margin-bottom-sm no-effect" href="{#{s.link}#}" target="_blank"
-               title="{#{s.name}#}">
-                <i class="icon icon--md fa fa-{#{s.icon}#} color-contrast-higher"></i>
+            {% if socials is defined  %}
+{% for s in socials %}
+            <a class="block margin-bottom-sm no-effect" href="{{s.link}}" target="_blank"
+               title="{{s.name}}">
+                <i class="icon icon--md fa fa-{{s.name}} color-contrast-higher"></i>
             </a>
-
-        </div>
+{% endfor %}
+            {% endif %}
+       </div>
         <div class="col-6">
             <div class="container max-width-adaptive-lg">
                 <div class="grid items-center">
                     <div class="col-6@lg order-1@md">
-                        <img src="/images/main_page/main-hero.png">
+                        <img src="{{url_for('img', path='/pages/main/main-hero.png')}}">
                     </div>
                     <div class="col-6@lg order-2@md" style="transform: translate(-50px,0);">
                         <div class="text-component">
@@ -32,6 +34,8 @@
     </div>
 </section>
 <!--Выпускники -->
+
+{% if graduates is defined and graduates != [] %}
 <section class="max-width-adaptive-lg margin-x-auto">
     <div class="margin-top-xl">
         <h1 class="text-center">Наши выпускники</h1>
@@ -39,31 +43,31 @@
     <div class="slideshow js-slideshow slideshow--transition-slide" data-swipe="on">
 
         <ul class="slideshow__content">
-
+            {% for i in graduates %}
             <li class="slideshow__item js-slideshow__item">
                 <div class='container max-width-sm'>
                     <div class="text-component">
-                        <p class="text-center">{#{i.text}#}</p>
+                        <p class="text-center">{{i.about_program}}</p>
 
                         <div class="container max-width-adaptive-sm margin-top-lg">
                             <div class="grid items-center justify-center">
                                 <div class="col-6@sm margin-left-md order-2@sm">
                                     <div class="text-component">
                                         <p>
-                                            {#{i.people.name}#}<br>
-                                            {#{i.people.studied_direction}#}
+                                            {{i.name}} {{i.surname}}<br>
+                                            {{i.direction}}
                                         </p>
                                     </div>
                                 </div>
                                 <div class=" margin-x-auto col-3 order-1@sm">
-                                    <img class="col-11@sm" src="{#{i.people.image}#}" alt="Image description">
+                                    <img class="col-11@sm" src="{{i.photo}}" alt="Image description">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </li>
-
+            {% endfor %}
         </ul>
 
         <ul>
@@ -85,9 +89,11 @@
         </ul>
     </div>
 </section>
+{% endif %}
 <!--слайды-->
 
 <!--спонсоры -->
+{% if partner is defined and partner != [] %}
 <section>
     <div class="container max-width-adaptive-lg margin-top-xl">
         <div class="margin-bottom-lg">
@@ -95,21 +101,23 @@
         </div>
 
         <ol class="text-points  grid grid-gap-sm">
-
+            {% for i in partner%}
             <li class="col-4@lg">
                 <div class="card  height-xxxxl ">
                     <img class="block margin-x-auto margin-top-xs margin-bottom-md"
-                         style="height: 120px; width:120px; border-radius: 10px;" src="{#{i.image}#}"
+                         style="height: 120px; width:120px; border-radius: 10px;" src="{{i.image}}"
                          alt="Card preview img">
 
                     <div class="card_content">
                         <div class="text-component text-center ">
-                            <p class="text-sm color-contrast-medium ">{#{i.name}#}</p>
+                            <p class="text-sm color-contrast-medium ">{{i.name}}</p>
                         </div>
                     </div>
                 </div>
             </li>
+            {% endfor %}
 
         </ol>
     </div>
 </section>
+{% endif %}

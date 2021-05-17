@@ -315,6 +315,12 @@ class User(Human):
         :access direction: dev admin self
         :mod direction user dev admin: create edit look
 
+        :param visible_about_program_field: Показывать этот отзыв на главной странице в разделе "Выпускники"?
+        :type visible_about_program_field: bool
+        :access visible_about_program_field: dev admin
+        :mod visible_about_program_field dev admin: create edit look
+
+
         (если ему еще нет 18)
     """
     date_of_birth = Required(date)  # день рождения
@@ -322,6 +328,7 @@ class User(Human):
     about_program = Optional(str)  # Отзыв о программе
     direction = Optional(str)  # с каким направлением себя ассоциирует участник
     visible_about_program_field = Required(bool, default='false')
+
     # будет ли отзыв участника о программе
     # отображаться на главной странице
 
