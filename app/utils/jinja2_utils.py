@@ -152,7 +152,7 @@ class MyJinja2Templates:
                     current_method="POST",
                     socials=[easy_ent_pd.Socials(id=key, **val) for key, val in
                              dict(m.SimpleEntity['socials'].data).items()],
-                    header_pages=[i.get_header_menu_html_code() for i in m.Page.select(lambda i: i.is_header)[:]],
+                    header_pages=[i.get_header_menu_html_code() for i in m.Page.select(lambda i: i.is_header)[:] if not print(i.title)],
 
                 )
         return _MyTemplateResponse(

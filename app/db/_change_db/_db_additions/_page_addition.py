@@ -21,7 +21,7 @@ def get_header_menu_html_code(self):
                          f'</li>'for page in self.child_pages.select(lambda i: i.visible)[:]])
 
     return f'''<li class="f-header__item margin-x-sm">
-    <a class="f-header__link">События
+    <a class="f-header__link">{self.title}
     <i class="icon text-center fa fa-caret-down"></i></a>
     <ul class="f-header__dropdown">{options}</ul></li>'''
 

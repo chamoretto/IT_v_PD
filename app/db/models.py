@@ -107,7 +107,8 @@ class Human(db.Entity):
                f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
                f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
@@ -205,7 +206,8 @@ class Admin(Human):
                f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
                f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
@@ -345,7 +347,8 @@ class User(Human):
                f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
                f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
@@ -444,7 +447,8 @@ class Smm(Human):
                f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
                f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
@@ -553,7 +557,8 @@ class Developer(Human):
                f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
                f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
@@ -656,7 +661,8 @@ class HumanContacts(db.Entity):
                f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
                f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
@@ -753,7 +759,8 @@ class DirectionExpert(Human):
                f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
                f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
@@ -850,7 +857,8 @@ class Competition(db.Entity):
                f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
                f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
@@ -929,7 +937,8 @@ class Direction(db.Entity):
                f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
                f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
@@ -1009,7 +1018,8 @@ class CompetitionDirection(db.Entity):
                f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
                f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
@@ -1119,7 +1129,8 @@ class Task(db.Entity):
                f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
                f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
@@ -1225,7 +1236,8 @@ class UserWork(db.Entity):
                f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
                f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
@@ -1321,7 +1333,8 @@ class Criterion(db.Entity):
                f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
                f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
@@ -1403,7 +1416,8 @@ class MarkWork(db.Entity):
                f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
                f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
@@ -1524,7 +1538,8 @@ class Page(db.Entity):
                f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
                f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
@@ -1580,7 +1595,7 @@ class Page(db.Entity):
                              f'</li>' for page in self.child_pages.select(lambda i: i.visible)[:]])
 
         return f'''<li class="f-header__item margin-x-sm">
-	    <a class="f-header__link">События
+	    <a class="f-header__link">{self.title}
 	    <i class="icon text-center fa fa-caret-down"></i></a>
 	    <ul class="f-header__dropdown">{options}</ul></li>'''
 
@@ -1672,7 +1687,8 @@ class Question(db.Entity):
                f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
                f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
@@ -1745,7 +1761,8 @@ class SimpleEntity(db.Entity):
                f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
                f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 
@@ -1829,7 +1846,8 @@ class News(Page):
                f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
                f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
 

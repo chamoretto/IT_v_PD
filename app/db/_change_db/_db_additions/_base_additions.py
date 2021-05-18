@@ -11,7 +11,6 @@ from app.utils.html_utils import nice_table_page
 _start = set(globals())
 
 
-
 @classmethod
 def important_field_for_print(cls):
     return []
@@ -19,11 +18,12 @@ def important_field_for_print(cls):
 
 def get_entity_html(self, keys):
     # language=H TML
-    data =  f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
+    data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
            f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
            f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
            f'<i class="far fa-trash-alt"></i></a>' \
-           f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}"><i class="far fa-eye-slash"></i></a></td></tr>'
+           f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+           f'<i class="far fa-eye-slash"></i></a></td></tr>'
     # print(data)
     return data
 
@@ -32,7 +32,6 @@ def key_as_part_query(self):
     _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
     _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
     return _dict
-
 
 
 @classmethod
@@ -51,8 +50,8 @@ def get_entities_html(cls, *keys):
         print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
         # language=HTML
         return f"<table><caption>{cls.__name__}</caption>" \
-           f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
-           f"<tbody></tbody></table>"
+               f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+               f"<tbody></tbody></table>"
     except Exception as e:
         print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
         # language=HTML
@@ -67,8 +66,6 @@ def get_entities_html(cls, *keys):
     return f"<table><caption>{cls.__name__}</caption>" \
            f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
            f"<tbody>{body_table}</tbody></table>"
-
-
 
 
 added_params = set(globals()) - _start - {"_start"}
