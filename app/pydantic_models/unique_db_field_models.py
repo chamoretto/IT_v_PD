@@ -10,10 +10,11 @@
 
 from typing import Set, Union, List, Dict, Tuple, ForwardRef
 from typing import Optional, Literal, Any
-from pydantic import Json
+from pydantic import Json, root_validator, validator
 from datetime import date, datetime, time
 
 from app.pydantic_models.standart_methhods_redefinition import BaseModel, as_form
+from app.pydantic_models.standart_methhods_redefinition import PydanticValidators
 from app.settings.config import HOME_DIR
 
 
@@ -140,7 +141,6 @@ class Developer(BaseModel):
 
 
 class HumanContacts(BaseModel):
-	human: Union[int, Human]
 
 	class Config:
 		orm_mode = True
@@ -185,8 +185,8 @@ class Task(BaseModel):
 
 
 class UserWork(BaseModel):
-	user: Union[int, User]
 	task: Union[int, Task]
+	user: Union[int, User]
 
 	class Config:
 		orm_mode = True

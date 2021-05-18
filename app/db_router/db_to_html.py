@@ -9,90 +9,9 @@ from app.db._change_db._create_models import db_ent_to_dict
 from app.pydantic_models.standart_methhods_redefinition import BaseModel
 from app.pydantic_models.create_pydantic_models import create_pd_models
 from app.settings.config import HOME_DIR, join
+from app.db._change_db._create_models import DbDocs, AccessType, AccessMode, FieldHtmlType, info_from_docs
 
 
-@enum.unique
-class AccessType(enum.Enum):
-    PUBLIC = "public"
-    USER = "user"
-    SMMER = "smm"
-    DIRECTION_EXPERT = "expert"
-    ADMIN = "admin"
-    DEVELOPER = "dev"
-    SELF = "self"
-
-    @classmethod
-    def get_obj(cls, val: str):
-        if val in cls._value2member_map_:
-            return cls._value2member_map_[val]
-        print(val)
-        raise AttributeError
-
-    def __str__(self):
-        return self.value
-
-
-@enum.unique
-class AccessMode(enum.Enum):
-    CREATE = "create"
-    EDIT = "edit"
-    LOOK = "look"
-
-    @classmethod
-    def get_obj(cls, val: str):
-        if val in cls._value2member_map_:
-            return cls._value2member_map_[val]
-        print(val)
-        raise AttributeError
-
-    def __str__(self):
-        return self.value
-
-
-@enum.unique
-class FieldHtmlType(enum.Enum):
-    TEXT = "text"
-    NUMBER = "number"
-    SELECT = "select"
-    MULTI_SELECT = "multi_select"
-    FILE = "file"
-    IMAGE = "image"
-    DATE = "date"
-    TIME = "time"
-    DATETIME = "datetime"
-    BOOL = "bool"
-    PASSWORD = "password"
-    ADDING_FIELD = "adding_field"
-    PHONE_NUMBER = "phone_number"
-    URL = "url"
-    VIDEO_LESSONS = "video_lessons"
-    SCOPES = "scopes"
-    QUESTION_SELECT = "qu_select"
-    EMAIL = "email"
-    DB_JSON = "db_json"
-
-    def __str__(self):
-        return self.value
-
-    @classmethod
-    def get_obj(cls, val: str):
-        if val in cls._value2member_map_:
-            return cls._value2member_map_[val]
-        print(val)
-        raise AttributeError
-
-
-class DbDocs(BaseModel):
-    name: str
-    description: Optional[str]
-    html_type: Optional[FieldHtmlType]
-    access: dict[AccessType, list[AccessMode]] = dict()
-    required: bool = False
-    class_name: str
-    placeholder: str = ""
-    default: str = None
-    is_entity: bool = False
-    is_set: bool = False
 
 
 def all_html_form(content: str, entity_name: str) -> str:
@@ -225,6 +144,7 @@ def html_text(param: DbDocs, html_input_type="text") -> str:
            f'</div>'
     return text
 
+
 def html_number(param: DbDocs)-> str:
     return html_text(param, html_input_type='number')
 
@@ -326,7 +246,6 @@ def html_bool(param: DbDocs):
                             </div>
                         </fieldset>
                     </div>"""
-    # text = f""" <fieldset class="margin-bottom-md"> <input type="checkbox" {required_options_into_input(param, black_list=[_get_value_code])} value="true" ></fieldset>"""
     return text
 
 
@@ -370,13 +289,6 @@ def time_html(param: DbDocs) -> str:
     return datetime_html(param, html_input_type='time')
 
 
-def get_doc(ent):
-    if ent.__doc__:
-        return "\n".join(
-            [get_doc(parent) for parent in ent.__bases__ if parent.__name__ in m.db.entities]) + "\n" + ent.__doc__
-    return ""
-
-
 type_to_html: dict[FieldHtmlType, Callable[[DbDocs], str]] = defaultdict(lambda: default_html)
 type_to_html.update({
     FieldHtmlType.TEXT: html_text,
@@ -392,83 +304,8 @@ type_to_html.update({
 })
 
 
-def get_access_dict(role_list: list[str]):
-    if type(role_list) != list:
-        role_list = [role_list]
-    return {AccessType.get_obj(i): [] for i in role_list}
-
-
-def full_access_dict(role_list: list[str], mode_list: list[str]):
-    if type(mode_list) != list:
-        mode_list = [mode_list]
-    if type(role_list) != list:
-        role_list = [role_list]
-    mode_list = [AccessMode.get_obj(i) for i in mode_list]
-    return {AccessType.get_obj(i): mode_list[:] for i in role_list}
-
-
-def get_new_access(new_access: dict[AccessType, list[AccessMode]],
-                   old_access: dict[AccessType, list[AccessMode]] = dict()):
-    return old_access | new_access
-
-
 def create_html_file(ent: m.db.Entity):
-    keys_convertor: dict[str, str] = {
-        "type": "html_type",
-        "param": "description",
-        "access": "access",
-        "mod": "access",
-    }
-    vals_convertor: dict[str, Callable] = defaultdict(lambda: str)
-    vals_convertor.update(dict(
-        type=FieldHtmlType.get_obj,
-        access=get_access_dict,
-        mod=get_new_access,
-    ))
-
-    good_start: list[str] = [":mod" ":access", ":param", ":type"]
-    pd_ent = getattr(pd, ent.__name__)
-    # print(pd_ent)
-    all_ent_docs: dict[str, DbDocs] = defaultdict(lambda: DbDocs(name=n.strip(), class_name=ent.__name__))
-
-    all_docs = [i.strip() for i in get_doc(ent).split("\n")]
-    # print(*all_docs, sep="\n")
-    all_docs = [i[1:].split(":") for i in all_docs if not print(i) and bool(i) and not print(i) and any(i.strip().startswith(j) or i.strip().startswith(":mod") or i.strip().startswith(":access") for j in good_start) and not print(i)]
-    # print(*all_docs, sep="\n")
-    all_docs = ([t.split()] + [i for i in d.strip().split()] for [t, d] in all_docs)
-
-    code, pk = db_ent_to_dict(ent)
-
-    for [[t, n, *other], *d] in all_docs:
-        obj: DbDocs = all_ent_docs[n.strip()]
-        # print(t, n, other, d)
-        if t not in ["access", "mod"]:
-            d = ' '.join(d)
-        if bool(other):  # mod
-            print(other)
-            d = full_access_dict(other, d)
-            old_access = obj.access
-            all_ent_docs[n.strip()] = DbDocs(**(obj.dict(exclude_unset=True) |
-                                                {keys_convertor[t]: vals_convertor[t](d, old_access)}))
-        else:  # type, param, access
-            all_ent_docs[n.strip()] = DbDocs(**(obj.dict(exclude_unset=True) |
-                                                {keys_convertor[t]: vals_convertor[t](d)}))
-
-    for name, doc in all_ent_docs.items():
-        # print(name, *doc.dict().items(), sep='\n')
-        # print()
-        if code.get(name):
-            doc.required = code[name].db_type in ["PrimaryKey", "Required"]
-            doc.is_set = not doc.required and code[name].db_type in ["Set"]
-            doc.default = getattr(pd_ent.__fields__[name], "default")
-            # print(ent.__name__, name, doc.default)
-            doc.is_entity = any(i in code[name].param_type for i in m.db.entities)
-        else:
-            doc.required = code.get(name, True)
-            doc.is_set = False
-            doc.default = None
-            doc.is_entity = False
-
+    all_ent_docs = info_from_docs(ent)
     html_form = [type_to_html[val.html_type](val) for key, val in all_ent_docs.items()]
     html_form = all_html_form("\n".join(html_form), ent.__name__)
     html_form = "{# =======!!! ВНИМАНИЕ !!!======= #}\n" \

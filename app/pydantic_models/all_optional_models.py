@@ -10,10 +10,11 @@
 
 from typing import Set, Union, List, Dict, Tuple, ForwardRef
 from typing import Optional, Literal, Any
-from pydantic import Json
+from pydantic import Json, root_validator, validator
 from datetime import date, datetime, time
 
 from app.pydantic_models.standart_methhods_redefinition import BaseModel, as_form
+from app.pydantic_models.standart_methhods_redefinition import PydanticValidators
 from app.settings.config import HOME_DIR
 
 
@@ -97,7 +98,7 @@ SetPkNews = Set[Union[int, News]]
 class Human(BaseModel):
 	id: Optional[int] = None
 	username: Optional[str] = None
-	hash_password: Optional[str] = None
+	password: Optional[None] = None
 	name: Optional[str] = None
 	surname: Optional[str] = None
 	email: Optional[str] = None
@@ -115,7 +116,7 @@ class Human(BaseModel):
 class Admin(BaseModel):
 	id: Optional[int] = None
 	username: Optional[str] = None
-	hash_password: Optional[str] = None
+	password: Optional[None] = None
 	name: Optional[str] = None
 	surname: Optional[str] = None
 	email: Optional[str] = None
@@ -133,7 +134,7 @@ class Admin(BaseModel):
 class User(BaseModel):
 	id: Optional[int] = None
 	username: Optional[str] = None
-	hash_password: Optional[str] = None
+	password: Optional[None] = None
 	name: Optional[str] = None
 	surname: Optional[str] = None
 	email: Optional[str] = None
@@ -144,7 +145,6 @@ class User(BaseModel):
 	scopes: Optional[Union[Json, dict]] = {}
 	questions: Set[Union[int, Question]] = []
 	date_of_birth: Optional[date] = None
-	user_works: Set[Union[Tuple[int, int], UserWork]] = []
 	about_program: Optional[str] = None
 	direction: Optional[str] = None
 	visible_about_program_field: Optional[bool] = False
@@ -156,7 +156,7 @@ class User(BaseModel):
 class Smm(BaseModel):
 	id: Optional[int] = None
 	username: Optional[str] = None
-	hash_password: Optional[str] = None
+	password: Optional[None] = None
 	name: Optional[str] = None
 	surname: Optional[str] = None
 	email: Optional[str] = None
@@ -174,7 +174,7 @@ class Smm(BaseModel):
 class Developer(BaseModel):
 	id: Optional[int] = None
 	username: Optional[str] = None
-	hash_password: Optional[str] = None
+	password: Optional[None] = None
 	name: Optional[str] = None
 	surname: Optional[str] = None
 	email: Optional[str] = None
@@ -190,13 +190,12 @@ class Developer(BaseModel):
 
 
 class HumanContacts(BaseModel):
-	human: Union[int, Human, None] = None
 	phone: Optional[str] = ''
 	vk: Optional[str] = ''
 	insagramm: Optional[str] = ''
 	facebook: Optional[str] = ''
-	home_adress: Optional[str] = ''
 	telegram: Optional[str] = ''
+	home_adress: Optional[str] = ''
 
 	class Config:
 		orm_mode = True
@@ -205,7 +204,7 @@ class HumanContacts(BaseModel):
 class DirectionExpert(BaseModel):
 	id: Optional[int] = None
 	username: Optional[str] = None
-	hash_password: Optional[str] = None
+	password: Optional[None] = None
 	name: Optional[str] = None
 	surname: Optional[str] = None
 	email: Optional[str] = None
@@ -215,7 +214,6 @@ class DirectionExpert(BaseModel):
 	description: Optional[str] = ''
 	scopes: Optional[Union[Json, dict]] = {}
 	questions: Set[Union[int, Question]] = []
-	competition_directions: Set[Union[Tuple[str, int], CompetitionDirection]] = []
 
 	class Config:
 		orm_mode = True
@@ -227,8 +225,17 @@ class Competition(BaseModel):
 	start: Optional[datetime] = None
 	end: Optional[datetime] = None
 	description: Optional[str] = ''
-	competition_direction: Set[Union[Tuple[str, int], CompetitionDirection]] = []
 	document: Optional[str] = ''
+
+
+	@validator("start", pre=True, always=True)
+	def start_to_datetime_validator(cls, value):
+		return PydanticValidators.datetime(cls, value)
+
+
+	@validator("end", pre=True, always=True)
+	def end_to_datetime_validator(cls, value):
+		return PydanticValidators.datetime(cls, value)
 
 	class Config:
 		orm_mode = True
@@ -237,7 +244,6 @@ class Competition(BaseModel):
 class Direction(BaseModel):
 	name: Optional[str] = None
 	icon: Optional[str] = None
-	competition_direction: Set[Union[Tuple[str, int], CompetitionDirection]] = []
 	video_lessons: Optional[Union[Json, dict]] = {}
 
 	class Config:
@@ -246,10 +252,9 @@ class Direction(BaseModel):
 
 class CompetitionDirection(BaseModel):
 	directions: Union[str, Direction, None] = None
+	questions: Optional[None] = None
 	competition: Union[int, Competition, None] = None
-	tasks: Set[Union[int, Task]] = []
 	direction_experts: Set[Union[int, DirectionExpert]] = []
-	criterions: Set[Union[int, Criterion]] = []
 
 	class Config:
 		orm_mode = True
@@ -262,19 +267,32 @@ class Task(BaseModel):
 	description: Optional[str] = ''
 	start: Optional[datetime] = None
 	end: Optional[datetime] = None
-	user_works: Set[Union[Tuple[int, int], UserWork]] = []
+
+
+	@validator("start", pre=True, always=True)
+	def start_to_datetime_validator(cls, value):
+		return PydanticValidators.datetime(cls, value)
+
+
+	@validator("end", pre=True, always=True)
+	def end_to_datetime_validator(cls, value):
+		return PydanticValidators.datetime(cls, value)
 
 	class Config:
 		orm_mode = True
 
 
 class UserWork(BaseModel):
-	mark_works: Set[Union[Tuple[int, int, int], MarkWork]] = []
-	user: Union[int, User, None] = None
 	task: Union[int, Task, None] = None
 	work: Optional[str] = ''
+	mark_works: Set[Union[Tuple[int, int, int], MarkWork]] = []
+	user: Union[int, User, None] = None
 	upload_date: Optional[datetime] = None
-	mark: Optional[str] = ''
+
+
+	@validator("upload_date", pre=True, always=True)
+	def upload_date_to_datetime_validator(cls, value):
+		return PydanticValidators.datetime(cls, value)
 
 	class Config:
 		orm_mode = True
@@ -282,7 +300,7 @@ class UserWork(BaseModel):
 
 class Criterion(BaseModel):
 	id: Optional[int] = None
-	competition_direction: Union[Tuple[str, int], CompetitionDirection, None] = None
+	task: Union[int, Task, None] = None
 	name: Optional[str] = None
 	description: Optional[str] = ''
 	max_value: Optional[float] = None
@@ -307,8 +325,8 @@ class Page(BaseModel):
 	page_path: Optional[str] = ''
 	is_header: Optional[bool] = False
 	visible: Optional[bool] = False
-	child_pages: Set[Union[int, Page]] = []
 	root_page: Union[int, Page, None] = None
+	child_pages: Set[Union[int, Page]] = []
 	title: Optional[str] = ''
 	questions: Set[Union[int, Question]] = []
 
@@ -345,14 +363,19 @@ class News(BaseModel):
 	page_path: Optional[str] = ''
 	is_header: Optional[bool] = False
 	visible: Optional[bool] = False
-	child_pages: Set[Union[int, Page]] = []
 	root_page: Union[int, Page, None] = None
+	child_pages: Set[Union[int, Page]] = []
 	title: Optional[str] = ''
 	questions: Set[Union[int, Question]] = []
 	auto_publish: Optional[datetime] = None
 	image: Optional[str] = None
 	author: Optional[str] = None
 	description: Optional[str] = None
+
+
+	@validator("auto_publish", pre=True, always=True)
+	def auto_publish_to_datetime_validator(cls, value):
+		return PydanticValidators.datetime(cls, value)
 
 	class Config:
 		orm_mode = True

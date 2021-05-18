@@ -10,7 +10,7 @@ def pydantic_from_orm(cls, db_ent, all_obj=False):
     data: dict = db_ent.to_dict(related_objects=all_obj or False, with_collections=True)
     if all_obj:
         data |= {key: val.to_dict(related_objects=False, with_collections=True)
-                for key, val in data.items() if hasattr(val, "to_dict")}
+                 for key, val in data.items() if hasattr(val, "to_dict")}
         data |= {key: [i.to_dict(related_objects=False, with_collections=True) for i in val]
                  for key, val in data.items() if type(val) in [list, set, frozenset]}
     print(data)
@@ -43,3 +43,20 @@ def as_form(cls: Type[BaseModel]):
     _as_form.__signature__ = sig
     setattr(cls, "as_form", _as_form)
     return cls
+
+
+class PydanticValidators:
+
+    @staticmethod
+    def datetime(cls, value):
+        if value is None or not bool(value):
+            return None
+        return value
+
+    def __class_getitem__(cls, code) -> str:
+        # print('----------------', [code.html_type])
+        if hasattr(PydanticValidators, str(code.html_type)):
+            return f'\n\n\t@validator("{code.name}", pre=True, always=True)\n' \
+                   f'\tdef {code.name}_to_{code.html_type}_validator(cls, value):\n' \
+                   f'\t\treturn PydanticValidators.{code.html_type}(cls, value)\n'
+        return ""

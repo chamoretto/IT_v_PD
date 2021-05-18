@@ -10,10 +10,11 @@
 
 from typing import Set, Union, List, Dict, Tuple, ForwardRef
 from typing import Optional, Literal, Any
-from pydantic import Json
+from pydantic import Json, root_validator, validator
 from datetime import date, datetime, time
 
 from app.pydantic_models.standart_methhods_redefinition import BaseModel, as_form
+from app.pydantic_models.standart_methhods_redefinition import PydanticValidators
 from app.settings.config import HOME_DIR
 
 
@@ -96,7 +97,7 @@ SetPkNews = Set[Union[int, News]]
 
 class Human(BaseModel):
 	username: str
-	password: str
+	password: Optional[None] = None
 	name: str
 	surname: str
 	email: str
@@ -113,7 +114,7 @@ class Human(BaseModel):
 
 class Admin(BaseModel):
 	username: str
-	password: str
+	password: Optional[None] = None
 	name: str
 	surname: str
 	email: str
@@ -130,7 +131,7 @@ class Admin(BaseModel):
 
 class User(BaseModel):
 	username: str
-	password: str
+	password: Optional[None] = None
 	name: str
 	surname: str
 	email: str
@@ -141,7 +142,6 @@ class User(BaseModel):
 	scopes: Optional[Union[Json, dict]] = {}
 	questions: Set[Union[int, Question]] = []
 	date_of_birth: date
-	user_works: Set[Union[Tuple[int, int], UserWork]] = []
 	about_program: Optional[str] = None
 	direction: Optional[str] = None
 	visible_about_program_field: bool = False
@@ -152,7 +152,7 @@ class User(BaseModel):
 
 class Smm(BaseModel):
 	username: str
-	password: str
+	password: Optional[None] = None
 	name: str
 	surname: str
 	email: str
@@ -169,7 +169,7 @@ class Smm(BaseModel):
 
 class Developer(BaseModel):
 	username: str
-	password: str
+	password: Optional[None] = None
 	name: str
 	surname: str
 	email: str
@@ -185,13 +185,12 @@ class Developer(BaseModel):
 
 
 class HumanContacts(BaseModel):
-	human: Union[int, Human]
 	phone: Optional[str] = ''
 	vk: Optional[str] = ''
 	insagramm: Optional[str] = ''
 	facebook: Optional[str] = ''
-	home_adress: Optional[str] = ''
 	telegram: Optional[str] = ''
+	home_adress: Optional[str] = ''
 
 	class Config:
 		orm_mode = True
@@ -199,7 +198,7 @@ class HumanContacts(BaseModel):
 
 class DirectionExpert(BaseModel):
 	username: str
-	password: str
+	password: Optional[None] = None
 	name: str
 	surname: str
 	email: str
@@ -209,7 +208,6 @@ class DirectionExpert(BaseModel):
 	description: Optional[str] = ''
 	scopes: Optional[Union[Json, dict]] = {}
 	questions: Set[Union[int, Question]] = []
-	competition_directions: Set[Union[Tuple[str, int], CompetitionDirection]] = []
 
 	class Config:
 		orm_mode = True
@@ -220,8 +218,17 @@ class Competition(BaseModel):
 	start: datetime
 	end: datetime
 	description: Optional[str] = ''
-	competition_direction: Set[Union[Tuple[str, int], CompetitionDirection]] = []
 	document: Optional[str] = ''
+
+
+	@validator("start", pre=True, always=True)
+	def start_to_datetime_validator(cls, value):
+		return PydanticValidators.datetime(cls, value)
+
+
+	@validator("end", pre=True, always=True)
+	def end_to_datetime_validator(cls, value):
+		return PydanticValidators.datetime(cls, value)
 
 	class Config:
 		orm_mode = True
@@ -230,7 +237,6 @@ class Competition(BaseModel):
 class Direction(BaseModel):
 	name: str
 	icon: str
-	competition_direction: Set[Union[Tuple[str, int], CompetitionDirection]] = []
 	video_lessons: Optional[Union[Json, dict]] = {}
 
 	class Config:
@@ -239,10 +245,9 @@ class Direction(BaseModel):
 
 class CompetitionDirection(BaseModel):
 	directions: Union[str, Direction]
+	questions: Optional[None] = None
 	competition: Union[int, Competition]
-	tasks: Set[Union[int, Task]] = []
 	direction_experts: Set[Union[int, DirectionExpert]] = []
-	criterions: Set[Union[int, Criterion]] = []
 
 	class Config:
 		orm_mode = True
@@ -254,26 +259,39 @@ class Task(BaseModel):
 	description: Optional[str] = ''
 	start: datetime
 	end: datetime
-	user_works: Set[Union[Tuple[int, int], UserWork]] = []
+
+
+	@validator("start", pre=True, always=True)
+	def start_to_datetime_validator(cls, value):
+		return PydanticValidators.datetime(cls, value)
+
+
+	@validator("end", pre=True, always=True)
+	def end_to_datetime_validator(cls, value):
+		return PydanticValidators.datetime(cls, value)
 
 	class Config:
 		orm_mode = True
 
 
 class UserWork(BaseModel):
-	mark_works: Set[Union[Tuple[int, int, int], MarkWork]] = []
-	user: Union[int, User]
 	task: Union[int, Task]
 	work: Optional[str] = ''
+	mark_works: Set[Union[Tuple[int, int, int], MarkWork]] = []
+	user: Union[int, User]
 	upload_date: datetime
-	mark: Optional[str] = ''
+
+
+	@validator("upload_date", pre=True, always=True)
+	def upload_date_to_datetime_validator(cls, value):
+		return PydanticValidators.datetime(cls, value)
 
 	class Config:
 		orm_mode = True
 
 
 class Criterion(BaseModel):
-	competition_direction: Union[Tuple[str, int], CompetitionDirection]
+	task: Union[int, Task]
 	name: str
 	description: Optional[str] = ''
 	max_value: Optional[float] = None
@@ -297,8 +315,8 @@ class Page(BaseModel):
 	page_path: Optional[str] = ''
 	is_header: bool = False
 	visible: bool = False
-	child_pages: Set[Union[int, Page]] = []
 	root_page: Union[int, Page, None] = None
+	child_pages: Set[Union[int, Page]] = []
 	title: Optional[str] = ''
 	questions: Set[Union[int, Question]] = []
 
@@ -332,14 +350,19 @@ class News(BaseModel):
 	page_path: Optional[str] = ''
 	is_header: bool = False
 	visible: bool = False
-	child_pages: Set[Union[int, Page]] = []
 	root_page: Union[int, Page, None] = None
+	child_pages: Set[Union[int, Page]] = []
 	title: Optional[str] = ''
 	questions: Set[Union[int, Question]] = []
 	auto_publish: Optional[datetime] = None
 	image: Optional[str] = None
 	author: Optional[str] = None
 	description: Optional[str] = None
+
+
+	@validator("auto_publish", pre=True, always=True)
+	def auto_publish_to_datetime_validator(cls, value):
+		return PydanticValidators.datetime(cls, value)
 
 	class Config:
 		orm_mode = True

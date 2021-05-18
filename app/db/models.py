@@ -1,10 +1,13 @@
 import enum
 
-from app.pydantic_models import db_models as pd
-from app.pydantic_models import unique_db_field_models as pk_pd
-from app.pydantic_models import unique_db_field_models as pk_pd
-from app.pydantic_models import input_ent as inp_pd
-from app.pydantic_models import output_ent as out_pd
+try:
+    from app.pydantic_models import db_models as pd
+    from app.pydantic_models import unique_db_field_models as pk_pd
+    from app.pydantic_models import unique_db_field_models as pk_pd
+    from app.pydantic_models import input_ent as inp_pd
+    from app.pydantic_models import output_ent as out_pd
+except ImportError as e:
+    print('произошла ошибка при импорте моделей pydantic. По всей видимости в них ошибка', e)
 from app.pydantic_models import only_primarykey_fields_model as only_pk
 from app.utils.html_utils import nice_table_page
 
