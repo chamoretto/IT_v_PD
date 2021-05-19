@@ -4,7 +4,11 @@
 {# =======! Ни одно изменение в этом файле не будет сохранено! !======= #}
 
 <div class="container max-width-lg">
-<h3 class="margin-bottom-sm"><a href="/db/Page" class="no-effect" title="Вернуться к просмотру объектов БД"><i class="fa fa-long-arrow-alt-left"></i></a>Вернуться ко всем объектам Page</h3>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
+{% if not(db_mode is defined) or db_mode%}<h3 class="margin-bottom-sm">
+<a href="/db/Page" class="no-effect" title="Вернуться к просмотру объектов БД">
+<i class="fa fa-long-arrow-alt-left"></i></a>
+Вернуться ко всем объектам Page</h3>
+{% endif %}{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
 {#{access_mode}#}
 <form id="page" action="{{(action_url if action_url is defined else "/db/Page/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
 {% endif %}
@@ -40,7 +44,7 @@
 <input class="form-control width-100% text-sm" type="text" name="page_url" id="Page_page_url" placeholder="" {{
     ('value="%s"' % (page.page_url if page.page_url else "")
         if page is defined
-        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+        else 'value="''"'|safe)|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Page_page_url_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
    {% set ns = namespace(good_modes=[]) %}
@@ -56,7 +60,7 @@
 <input class="form-control width-100% text-sm" type="text" name="page_path" id="Page_page_path" placeholder="" {{
     ('value="%s"' % (page.page_path if page.page_path else "")
         if page is defined
-        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+        else 'value="''"'|safe)|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Page_page_path_error"></div>{% endif %}{% endif %}{% endif %}
 <div class="col-6@md">
                         <fieldset class="margin-bottom-md">
@@ -67,7 +71,7 @@
                                     name="is_header" id="Page_is_header" placeholder=""  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}
                                     {{ (( "checked" if page.is_header else "" )|safe 
     if page is defined else
-            ""|safe )}}>
+            "checked"|safe )}}>
                                     <label aria-hidden="true" class="switch__label" for="Page_is_header">is_header</label>
                                     <div aria-hidden="true" class="switch__marker"></div>
                                 </div>
@@ -83,7 +87,7 @@
                                     name="visible" id="Page_visible" placeholder=""  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}
                                     {{ (( "checked" if page.visible else "" )|safe 
     if page is defined else
-            ""|safe )}}>
+            "checked"|safe )}}>
                                     <label aria-hidden="true" class="switch__label" for="Page_visible">visible</label>
                                     <div aria-hidden="true" class="switch__marker"></div>
                                 </div>
@@ -112,14 +116,34 @@ child_pages имеет тип select, который еще не поддерж�
 <input class="form-control width-100% text-sm" type="text" name="title" id="Page_title" placeholder="" {{
     ('value="%s"' % (page.title if page.title else "")
         if page is defined
-        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+        else 'value="''"'|safe)|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Page_title_error"></div>{% endif %}{% endif %}{% endif %}
 <div class="margin-bottom-sm"><label class="form-label margin-bottom-xxs">
 questions имеет тип multi_select, который еще не поддерживается...
 </label></div>
-</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>
+
+{% if access_mode is defined and access is defined %}
+   {% set ns = namespace(good_modes=[]) %}
+   {% set access_dict = {'dev': ['create', 'edit', 'look'], 'admin': ['create', 'edit', 'look'], 'smm': ['create', 'edit', 'look']} %}
+   {% for a in access %}
+       {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
+    {% endfor %}
+   {% if access_mode in ns.good_modes %}
+      {% if (page is defined and page.page_type != Undefined) or page is not defined %}
+<div class="margin-bottom-sm">
+<label class="form-label margin-bottom-xxs" for="Page_page_type">Выберите тип страницы, к примеру "события"
+</label>
+<input class="form-control width-100% text-sm" type="text" name="page_type" id="Page_page_type" placeholder="" {{
+    ('value="%s"' % (page.page_type if page.page_type else "")
+        if page is defined
+        else 'value="''"'|safe)|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+</div><div id="Page_page_type_error"></div>{% endif %}{% endif %}{% endif %}</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
 </div></form>
 {% endif %}
-</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>
+{% if not(db_mode is defined) or db_mode%}<br><h3 class="margin-bottom-sm">
+<a href="/db/Page" class="no-effect" title="Вернуться к просмотру объектов БД">
+<i class="fa fa-long-arrow-alt-left"></i></a>
+Вернуться ко всем объектам Page</h3>
+{% endif %}</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>

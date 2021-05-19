@@ -1,0 +1,41 @@
+DEBUG     [10-04-2020 11:55:11] models.py:23 — Load SQLITE db
+INFO      [10-04-2020 11:55:11] controller.py:13 — INIT CREATE FORMS: Admin
+INFO      [10-04-2020 11:55:11] controller.py:13 — INIT CREATE FORMS: News
+INFO      [10-04-2020 11:55:11] controller.py:13 — INIT CREATE FORMS: Event
+INFO      [10-04-2020 11:55:11] controller.py:13 — INIT CREATE FORMS: Directions
+INFO      [10-04-2020 11:55:11] controller.py:13 — INIT CREATE FORMS: People
+INFO      [10-04-2020 11:55:11] controller.py:13 — INIT CREATE FORMS: Partners
+INFO      [10-04-2020 11:55:11] controller.py:13 — INIT CREATE FORMS: Events1000ListNick
+INFO      [10-04-2020 11:55:11] controller.py:13 — INIT CREATE FORMS: Socials
+INFO      [10-04-2020 11:55:11] controller.py:13 — INIT CREATE FORMS: Graduates
+INFO      [10-04-2020 11:55:11] controller.py:13 — INIT CREATE FORMS: WorkChildren
+ERROR     [10-04-2020 11:55:11] lib.py:22 — Please, install ujson module (pip3 install ujson)
+DEBUG     [10-04-2020 11:55:12] __main__.py:1125 — Create admin with login "rcbcu@mail.ru"
+DEBUG     [09-04-2020 00:11:20] models.py:23 — Load SQLITE db
+INFO      [09-04-2020 00:11:20] controller.py:13 — INIT CREATE FORMS: Admin
+INFO      [09-04-2020 00:11:20] controller.py:13 — INIT CREATE FORMS: News
+INFO      [09-04-2020 00:11:20] controller.py:13 — INIT CREATE FORMS: Event
+INFO      [09-04-2020 00:11:20] controller.py:13 — INIT CREATE FORMS: Directions
+INFO      [09-04-2020 00:11:20] controller.py:13 — INIT CREATE FORMS: People
+INFO      [09-04-2020 00:11:20] controller.py:13 — INIT CREATE FORMS: Partners
+INFO      [09-04-2020 00:11:20] controller.py:13 — INIT CREATE FORMS: Events1000ListNick
+INFO      [09-04-2020 00:11:20] controller.py:13 — INIT CREATE FORMS: Socials
+INFO      [09-04-2020 00:11:20] controller.py:13 — INIT CREATE FORMS: Graduates
+INFO      [09-04-2020 00:11:20] controller.py:13 — INIT CREATE FORMS: WorkChildren
+ERROR     [09-04-2020 00:11:20] lib.py:24 — Please, install ujson module (pip3 install ujson)
+DEBUG     [09-04-2020 00:11:21] __main__.py:1103 — Create admin with login "rcbcu@mail.ru"
+INFO      [09-04-2020 00:11:22] __main__.py:844 — <class 'pony.orm.ormtypes.TrackedDict'>
+DEBUG     [10-04-2020 13:07:34] models.py:23 — Load SQLITE db
+INFO      [10-04-2020 13:07:34] controller.py:13 — INIT CREATE FORMS: Admin
+INFO      [10-04-2020 13:07:34] controller.py:13 — INIT CREATE FORMS: News
+INFO      [10-04-2020 13:07:34] controller.py:13 — INIT CREATE FORMS: Event
+INFO      [10-04-2020 13:07:34] controller.py:13 — INIT CREATE FORMS: Directions
+INFO      [10-04-2020 13:07:34] controller.py:13 — INIT CREATE FORMS: People
+INFO      [10-04-2020 13:07:34] controller.py:13 — INIT CREATE FORMS: Partners
+INFO      [10-04-2020 13:07:34] controller.py:13 — INIT CREATE FORMS: Events1000ListNick
+INFO      [10-04-2020 13:07:34] controller.py:13 — INIT CREATE FORMS: Socials
+INFO      [10-04-2020 13:07:34] controller.py:13 — INIT CREATE FORMS: Graduates
+INFO      [10-04-2020 13:07:34] controller.py:13 — INIT CREATE FORMS: WorkChildren
+ERROR     [10-04-2020 13:07:34] lib.py:22 — Please, install ujson module (pip3 install ujson)
+DEBUG     [10-04-2020 13:07:34] __main__.py:1134 — Create admin with login "rcbcu@mail.ru"
+

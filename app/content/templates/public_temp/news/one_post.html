@@ -21,7 +21,7 @@
                 <div class="col-4@lg">
                     {% if socials is defined %}
                     {% for s in socials %}
-                    <a class=" margin-x-xxs" style="text-decoration: none;"  href="{{s.link}}" target="_blank" title="{{s.name}}">
+                    <a class=" margin-x-xxs" style="text-decoration: none;"  href="/{{s.link}}" target="_blank" title="{{s.name}}">
                         <i class="icon icon--md fa fa-{{s.name}} color-contrast-higher"></i>
                     </a>
                     {% endfor %}

@@ -5,9 +5,6 @@
         <header>Панель</header>
         <nav>
             <ul>
-                <li><a href="">Глава перва99999999999999999я</a></li>
-                <li><a href="">Глава вторая</a></li>
-                <li><a href="">Глава третья</a></li>
                 {% for name, link in pages.items()%}
                 <li><a href="{{link}}">{{name}}</a></li>
                 {% endfor %}

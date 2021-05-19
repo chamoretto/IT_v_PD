@@ -96,6 +96,24 @@ class MyJinja2Templates:
     def get_template(self, name: str) -> "jinja2.Template":
         return self.env.get_template(name)
 
+    def get_cooked_template(self, name: str, params: dict):
+        params = self._params_addition(params)
+        return self.get_template(name).render(params)
+
+    def _params_addition(self, params: dict):
+        if "request" not in params:
+            raise ValueError('context must include a "request" key')
+
+        params['access'] = params.get('access') or self.access or ["public"]
+        params['access_mode'] = params.get('access_mode') or "look"
+        if type(params['access']) == str:
+            params['access'] = [params['access']]
+        params['access'] += ['self']
+
+        [params.update(val()) for key, val in includes.items() if params.get(key)]
+        return params
+
+
     def TemplateResponse(
             self,
             name: str,
@@ -107,16 +125,7 @@ class MyJinja2Templates:
             only_part: bool = False
     ) -> Union[_MyTemplateResponse, JSONResponse]:
 
-        if "request" not in local_context:
-            raise ValueError('context must include a "request" key')
-
-        local_context['access'] = local_context.get('access') or self.access or ["public"]
-        local_context['access_mode'] = local_context.get('access_mode') or "look"
-        if type(local_context['access']) == str:
-            local_context['access'] = [local_context['access']]
-        local_context['access'] += ['self']
-
-        [local_context.update(val()) for key, val in includes.items() if local_context.get(key)]
+        local_context = self._params_addition(local_context)
 
         template = self.get_template(name)
         layout_env = self.get_env("content/templates/layout")
@@ -182,7 +191,7 @@ class MyJinja2Templates:
         )
 
 
-_admin_shell = {"Управление БД": "/db", "Мой профиль": "/dev/me"}
+_admin_shell = {"Управление БД": "/db", "Мой профиль": "/dev/me", "Скачать логи": "/dev/logs"}
 
 login_templates = MyJinja2Templates(directory="content/templates/login")
 error_templates = MyJinja2Templates(directory="content/templates/errors")

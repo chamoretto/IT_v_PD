@@ -4,7 +4,11 @@
 {# =======! Ни одно изменение в этом файле не будет сохранено! !======= #}
 
 <div class="container max-width-lg">
-<h3 class="margin-bottom-sm"><a href="/db/Question" class="no-effect" title="Вернуться к просмотру объектов БД"><i class="fa fa-long-arrow-alt-left"></i></a>Вернуться ко всем объектам Question</h3>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
+{% if not(db_mode is defined) or db_mode%}<h3 class="margin-bottom-sm">
+<a href="/db/Question" class="no-effect" title="Вернуться к просмотру объектов БД">
+<i class="fa fa-long-arrow-alt-left"></i></a>
+Вернуться ко всем объектам Question</h3>
+{% endif %}{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
 {#{access_mode}#}
 <form id="question" action="{{(action_url if action_url is defined else "/db/Question/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
 {% endif %}
@@ -40,7 +44,7 @@
 <input class="form-control width-100% text-sm" type="text" name="question_title" id="Question_question_title" placeholder="" {{
     ('value="%s"' % (question.question_title if question.question_title else "")
         if question is defined
-        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+        else 'value="''"'|safe)|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Question_question_title_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
    {% set ns = namespace(good_modes=[]) %}
@@ -72,7 +76,7 @@
 <input class="form-control width-100% text-sm" type="text" name="answer" id="Question_answer" placeholder="" {{
     ('value="%s"' % (question.answer if question.answer else "")
         if question is defined
-        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+        else 'value="''"'|safe)|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="Question_answer_error"></div>{% endif %}{% endif %}{% endif %}
 {% if access_mode is defined and access is defined %}
    {% set ns = namespace(good_modes=[]) %}
@@ -107,7 +111,7 @@ human имеет тип select, который еще не поддержива�
                                     name="was_read" id="Question_was_read" placeholder=""  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}
                                     {{ (( "checked" if question.was_read else "" )|safe 
     if question is defined else
-            ""|safe )}}>
+            "checked"|safe )}}>
                                     <label aria-hidden="true" class="switch__label" for="Question_was_read">was_read</label>
                                     <div aria-hidden="true" class="switch__marker"></div>
                                 </div>
@@ -123,7 +127,7 @@ human имеет тип select, который еще не поддержива�
                                     name="was_answered" id="Question_was_answered" placeholder=""  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}
                                     {{ (( "checked" if question.was_answered else "" )|safe 
     if question is defined else
-            ""|safe )}}>
+            "checked"|safe )}}>
                                     <label aria-hidden="true" class="switch__label" for="Question_was_answered">was_answered</label>
                                     <div aria-hidden="true" class="switch__marker"></div>
                                 </div>
@@ -134,4 +138,8 @@ human имеет тип select, который еще не поддержива�
 <button class="btn btn--subtle" type="reset">Сбросить</button>
 </div></form>
 {% endif %}
-</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>
+{% if not(db_mode is defined) or db_mode%}<br><h3 class="margin-bottom-sm">
+<a href="/db/Question" class="no-effect" title="Вернуться к просмотру объектов БД">
+<i class="fa fa-long-arrow-alt-left"></i></a>
+Вернуться ко всем объектам Question</h3>
+{% endif %}</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>

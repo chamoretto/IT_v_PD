@@ -18,10 +18,12 @@ def all_html_form(content: str, entity_name: str) -> str:
     # langua ge=HTML
     text = f'' \
            f'<div class="container max-width-lg">\n' \
-           f'<h3 class="margin-bottom-sm">' \
-           f'<a href="/db/{entity_name}" class="no-effect" title="Вернуться к просмотру объектов БД">' \
-           f'<i class="fa fa-long-arrow-alt-left"></i></a>' \
-           f'Вернуться ко всем объектам {entity_name}</h3>' \
+           f'{"{%"} if not(db_mode is defined) or db_mode{"%}"}' \
+           f'<h3 class="margin-bottom-sm">\n' \
+           f'<a href="/db/{entity_name}" class="no-effect" title="Вернуться к просмотру объектов БД">\n' \
+           f'<i class="fa fa-long-arrow-alt-left"></i></a>\n' \
+           f'Вернуться ко всем объектам {entity_name}</h3>\n' \
+           f'{"{%"} endif {"%}"}' \
            f'{"{%"} if (disabled is not defined or not disabled) or' \
            f' (access_mode is defined and access_mode != "look") {"%}"}\n' \
            f'{"{#{"}access_mode{"}#}"}\n' \
@@ -41,7 +43,14 @@ def all_html_form(content: str, entity_name: str) -> str:
            f'<button class="btn btn--subtle" type="reset">Сбросить</button>\n' \
            f'</div></form>\n' \
            f'{"{%"} endif {"%}"}\n' \
+           f'{"{%"} if not(db_mode is defined) or db_mode{"%}"}' \
+           f'<br><h3 class="margin-bottom-sm">\n' \
+           f'<a href="/db/{entity_name}" class="no-effect" title="Вернуться к просмотру объектов БД">\n' \
+           f'<i class="fa fa-long-arrow-alt-left"></i></a>\n' \
+           f'Вернуться ко всем объектам {entity_name}</h3>\n' \
+           f'{"{%"} endif {"%}"}' \
            f'</div>' \
+           f'' \
            f'<script src="{"{{"}url_for("scripts", path="/async_forms_and_redirects.js"){"}}"}"></script>'
     return text
 

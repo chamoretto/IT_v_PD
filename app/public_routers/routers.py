@@ -112,6 +112,35 @@ def get_public_pages(request: Request, post: str):
     raise error_404_Page
 
 
+@public_router.get("/about_program")
+@db_session
+def get_public_pages(request: Request):
+    if (ent := m.Page.get(page_url="/about_program")) or (ent := m.Page.get(page_url="about_program")):
+        return public_templates.TemplateResponse(ent.page_path, {
+            "request": request})
+    raise error_404_Page
+
+
+# @public_router.get("/competition")
+# @db_session
+# def get_public_pages(request: Request):
+#     if (ent := m.Page.get(page_url="/competition")) or (ent := m.Page.get(page_url="competition")):
+#         return public_templates.TemplateResponse(ent.page_path, {
+#             "request": request,
+#             "directions": [out_pd.Direction.from_pony_orm(i) for i in m.Direction.select()[:]]})
+#     raise error_404_Page
+#
+#
+# @public_router.get("/competition/{direction}")
+# @db_session
+# def get_public_pages(request: Request, direction: str):
+#     if ent := m.Direction.get(name=direction):
+#         return public_templates.TemplateResponse("competition/direction.html", {
+#             "request": request,
+#             "direction": out_pd.Direction.from_pony_orm(ent)})
+#
+#     raise error_404_Page
+
 # @public_router.get("/{file_path:path}")
 # @db_session
 # def get_public_pages(file_path: str, request: Request):

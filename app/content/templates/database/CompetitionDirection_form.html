@@ -4,7 +4,11 @@
 {# =======! Ни одно изменение в этом файле не будет сохранено! !======= #}
 
 <div class="container max-width-lg">
-<h3 class="margin-bottom-sm"><a href="/db/CompetitionDirection" class="no-effect" title="Вернуться к просмотру объектов БД"><i class="fa fa-long-arrow-alt-left"></i></a>Вернуться ко всем объектам CompetitionDirection</h3>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
+{% if not(db_mode is defined) or db_mode%}<h3 class="margin-bottom-sm">
+<a href="/db/CompetitionDirection" class="no-effect" title="Вернуться к просмотру объектов БД">
+<i class="fa fa-long-arrow-alt-left"></i></a>
+Вернуться ко всем объектам CompetitionDirection</h3>
+{% endif %}{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
 {#{access_mode}#}
 <form id="competitiondirection" action="{{(action_url if action_url is defined else "/db/CompetitionDirection/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
 {% endif %}
@@ -30,4 +34,8 @@ direction_experts имеет тип multi_select, который еще не п�
 <button class="btn btn--subtle" type="reset">Сбросить</button>
 </div></form>
 {% endif %}
-</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>
+{% if not(db_mode is defined) or db_mode%}<br><h3 class="margin-bottom-sm">
+<a href="/db/CompetitionDirection" class="no-effect" title="Вернуться к просмотру объектов БД">
+<i class="fa fa-long-arrow-alt-left"></i></a>
+Вернуться ко всем объектам CompetitionDirection</h3>
+{% endif %}</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>

@@ -4,7 +4,11 @@
 {# =======! Ни одно изменение в этом файле не будет сохранено! !======= #}
 
 <div class="container max-width-lg">
-<h3 class="margin-bottom-sm"><a href="/db/HumanContacts" class="no-effect" title="Вернуться к просмотру объектов БД"><i class="fa fa-long-arrow-alt-left"></i></a>Вернуться ко всем объектам HumanContacts</h3>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
+{% if not(db_mode is defined) or db_mode%}<h3 class="margin-bottom-sm">
+<a href="/db/HumanContacts" class="no-effect" title="Вернуться к просмотру объектов БД">
+<i class="fa fa-long-arrow-alt-left"></i></a>
+Вернуться ко всем объектам HumanContacts</h3>
+{% endif %}{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
 {#{access_mode}#}
 <form id="humancontacts" action="{{(action_url if action_url is defined else "/db/HumanContacts/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
 {% endif %}
@@ -44,10 +48,14 @@ telegram имеет тип url, который еще не поддержива�
 <input class="form-control width-100% text-sm" type="text" name="home_adress" id="HumanContacts_home_adress" placeholder="" {{
     ('value="%s"' % (humancontacts.home_adress if humancontacts.home_adress else "")
         if humancontacts is defined
-        else "")|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
+        else 'value="''"'|safe)|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
 </div><div id="HumanContacts_home_adress_error"></div>{% endif %}{% endif %}{% endif %}</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
 </div></form>
 {% endif %}
-</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>
+{% if not(db_mode is defined) or db_mode%}<br><h3 class="margin-bottom-sm">
+<a href="/db/HumanContacts" class="no-effect" title="Вернуться к просмотру объектов БД">
+<i class="fa fa-long-arrow-alt-left"></i></a>
+Вернуться ко всем объектам HumanContacts</h3>
+{% endif %}</div><script src="{{url_for("scripts", path="/async_forms_and_redirects.js")}}"></script>
