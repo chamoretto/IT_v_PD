@@ -87,20 +87,45 @@ def get_public_pages(request: Request, event: str):
     raise error_404_Page
 
 
-@public_router.get("/{file_path:path}")
+@public_router.get("/news")
 @db_session
-def get_public_pages(file_path: str, request: Request):
-    print('=-098765456789', file_path)
-    file_path = file_path.removeprefix("/")
-    ent = None
-    if m.Page.exists(page_url=file_path):
-        print('456')
-        ent = m.Page.get(page_url=file_path)
-
-    elif m.Page.exists(page_url="/" + file_path):
-        print('4erter')
-        ent = m.Page.get(page_url="/" + file_path)
-    print(ent)
-    if ent:
-        return public_templates.TemplateResponse(ent.page_path, {"request": request})
+def get_public_pages(request: Request):
+    print('rfgsdg')
+    if (ent := m.Page.get(page_url="/news")) or (ent := m.Page.get(page_url="news")):
+        return public_templates.TemplateResponse(ent.page_path, {
+            "request": request,
+            "news": [out_pd.News.from_pony_orm(i) for i in m.News.select()[:]]})
     raise error_404_Page
+
+
+@public_router.get("/news/{post}")
+@db_session
+def get_public_pages(request: Request, post: str):
+    print("------------------------------------")
+    if (ent := m.News.get(page_url="/news/" + post)) or (ent := m.News.get(page_url="news/" + post)):
+        return public_templates.TemplateResponse("news/one_post.html", {
+            "request": request,
+            "socials": [easy_ent_pd.Socials(id=key, **val) for key, val in dict(m.SimpleEntity['socials'].data).items()],
+            "post": out_pd.News.from_pony_orm(ent)
+        })
+
+    raise error_404_Page
+
+
+# @public_router.get("/{file_path:path}")
+# @db_session
+# def get_public_pages(file_path: str, request: Request):
+#     print('=-098765456789', file_path)
+#     file_path = file_path.removeprefix("/")
+#     ent = None
+#     if m.Page.exists(page_url=file_path):
+#         print('456')
+#         ent = m.Page.get(page_url=file_path)
+#
+#     elif m.Page.exists(page_url="/" + file_path):
+#         print('4erter')
+#         ent = m.Page.get(page_url="/" + file_path)
+#     print(ent)
+#     if ent:
+#         return public_templates.TemplateResponse(ent.page_path, {"request": request})
+#     raise error_404_Page
