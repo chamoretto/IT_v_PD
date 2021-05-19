@@ -1,0 +1,43 @@
+<div class="container">
+<section class="feature">
+  <div class="container max-width-adaptive-lg">
+    <div class="grid grid-gap-md items-center">
+      <div class="col-6@md">
+        <div class="text-component">
+          <h1>Получи</h1>
+          <h1>Знания</h1>
+          <h1>Бесплатно</h1>
+          <p>Выпускники программы 1000-list-nick не прочь поделиться
+            своими знаниями и умениями по 8 направлениям, для того
+            чтобы ты смог определиться со своей специальностью,
+            а также узнать что-то новое. Выбирай направление и
+            начинай знакомство с новой специальностью!
+          </p>
+        </div>
+      </div>
+      <div class="col-6@md order-1@md">
+        <img class="" src="/images/videostudy/vs-1.png" alt="Image description">
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<section class="margin-y-md">
+    <h1 class="text-center margin-y-sm"> Выбери направление </h1>
+    <div class="max-width-adaptive-md margin-x-auto">
+        <ol class="grid-auto-md grid-gap-sm items-center text-center">
+            {% if directions is defined %}
+            {% for i in directions %}
+                <li>
+                    <div class=""> <a href="/videostudy/{{i.name}}">
+                        <img class="block margin-x-auto" src="{{i.icon}}" alt="placeholder"> {{i.name}}</a>
+                    </div></li>
+            {% endfor %}
+            {% else %}
+            при загрузке направлений произошла какая-то ошибка.....
+            {% endif %}
+        </ol>
+    </div>
+</section>

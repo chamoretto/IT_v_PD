@@ -25,76 +25,82 @@ def create_pages():
 
     main = Page(
         page_url="/",
-        page_path="content/templates/main.html",
+        page_path="main.html",
         visible=True,
         title="Главная"
     )
     event_main = Page(
         page_url="/events",
-        page_path="content/templates/events/event_main.html",
+        page_path="events/event_main.html",
         is_header=True,
-        title="Список всех событий"
+        title="События"
     )
     commit()
     teengrad = Page(
         page_url="/events/teengrad",
-        page_path="content/templates/events/teengrad.html",
+        page_path="events/teengrad.html",
         visible=True,
+        is_header=False,
         title="TeenГрад",
         root_page=event_main
     )
     dominno = Page(
         page_url="/events/dominno",
-        page_path="content/templates/events/dominno.html",
+        page_path="events/dominno.html",
         visible=True,
+        is_header=False,
         title="ДомInno",
         root_page=event_main
     )
     brainstorm = Page(
         page_url="/events/brainstorm",
-        page_path="content/templates/events/brainstorm.html",
+        page_path="events/brainstorm.html",
         visible=True,
+        is_header=False,
         title="brainstorm",
         root_page=event_main
     )
     innovatorium = Page(
         page_url="/events/innovatorium",
-        page_path="content/templates/events/innovatorium.html",
+        page_path="events/innovatorium.html",
         visible=True,
+        is_header=False,
         title="innovatorium",
         root_page=event_main
     )
     season_start = Page(
         page_url="/events/season_start",
-        page_path="content/templates/events/season_start.html",
+        page_path="events/season_start.html",
         visible=True,
+        is_header=False,
         title="season_start",
         root_page=event_main
     )
     success_factor = Page(
         page_url="/events/success_factor",
-        page_path="content/templates/events/success_factor.html",
+        page_path="events/success_factor.html",
         visible=True,
+        is_header=False,
         title="success_factor",
         root_page=event_main
     )
     news_main = Page(
         page_url="/news",
-        page_path="content/templates/news/news_main.html",
+        page_path="news/news_main.html",
         visible=True,
         is_header=True,
         title="Новости",
     )
     about_program = Page(
         page_url="/about_program",
-        page_path="content/templates/about_program.html",
+        page_path="about_program.html",
         visible=True,
         is_header=True,
         title="О нас",
     )
     competition = Page(
         page_url="/competition",
-        page_path="content/templates/competition/main_novator_web.html.html",
+        page_path="competition/main_novator_web.html.html",
         visible=True,
         is_header=True,
         title="Новатор веб",
@@ -108,19 +114,19 @@ def create_pages():
     # )
     videostudy = Page(
         page_url="/videostudy",
-        page_path="content/templates/videostudy/main_videostudy.html.html",
+        page_path="videostudy/main_videostudy.html",
         visible=True,
         title="videostudy",
         is_header=True,
-        root_page=event_main
     )
 
     commit()
 
     News(
         page_url="/news/mediaForum",
-        page_path="content/templates/news/mediaForum.html",
+        page_path="news/mediaForum.html",
         visible=True,
+        is_header=False,
         title="1000-list-nick на медиафоруме",
         root_page=news_main,
         image="img/news/mediaForum.jfif",
@@ -128,8 +134,9 @@ def create_pages():
     )
     News(
         page_url="/news/start_2019",
-        page_path="content/templates/news/start_2019.html",
+        page_path="news/start_2019.html",
         visible=True,
+        is_header=False,
         title="Старт сезону дан!",
         root_page=news_main,
         image="img/news/start_2019.jfif",
@@ -137,8 +144,9 @@ def create_pages():
     )
     News(
         page_url="/news/seminar",
-        page_path="content/templates/news/seminar.html",
+        page_path="news/seminar.html",
         visible=True,
+        is_header=False,
         title="Семинар - стажировка",
         root_page=news_main,
         image="img/news/seminar.jfif",
@@ -148,7 +156,7 @@ def create_pages():
 
     Direction(
         name="IT",
-        icon="img/directions/it.png",
+        icon="/img/directions/it.png",
         video_lessons={
             1: "https://video.wixstatic.com/video/9a5d54_885c36fc8e1d4fdd9c281d58e1901d17/1080p/mp4/file.mp4",
             2: "https://video.wixstatic.com/video/9a5d54_65b0e4979a5442f88d6a38f15c606853/1080p/mp4/file.mp4",
@@ -159,7 +167,7 @@ def create_pages():
     )
     Direction(
         name="3D",
-        icon="img/directions/3d.png",
+        icon="/img/directions/3d.png",
         video_lessons={
             1: "https://video.wixstatic.com/video/9a5d54_6bc1b38b9eed42ddab5994e13b37fc95/1080p/mp4/file.mp4",
             2: "https://video.wixstatic.com/video/9a5d54_0dd4ec30189944d682fccd258ee758a1/1080p/mp4/file.mp4",
@@ -170,7 +178,7 @@ def create_pages():
     )
     Direction(
         name="Engineer",
-        icon="img/directions/engineer.png",
+        icon="/img/directions/engineer.png",
         video_lessons={
             1: "https://video.wixstatic.com/video/9a5d54_c45dc14ee30b46c2a8d2a7891580adf5/1080p/mp4/file.mp4",
             2: "https://video.wixstatic.com/video/9a5d54_2a592617b02346d7a0c97ca2121d0fdf/1080p/mp4/file.mp4",
@@ -181,7 +189,7 @@ def create_pages():
     )
     Direction(
         name="Design",
-        icon="img/directions/design.png",
+        icon="/img/directions/design.png",
         video_lessons={
             1: "https://video.wixstatic.com/video/9a5d54_22c6be65403a41398f97904f4d9bd39c/1080p/mp4/file.mp4",
             2: "https://video.wixstatic.com/video/9a5d54_e116b6a6f2794bc5b13291bca556f642/1080p/mp4/file.mp4",
@@ -192,7 +200,7 @@ def create_pages():
     )
     Direction(
         name="PM",
-        icon="img/directions/pm.png",
+        icon="/img/directions/pm.png",
         video_lessons={
             1: "https://video.wixstatic.com/video/9a5d54_4890fdcae2b74eebb28091e4a8267870/1080p/mp4/file.mp4",
             2: "https://video.wixstatic.com/video/9a5d54_0efb8386339d4ebd8fb92bf6a656b6b6/1080p/mp4/file.mp4",
@@ -203,7 +211,7 @@ def create_pages():
     )
     Direction(
         name="SMM",
-        icon="img/directions/smm.png",
+        icon="/img/directions/smm.png",
         video_lessons={
             1: "https://video.wixstatic.com/video/9a5d54_53b245f42ec14a29bb96204605226fd8/1080p/mp4/file.mp4",
             2: "https://video.wixstatic.com/video/9a5d54_573978293eb74120b30c7a3efdbda4d4/1080p/mp4/file.mp4",
@@ -214,7 +222,7 @@ def create_pages():
     )
     Direction(
         name="Video",
-        icon="img/directions/video.png",
+        icon="/img/directions/video.png",
         video_lessons={
             1: "https://video.wixstatic.com/video/9a5d54_3f557878d22645c192182aee325010ac/1080p/mp4/file.mp4",
             2: "https://video.wixstatic.com/video/9a5d54_f57c2eef03e84de0920e3114ca38017c/1080p/mp4/file.mp4",
@@ -226,7 +234,7 @@ def create_pages():
     )
     Direction(
         name="Hardware",
-        icon="img/directions/hardware.png",
+        icon="/img/directions/hardware.png",
         video_lessons={
             1: "https://video.wixstatic.com/video/9a5d54_aac2f2b6be0348fdb31f2d721fa48846/1080p/mp4/file.mp4",
             2: "https://video.wixstatic.com/video/9a5d54_cdc5f9d5795c417792d68dfc8b3e3ba4/1080p/mp4/file.mp4",

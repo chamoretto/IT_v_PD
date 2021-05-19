@@ -4,6 +4,7 @@ from pony.orm import db_session
 
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi import Depends, HTTPException, status, APIRouter
 
 from app.dependencies import *
 from app.db import models as m
@@ -16,16 +17,20 @@ from app.utils.html_utils import Alert
 
 
 public_router = APIRouter()
-
+error_404_Page = HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="Страниа не найдена",
+    )
 
 @public_router.get('/')
 @db_session
-def start_public_router(request: Request):
+def main_page(request: Request):
     return public_templates.TemplateResponse("main.html", {
         "request": request,
         "partner": [easy_ent_pd.Partner(id=key, **val) for key, val in dict(m.SimpleEntity['partner'].data).items()],
         "socials": [easy_ent_pd.Socials(id=key, **val) for key, val in dict(m.SimpleEntity['socials'].data).items()],
-        "graduates": [out_pd.User.from_pony_orm(i) for i in m.User.select(lambda i: i.visible_about_program_field)[:]]
+        "graduates": [out_pd.User.from_pony_orm(i) for i in m.User.select(lambda i: i.visible_about_program_field)[:]],
+        # "events": True
     })
 
 
@@ -45,3 +50,57 @@ async def start_public_router(request: Request):
     return login_templates.TemplateResponse(
         "login.html",
         {"request": request, "who": "Редактораdffffffffffff", "auth_url": '/' + "token_path"})
+
+
+@public_router.get("/videostudy")
+@db_session
+def get_public_pages(request: Request):
+    print('rfgsdg')
+    if (ent := m.Page.get(page_url="/videostudy")) or (ent := m.Page.get(page_url="videostudy")):
+        return public_templates.TemplateResponse(ent.page_path, {
+            "request": request,
+            "directions": [out_pd.Direction.from_pony_orm(i) for i in m.Direction.select()[:]]})
+    raise error_404_Page
+
+
+@public_router.get("/videostudy/{direction}")
+@db_session
+def get_public_pages(request: Request, direction: str):
+    print("------------------------------------")
+    if ent := m.Direction.get(name=direction):
+        return public_templates.TemplateResponse("videostudy/videostudy_direction.html", {
+            "request": request,
+            "direction": out_pd.Direction.from_pony_orm(ent)})
+
+    raise error_404_Page
+
+
+
+@public_router.get("/events/{event}")
+@db_session
+def get_public_pages(request: Request, event: str):
+    print("------------------------------------")
+    if (ent := m.Page.get(page_url="/events/" + event)) or (ent := m.Page.get(page_url="events/" + event)):
+        return public_templates.TemplateResponse(ent.page_path, {
+            "request": request})
+
+    raise error_404_Page
+
+
+@public_router.get("/{file_path:path}")
+@db_session
+def get_public_pages(file_path: str, request: Request):
+    print('=-098765456789', file_path)
+    file_path = file_path.removeprefix("/")
+    ent = None
+    if m.Page.exists(page_url=file_path):
+        print('456')
+        ent = m.Page.get(page_url=file_path)
+
+    elif m.Page.exists(page_url="/" + file_path):
+        print('4erter')
+        ent = m.Page.get(page_url="/" + file_path)
+    print(ent)
+    if ent:
+        return public_templates.TemplateResponse(ent.page_path, {"request": request})
+    raise error_404_Page

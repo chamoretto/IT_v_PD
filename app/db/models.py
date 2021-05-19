@@ -333,7 +333,6 @@ class User(Human):
     about_program = Optional(str)  # Отзыв о программе
     direction = Optional(str)  # с каким направлением себя ассоциирует участник
     visible_about_program_field = Required(bool, default='false')
-
     # будет ли отзыв участника о программе
     # отображаться на главной странице
 
@@ -1511,6 +1510,11 @@ class Page(db.Entity):
         :access questions: dev admin smm
         :mod questions dev admin smm: create edit look
 
+        :param page_type: Выберите тип страницы, к примеру "события"
+        :type page_type: text
+        :access page_type: dev admin smm
+        :mod page_type dev admin smm: create edit look
+
         пока что будет использоваться только для заголовков
     """
     id = PrimaryKey(int, auto=True)
@@ -1527,6 +1531,7 @@ class Page(db.Entity):
     root_page = Optional('Page', reverse='child_pages')
     title = Optional(str)  # заголовок страницы
     questions = Set('Question')
+    page_type = Optional(str)
 
     @classmethod
     def important_field_for_print(cls):

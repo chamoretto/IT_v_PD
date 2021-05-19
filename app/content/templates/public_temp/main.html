@@ -33,6 +33,9 @@
         <div class="col-1" style="writing-mode:vertical-lr;"> Твой личный сорт профессионального роста</div>
     </div>
 </section>
+{% if events_box is defined and events_context is defined %}
+{{events_box.render(events_context)|safe}}
+{% endif %}
 <!--Выпускники -->
 
 {% if graduates is defined and graduates != [] %}

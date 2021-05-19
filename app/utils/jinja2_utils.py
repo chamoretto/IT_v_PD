@@ -11,11 +11,12 @@ from starlette.responses import Response
 from starlette.types import Receive, Scope, Send
 from fastapi.responses import JSONResponse
 from pony.orm import db_session
+from fastapi.templating import Jinja2Templates
 
 from app.utils.html_utils import Alert, SitePageMenu
 from app.pydantic_models.response_models import code_to_resp
 from app.pydantic_models import simple_entities as easy_ent_pd
-from app.pydantic_models import  output_ent as out_pd
+from app.pydantic_models import output_ent as out_pd
 from app.db import models as m
 
 
@@ -51,6 +52,20 @@ class _MyTemplateResponse(Response):
                 }
             )
         await super().__call__(scope, receive, send)
+
+
+_public_teamplate = Jinja2Templates("content/templates/public_temp")
+# event_box_template = _public_teamplate.get_template("/events_box.html")
+
+
+def _get_event_box_params():
+    return {"events_box": _public_teamplate.get_template("events/events_box.html"),
+            "events_context": {"events": [getattr(out_pd, e.__class__.__name__).from_pony_orm(e) for e in m.Page.select(lambda i: i.page_type == "event")]}}
+
+
+includes = {
+    "events": _get_event_box_params
+}
 
 
 class MyJinja2Templates:
@@ -101,6 +116,8 @@ class MyJinja2Templates:
             local_context['access'] = [local_context['access']]
         local_context['access'] += ['self']
 
+        [local_context.update(val()) for key, val in includes.items() if local_context.get(key)]
+
         template = self.get_template(name)
         layout_env = self.get_env("content/templates/layout")
         skeleton_template = layout_env.get_template("skeleton.html")
@@ -125,7 +142,6 @@ class MyJinja2Templates:
                     headers=headers,
                     media_type=media_type,
                     background=background)
-            print('987654567890')
             context = local_context | {
                 "response_status_code": status_code,
             }
@@ -152,7 +168,8 @@ class MyJinja2Templates:
                     current_method="POST",
                     socials=[easy_ent_pd.Socials(id=key, **val) for key, val in
                              dict(m.SimpleEntity['socials'].data).items()],
-                    header_pages=[i.get_header_menu_html_code() for i in m.Page.select(lambda i: i.is_header)[:] if not print(i.title)],
+                    header_pages=[i.get_header_menu_html_code() for i in m.Page.select(lambda i: i.is_header)[:]],
+
 
                 )
         return _MyTemplateResponse(

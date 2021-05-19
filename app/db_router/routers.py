@@ -90,27 +90,6 @@ def entity_screen(request: Request,
     return db_templates.TemplateResponse(f"{class_entity_name.value}_form.html", {"request": request, 'access_mode': 'create'})
 
 
-# @as_form
-# class TestHuman(BaseModel):
-#     id: int
-#     username: str
-#     hash_password: str
-#     name: str = 'Вася'
-#     surname: str
-#     email: str
-#     human_contacts: Union[int, HumanContacts, None] = None
-#     photo: Optional[str] = ''
-#     status: Optional[str] = ''
-#     description: Optional[str] = ''
-#     scopes: Optional[Json] = "{}"
-#     questions: Set[Union[int, Question]] = []
-#
-#
-#     class Config:
-#         orm_mode = True
-
-# def check(entity: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных"), )
-
 @db_route.post('/{class_entity_name}/new')
 @db_session
 def create_entity(request: Request,

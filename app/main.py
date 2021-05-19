@@ -6,7 +6,7 @@ import uvicorn
 from fastapi.responses import FileResponse
 from fastapi.responses import HTMLResponse
 
-from fastapi import FastAPI, Request, HTTPException, Query
+from fastapi import FastAPI, Request, HTTPException, Query, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -32,6 +32,8 @@ from app.db.create_db_content import create_pages
 from app.db_router.routers import db_route
 from app.pydantic_models.standart_methhods_redefinition import BaseModel
 from app.db import models as m
+from app.utils.jinja2_utils import public_templates
+
 
 app = FastAPI()
 # app.add_middleware(HTTPSRedirectMiddleware)  # Устанавливаем https
@@ -77,11 +79,6 @@ app.include_router(security_admin)
 app.include_router(security_dev)
 
 app.include_router(security)
-
-
-@app.get("/")
-async def root():
-    return {"message": "Hello Bigger Applications!"}
 
 
 @app.get("/test", response_class=HTMLResponse)
@@ -132,6 +129,9 @@ async def root(request: Request, item: TestQuery = None):
     print([request.query_params.items()], item)
     print([request.body()], item)
     return {"message": "Hello Bigger Applications!"}
+
+
+
 
 
 if __name__ == "__main__":
