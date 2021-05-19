@@ -6,7 +6,7 @@
         <nav>
             <ul>
                 {% for name, link in pages.items()%}
-                <li><a href="{{link}}">{{name}}</a></li>
+                <li><a href="{{link}}" {{link.print_url_data()|safe}}>{{name}}</a></li>
                 {% endfor %}
             </ul>
         </nav>

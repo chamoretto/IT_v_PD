@@ -22,10 +22,32 @@ class Ajax401Answer(BaseModel):
     alert: str = ""
     main: str = ""
 
+
 class Ajax404Answer(BaseModel):
     my_response_type: ResponseType = "html"
     main: str = ""
 
+
+class PdUrl(BaseModel):
+    href: str
+    is_ajax: bool = False
+    is_download: bool = False
+
+    def __str__(self):
+        return self.href
+
+    def print_ajax_class(self) -> str:
+        if self.is_ajax:
+            return 'class="url_as_ajax"'
+        return ""
+
+    def download(self):
+        if self.is_download:
+            return " download "
+        return ""
+
+    def print_url_data(self):
+        return ' '.join([self.print_ajax_class(), self.download()])
 
 
 code_to_resp: dict[int, Any] = {

@@ -104,10 +104,10 @@ class Human(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error url_as_ajax">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}" class="url_as_ajax">' \
                f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
@@ -203,10 +203,10 @@ class Admin(Human):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error url_as_ajax">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}" class="url_as_ajax">' \
                f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
@@ -343,10 +343,10 @@ class User(Human):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error url_as_ajax">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}" class="url_as_ajax">' \
                f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
@@ -443,10 +443,10 @@ class Smm(Human):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error url_as_ajax">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}" class="url_as_ajax">' \
                f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
@@ -553,10 +553,10 @@ class Developer(Human):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error url_as_ajax">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}" class="url_as_ajax">' \
                f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
@@ -657,10 +657,10 @@ class HumanContacts(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error url_as_ajax">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}" class="url_as_ajax">' \
                f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
@@ -755,10 +755,10 @@ class DirectionExpert(Human):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error url_as_ajax">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}" class="url_as_ajax">' \
                f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
@@ -853,10 +853,10 @@ class Competition(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error url_as_ajax">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}" class="url_as_ajax">' \
                f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
@@ -933,10 +933,10 @@ class Direction(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error url_as_ajax">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}" class="url_as_ajax">' \
                f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
@@ -1014,10 +1014,10 @@ class CompetitionDirection(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error url_as_ajax">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}" class="url_as_ajax">' \
                f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
@@ -1125,10 +1125,10 @@ class Task(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error url_as_ajax">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}" class="url_as_ajax">' \
                f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
@@ -1232,10 +1232,10 @@ class UserWork(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error url_as_ajax">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}" class="url_as_ajax">' \
                f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
@@ -1329,10 +1329,10 @@ class Criterion(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error url_as_ajax">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}" class="url_as_ajax">' \
                f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
@@ -1412,10 +1412,10 @@ class MarkWork(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error url_as_ajax">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}" class="url_as_ajax">' \
                f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
@@ -1540,10 +1540,10 @@ class Page(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error url_as_ajax">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}" class="url_as_ajax">' \
                f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
@@ -1689,10 +1689,10 @@ class Question(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error url_as_ajax">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}" class="url_as_ajax">' \
                f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
@@ -1763,10 +1763,10 @@ class SimpleEntity(db.Entity):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error url_as_ajax">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}" class="url_as_ajax">' \
                f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data
@@ -1848,10 +1848,10 @@ class News(Page):
     def get_entity_html(self, keys):
         # language=H TML
         data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}"><i class="far fa-edit"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error">' \
+               f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>' \
+               f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error url_as_ajax">' \
                f'<i class="far fa-trash-alt"></i></a>' \
-               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}">' \
+               f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}" class="url_as_ajax">' \
                f'<i class="far fa-eye-slash"></i></a></td></tr>'
         # print(data)
         return data

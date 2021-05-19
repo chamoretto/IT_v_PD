@@ -7,7 +7,7 @@ function urls_as_ajax(){
     *
     * */
 
-    $('a[href]').not('a[href^=http]').not('a[href="#"]').click((event) => {
+    $('a[href].url_as_ajax').not('a[href^=http]').not('a[href="#"]').not('a[href="*"]').click((event) => {
         event.preventDefault();
         let target = $(event.target);
         if (!target.attr("href")){

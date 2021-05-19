@@ -58,13 +58,13 @@ def get_nice_table(data):
 def get_nice_table_page(table, href="*"):
     text = f'<div class="container max-width-adaptive-lg">' \
            f'<h3 class="margin-bottom-sm">' \
-           f'  <a href="/db" class="no-effect" title="Вернуться к базе данных">' \
+           f'  <a href="/db" class="no-effect url_as_ajax" title="Вернуться к базе данных">' \
            f'<i class="fa fa-long-arrow-alt-left"></i></a></h3><h4>' \
-           f'<a href="/db">Перейти а главную страницу БД</a></h4><br>'
+           f'<a href="/db" class="url_as_ajax">Перейти а главную страницу БД</a></h4><br>'
     text += get_nice_table(table)
     text += '<div class="margin-bottom-lg' \
             ' {{\'text-right\' if useless_human_from_old_project is defined else \'inline-block\'}}">' \
-            f'<a href="{href}" class="btn btn--primary"><i class="far fa-compass"></i>' \
+            f'<a href="{href}" class="btn btn--primary url_as_ajax"><i class="far fa-compass"></i>' \
             f' Добавить объект в БД</a></div></div>'
     return text
 

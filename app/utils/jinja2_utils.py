@@ -14,7 +14,7 @@ from pony.orm import db_session
 from fastapi.templating import Jinja2Templates
 
 from app.utils.html_utils import Alert, SitePageMenu
-from app.pydantic_models.response_models import code_to_resp
+from app.pydantic_models.response_models import code_to_resp, PdUrl
 from app.pydantic_models import simple_entities as easy_ent_pd
 from app.pydantic_models import output_ent as out_pd
 from app.db import models as m
@@ -55,12 +55,15 @@ class _MyTemplateResponse(Response):
 
 
 _public_teamplate = Jinja2Templates("content/templates/public_temp")
+
+
 # event_box_template = _public_teamplate.get_template("/events_box.html")
 
 
 def _get_event_box_params():
     return {"events_box": _public_teamplate.get_template("events/events_box.html"),
-            "events_context": {"events": [getattr(out_pd, e.__class__.__name__).from_pony_orm(e) for e in m.Page.select(lambda i: i.page_type == "event")]}}
+            "events_context": {"events": [getattr(out_pd, e.__class__.__name__).from_pony_orm(e) for e in
+                                          m.Page.select(lambda i: i.page_type == "event")]}}
 
 
 includes = {
@@ -75,7 +78,7 @@ class MyJinja2Templates:
     return templates.TemplateResponse("index.html", {"request": request})
     """
 
-    def __init__(self, directory: str, admin_shell: dict[str, str] = dict(),
+    def __init__(self, directory: str, admin_shell: dict[str, PdUrl] = dict(),
                  access: Optional[list[str]] = None) -> None:
         assert jinja2 is not None, "jinja2 must be installed to use Jinja2Templates"
         self.env = self.get_env(directory)
@@ -112,7 +115,6 @@ class MyJinja2Templates:
 
         [params.update(val()) for key, val in includes.items() if params.get(key)]
         return params
-
 
     def TemplateResponse(
             self,
@@ -179,7 +181,6 @@ class MyJinja2Templates:
                              dict(m.SimpleEntity['socials'].data).items()],
                     header_pages=[i.get_header_menu_html_code() for i in m.Page.select(lambda i: i.is_header)[:]],
 
-
                 )
         return _MyTemplateResponse(
             skeleton_template,
@@ -191,12 +192,16 @@ class MyJinja2Templates:
         )
 
 
-_admin_shell = {"Управление БД": "/db", "Мой профиль": "/dev/me", "Скачать логи": "/dev/logs"}
+_developer_shell = {"Управление БД": PdUrl(href="/db", is_ajax=True),
+                    "Мой профиль": PdUrl(href="/dev/me", is_ajax=True),
+                    "Скачать логи": PdUrl(href="/dev/logs"),
+                    "Выключить сайт": PdUrl(href="/dev/stop_server", is_ajax=True),
+                    }
 
 login_templates = MyJinja2Templates(directory="content/templates/login")
 error_templates = MyJinja2Templates(directory="content/templates/errors")
-db_templates = MyJinja2Templates(directory="content/templates/database", admin_shell=_admin_shell, access=['dev'])
+db_templates = MyJinja2Templates(directory="content/templates/database", admin_shell=_developer_shell, access=['dev'])
 public_templates = MyJinja2Templates(directory="content/templates/public_temp")
 
-developer_templates = MyJinja2Templates(directory="content/templates/developers", admin_shell=_admin_shell,
+developer_templates = MyJinja2Templates(directory="content/templates/developers", admin_shell=_developer_shell,
                                         access=['dev'])

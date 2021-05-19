@@ -20,7 +20,7 @@ def all_html_form(content: str, entity_name: str) -> str:
            f'<div class="container max-width-lg">\n' \
            f'{"{%"} if not(db_mode is defined) or db_mode{"%}"}' \
            f'<h3 class="margin-bottom-sm">\n' \
-           f'<a href="/db/{entity_name}" class="no-effect" title="Вернуться к просмотру объектов БД">\n' \
+           f'<a href="/db/{entity_name}" class="no-effect url_as_ajax" title="Вернуться к просмотру объектов БД">\n' \
            f'<i class="fa fa-long-arrow-alt-left"></i></a>\n' \
            f'Вернуться ко всем объектам {entity_name}</h3>\n' \
            f'{"{%"} endif {"%}"}' \
@@ -45,7 +45,7 @@ def all_html_form(content: str, entity_name: str) -> str:
            f'{"{%"} endif {"%}"}\n' \
            f'{"{%"} if not(db_mode is defined) or db_mode{"%}"}' \
            f'<br><h3 class="margin-bottom-sm">\n' \
-           f'<a href="/db/{entity_name}" class="no-effect" title="Вернуться к просмотру объектов БД">\n' \
+           f'<a href="/db/{entity_name}" class="no-effect url_as_ajax" title="Вернуться к просмотру объектов БД">\n' \
            f'<i class="fa fa-long-arrow-alt-left"></i></a>\n' \
            f'Вернуться ко всем объектам {entity_name}</h3>\n' \
            f'{"{%"} endif {"%}"}' \
