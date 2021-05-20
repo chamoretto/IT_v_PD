@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Any
 from functools import reduce
 
 from pony.orm import db_session, show, select
@@ -7,16 +7,17 @@ from app.db._change_db import _raw_models as _raw_m
 from app.db._change_db._db_additions._tools_for_addition import AddArrtInDbClass
 from app.pydantic_models import only_primarykey_fields_model as only_pk
 from app.utils.html_utils import nice_table_page
+from app.pydantic_models.response_models import TableCell
 
 _start = set(globals())
 
 
 @classmethod
-def important_field_for_print(cls):
+def important_field_for_print(cls) -> list[str]:
     return []
 
 
-def get_entity_html(self, keys):
+def get_entity_html(self, keys: list[str]) -> str:
     # language=H TML
     data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
            f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>' \
@@ -28,44 +29,82 @@ def get_entity_html(self, keys):
     return data
 
 
-def key_as_part_query(self):
+def key_as_part_query(self) -> str:
     _dict = dict(getattr(only_pk, self.__class__.__name__).from_orm(self))
     _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
     return _dict
 
 
+# @classmethod
+# @nice_table_page
+# def get_entities_html(cls, *keys) -> str:
+#     try:
+#         keys = list(keys)
+#         if not bool(keys):
+#             keys = list(cls.important_field_for_print())
+#         if not bool(keys):
+#             keys = None
+#         data = list(select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
+#         print('----', data)
+#         # data = data.to_dict(with_collections=False, only=keys).keys()
+#     except IndexError as e:
+#         print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
+#         # language=HTML
+#         return f"<table><caption>{cls.__name__}</caption>" \
+#                f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
+#                f"<tbody></tbody></table>"
+#     except Exception as e:
+#         print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
+#         # language=HTML
+#         return f"<table><caption>{cls.__name__}</caption>" \
+#                f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
+#                f"<tbody></tbody></table>"
+#     body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+#
+#     body_table = '\n'.join(body_table)
+#     print(data)
+#     # language=HTML
+#     return f"<table><caption>{cls.__name__}</caption>" \
+#            f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
+#            f"<tbody>{body_table}</tbody></table>"
+
+
 @classmethod
-@nice_table_page
-def get_entities_html(cls, *keys):
+def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
+    """
+
+    :param cls:
+    :param keys:
+    :param db_mode: True, если выполняется в рамказ db_route
+    :return:
+    """
     try:
         keys = list(keys)
         if not bool(keys):
             keys = list(cls.important_field_for_print())
         if not bool(keys):
             keys = None
-        data = list(select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
+        data: list[str] = list(select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
         print('----', data)
         # data = data.to_dict(with_collections=False, only=keys).keys()
     except IndexError as e:
         print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
         # language=HTML
-        return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr><th>Похоже в этой колонке базы данных нет ни одной сущности (БД пуста)</th></tr></thead>" \
-               f"<tbody></tbody></table>"
+        return dict()
     except Exception as e:
         print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
         # language=HTML
-        return f"<table><caption>{cls.__name__}</caption>" \
-               f"<thead><tr><th>Не удалось найти сущност в базе данных</th></tr></thead>" \
-               f"<tbody></tbody></table>"
-    body_table = [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
-
-    body_table = '\n'.join(body_table)
-    print(data)
-    # language=HTML
-    return f"<table><caption>{cls.__name__}</caption>" \
-           f"<thead><tr>{''.join(['<th>' + key + '</th>' for key in data])}<td>Операции</td></tr></thead>" \
-           f"<tbody>{body_table}</tbody></table>"
+        return dict()
+    [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
+    entities = [ent for ent in cls.select()[:]]
+    return {
+        "zip": zip,
+        "table": [[TableCell(name=str(getattr(ent, i))) for i in data] for ent in entities],
+        "table_header": [TableCell(name=str(i)) for i in data],
+        "keys_as_query": [ent.key_as_part_query() for ent in  entities],
+        "entity_name": cls.__name__,
+        "db_mode": db_mode,
+    }
 
 
 added_params = set(globals()) - _start - {"_start"}

@@ -237,7 +237,8 @@ def db_ent_to_dict(ent: db.Entity) -> Tuple[
 
 def create_db_models():
     header_file = inspect.getsource(_raw_models).split('class')[0]
-    header_file = "import enum\n\n" \
+    header_file = "import enum\n" \
+                  "from typing import Any\n\n" \
                   "try:\n" \
                   "\tfrom app.pydantic_models import db_models as pd\n" \
                   "\tfrom app.pydantic_models import unique_db_field_models as pk_pd\n" \
@@ -247,7 +248,8 @@ def create_db_models():
                   "except ImportError as e:\n" \
                   "\tprint('произошла ошибка при импорте моделей pydantic. По всей видимости в них ошибка', e)\n" \
                   "from app.pydantic_models import only_primarykey_fields_model as only_pk\n" \
-                  "from app.utils.html_utils import nice_table_page\n\n" + header_file
+                  "from app.utils.html_utils import nice_table_page\n" \
+                  "from app.pydantic_models.response_models import TableCell\n\n" + header_file
 
     classes: Dict[str: str] = {}
     for name, ent in db.entities.items():

@@ -67,7 +67,7 @@ def entity_screen(request: Request,
         )
 
     return db_templates.TemplateResponse(
-        "show_entity.html", {"request": request, "table": m.db.entities[entity.value].get_entities_html()})
+        "show_entity.html", {"request": request, **m.db.entities[entity.value].get_entities_html()})
 
 
 # enum.Enum('DynamicEnum', {key: key for key, val in m.db.entities.items()})
@@ -232,6 +232,7 @@ def look_entity(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Сущность для редактирования в базе данных не найдена..."
     )
+
 
 @db_route.post('/{class_entity_name}/delete')
 @db_session

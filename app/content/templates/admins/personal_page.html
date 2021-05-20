@@ -1,0 +1,14 @@
+<section class="margin-y-md">
+                <div class="margin-top-xl">
+
+<h1  class="text-center" >Личный кабинет</h1>
+                </div>
+</section>
+<section class="margin-y-md">
+<div class="margin-top-xl">
+<h1  class="text-center" >Личные данные</h1>
+    {% if personal_data is defined %}
+    {{personal_data|safe}}
+    {% endif %}
+</div>
+</section>

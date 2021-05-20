@@ -51,15 +51,6 @@ async def get_logs():
     return FileResponse("../logs/рандомные_логи.log")
 
 
-# @dev.get("/reboot_system")
-# def reboot_server():
-#
-#
-#
-#     yield {"answer": "Сервер будет перезагружен"}
-#
-
-
 @dev.get("/stop_server")
 def get_logs():
     from os import execl, fsync

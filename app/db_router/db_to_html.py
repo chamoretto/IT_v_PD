@@ -5,7 +5,7 @@ from itertools import chain
 
 from app.db import models as m
 from app.pydantic_models import db_models as pd
-from app.db._change_db._create_models import db_ent_to_dict
+# from app.db._change_db._create_models import db_ent_to_dict
 from app.pydantic_models.standart_methhods_redefinition import BaseModel
 from app.pydantic_models.create_pydantic_models import create_pd_models
 from app.settings.config import HOME_DIR, join

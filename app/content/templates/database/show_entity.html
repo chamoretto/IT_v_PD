@@ -1,1 +1,65 @@
-{{table|safe}}
+{#{table|safe}#}
+<div class="container max-width-adaptive-lg">
+    {% if not(db_mode is defined) or db_mode%}
+    <h3 class="margin-bottom-sm">
+        <a href="/db" class="no-effect url_as_ajax" title="Вернуться к базе данных">
+            <i class="fa fa-long-arrow-alt-left"></i>
+        </a>
+    </h3>
+    <h4>
+        <a href="/db" class="url_as_ajax">Перейти а главную страницу БД</a>
+    </h4>
+    {% endif %}
+    <br>
+    {% if table is defined and entity_name is defined and keys_as_query is defined %}
+    <table class="max-width-lg margin-x-auto table js-table table--expanded@sm width-100% margin-bottom-md table--expanded table--loaded">
+        <caption>{{entity_name}}</caption>
+        {% if table_header is defined %}
+        <thead class="table__header table__header--sticky">
+        <tr class="table__row">
+            {% for i in table_header %}
+            <th class="table__cell text-left" scope="col">i.name</th>
+            {% endfor %}
+            <th class="table__cell text-left" scope="col">Операции </th>
+
+        </tr>
+        </thead>
+        {% endif %}
+
+
+        <tbody class="table__body">
+        {% for table_string, key_as_query in zip(table, keys_as_query) %}
+        <tr class="table__row">
+            {% for table_cell in table_string %}
+            <td class="table__cell text-center" role="cell">{{table_cell.name}}</td>
+            {% endfor %}
+            <td class="table__cell text-center" role="cell">
+                <a href="/db/{{entity_name}}/look?{{key_as_query}}" class="url_as_ajax">
+                    <i class="far fa-eye-slash"></i>
+                </a>
+                <a href="/db/{{entity_name}}/edit?{{key_as_query}}" class="url_as_ajax">
+                    <i class="far fa-edit"></i>
+                </a>
+                <a href="/db/{{entity_name}}/delete?{{key_as_query}}"
+                   class="color-error url_as_ajax">
+                    <i class="far fa-trash-alt"></i>
+                </a>
+            </td>
+        </tr>
+
+        {% endfor %}
+        </tbody>
+
+
+    </table>
+    {% else %}
+    <h2>Похоже в этой базе данных нет ни одной сущности</h2>
+    {% endif %}
+    <div class="margin-bottom-lg {{'text-right' if useless_human_from_old_project is defined else 'inline-block'}}">
+        <a href="/db/{{entity_name}}/new" class="btn btn--primary url_as_ajax">
+            <i class="far fa-compass"></i>
+            Добавить объект в БД
+        </a>
+    </div>
+
+</div>

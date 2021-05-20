@@ -14,6 +14,7 @@ from pony.orm import db_session
 from fastapi.templating import Jinja2Templates
 
 from app.utils.html_utils import Alert, SitePageMenu
+from app.utils.utils_of_security import app_routers_to_scopes
 from app.pydantic_models.response_models import code_to_resp, PdUrl
 from app.pydantic_models import simple_entities as easy_ent_pd
 from app.pydantic_models import output_ent as out_pd
@@ -113,6 +114,7 @@ class MyJinja2Templates:
             params['access'] = [params['access']]
         params['access'] += ['self']
 
+
         [params.update(val()) for key, val in includes.items() if params.get(key)]
         return params
 
@@ -197,6 +199,15 @@ _developer_shell = {"Управление БД": PdUrl(href="/db", is_ajax=True)
                     "Скачать логи": PdUrl(href="/dev/logs"),
                     "Выключить сайт": PdUrl(href="/dev/stop_server", is_ajax=True),
                     }
+_admin_shell = {
+    "Мой профиль": PdUrl(href="/admin/me", is_ajax=True),
+    "Добавить админа":  PdUrl(href="/admin/add_admin", is_ajax=True),
+    "Добавить редактора":  PdUrl(href="/admin/add_smm", is_ajax=True),
+    "Добавить эксперта по направлению":  PdUrl(href="/admin/add_expert", is_ajax=True),
+    "Добавить событие":  PdUrl(href="/admin/add_event", is_ajax=True),
+    "Написать новость": PdUrl(href="/admin/add_news", is_ajax=True),
+    "Вопросы участников": PdUrl(href="/admin/look_question", is_ajax=True),
+}
 
 login_templates = MyJinja2Templates(directory="content/templates/login")
 error_templates = MyJinja2Templates(directory="content/templates/errors")
@@ -205,3 +216,5 @@ public_templates = MyJinja2Templates(directory="content/templates/public_temp")
 
 developer_templates = MyJinja2Templates(directory="content/templates/developers", admin_shell=_developer_shell,
                                         access=['dev'])
+admin_templates = MyJinja2Templates(directory="content/templates/admins", admin_shell=_admin_shell,
+                                        access=['admin'])

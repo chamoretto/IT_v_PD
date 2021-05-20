@@ -123,7 +123,7 @@
 <br><label for="Competition_document" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text" id="Competition_document_span">{% set value = 
     ('value="%s"' % (competition.document if competition.document else "")
         if competition is defined
-        else 'value="''"'|safe)|safe  %}{{ value | replace("value=", "") | replace('"', "") if "value" in value and value | replace("value=", "") | replace('"', "") != '""' else "Загрузить" }}</span></span> </label> <input type="file" accept="application/msword,application/msword,application/msword,application/pdf,application/x-zip-compressed,application/zip,multipart/x-zip,application/x-compressed" class="file-upload__input"  name="document" id="Competition_document" placeholder="" {{
+        else 'value="''"'|safe)|safe  %}{{ value | replace("value=", "") | replace('"', "") if "value" in value and value | replace("value=", "") | replace('"', "") != '""' else "Загрузить" }}</span></span> </label> <input type="file" accept="application/msword,application/x-zip-compressed,application/zip,multipart/x-zip,application/x-compressed,application/msword,application/msword,application/pdf" class="file-upload__input"  name="document" id="Competition_document" placeholder="" {{
     ('value="%s"' % (competition.document if competition.document else "")
         if competition is defined
         else 'value="''"'|safe)|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  {{

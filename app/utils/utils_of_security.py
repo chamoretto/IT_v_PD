@@ -2,6 +2,7 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from typing import Optional, List, Dict, Tuple, Union
 from pydantic import ValidationError
+from collections import defaultdict
 
 from fastapi import Depends, HTTPException, status, APIRouter
 from jose import JWTError, jwt
@@ -67,6 +68,15 @@ scopes_to_db: Dict[m.db.Entity, List[str]] = {
     m.Admin: ["admin", "smmer"],
     m.Developer: ["developer", "user", "direction_expert", "admin", "smmer"]
 }
+app_routers_to_scopes: dict[str, list[str]] = defaultdict(lambda i: [])
+app_routers_to_scopes.update({
+    "admin": scopes_to_db[m.Admin],
+    "public_router": [],
+    "user": scopes_to_db[m.User],
+    "smm": scopes_to_db[m.Smm],
+    "dev": scopes_to_db[m.Developer],
+    "direction_expert": scopes_to_db[m.DirectionExpert],
+})
 
 
 class PassScopes(BaseModel):
@@ -165,7 +175,6 @@ security = APIRouter(
 
 def check_scopes(username: str, password: str, scopes: List[str]) \
         -> Tuple[Optional[m.db.Entity], Union[List[str], bool]]:
-
     if not m.Human.exists(username=username):
         return None, False
     ent = m.Human.get(username=username)

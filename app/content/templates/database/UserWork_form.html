@@ -45,7 +45,7 @@ user имеет тип select, который еще не поддерживае
 {% set value = 
     ('value="%s"' % (userwork.upload_date if userwork.upload_date else "")
         if userwork is defined
-        else 'value="<function UserWork.<lambda> at 0x000001B4976D9F70>"'|safe)|safe  %}
+        else 'value="<function UserWork.<lambda> at 0x0000020127E91790>"'|safe)|safe  %}
 {% if "value" in value and value.split()|length == 2 %}
 {{value.split() | join("T")}}
 {% else %}

@@ -50,6 +50,10 @@ class PdUrl(BaseModel):
         return ' '.join([self.print_ajax_class(), self.download()])
 
 
+class TableCell(BaseModel):
+    name: str
+
+
 code_to_resp: dict[int, Any] = {
     200: Ajax200Answer,
     401: Ajax401Answer,

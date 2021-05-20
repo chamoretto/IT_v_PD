@@ -91,39 +91,51 @@ class Admin(Human):
 
         :access id: dev admin
         :mod id admin dev: edit look
+        :mod id admin: look
 
-        :access username: dev admin
-        :mod username admin dev: create edit look
+        :access username: dev admin self
+        :mod username self dev: create edit look
+        :mod username admin: create look
 
-        :access password: dev admin
-        :mod password admin dev: create
+        :access password: dev admin self
+        :mod password self dev: create
+        :mod password admin: create look
 
-        :access name: dev admin
-        :mod name admin dev: create edit look
+        :access name: dev admin self
+        :mod name  self  dev: create edit look
+        :mod name admin: create look
 
-        :access surname: dev admin
-        :mod surname admin dev: create edit look
+        :access surname: dev admin self
+        :mod surname  self  dev: create edit look
+        :mod surname admin: create look
 
-        :access email: dev admin
-        :mod email admin dev: create edit look
+        :access email: dev admin self
+        :mod email  self dev: create edit look
+        :mod email admin: create look
 
-        :access human_contacts: dev admin
-        :mod human_contacts admin dev: create edit look
+        :access human_contacts: dev admin self
+        :mod human_contacts  self dev: create edit look
+        :mod human_contacts admin: create look
 
-        :access photo: dev admin
-        :mod photo admin dev: create edit look
+        :access photo: dev admin self
+        :mod photo  self dev: create edit look
+        :mod photo admin: create look
 
-        :access status: dev admin
-        :mod status admin dev: create edit look
+        :access status: dev admin self
+        :mod status  self dev: create edit look
+        :mod status admin: create look
 
-        :access description: dev admin
-        :mod description admin dev: create edit look
+        :access description: dev admin self
+        :mod description  self dev: create edit look
+        :mod description admin: create look
 
-        :access scopes: dev admin
-        :mod scopes admin dev: create edit look
+        :access scopes: dev admin self
+        :mod scopes  self dev: create edit look
+        :mod scopes admin: create look
 
-        :access questions: dev admin
-        :mod questions admin dev: create edit look
+        :access questions: dev admin self
+        :mod questions  self dev: create edit look
+        :mod questions admin: create look
 
 
     """
