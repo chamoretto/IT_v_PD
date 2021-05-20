@@ -2,14 +2,14 @@ import enum
 from typing import Any
 
 try:
-    from app.pydantic_models import db_models as pd
-    from app.pydantic_models import unique_db_field_models as pk_pd
-    from app.pydantic_models import unique_db_field_models as pk_pd
-    from app.pydantic_models import input_ent as inp_pd
-    from app.pydantic_models import output_ent as out_pd
+    from app.pydantic_models.gen import db_models as pd
+    from app.pydantic_models.gen import unique_db_field_models as pk_pd
+    from app.pydantic_models.gen import unique_db_field_models as pk_pd
+    from app.pydantic_models.gen import input_ent as inp_pd
+    from app.pydantic_models.gen import output_ent as out_pd
 except ImportError as e:
     print('произошла ошибка при импорте моделей pydantic. По всей видимости в них ошибка', e)
-from app.pydantic_models import only_primarykey_fields_model as only_pk
+from app.pydantic_models.gen import only_primarykey_fields_model as only_pk
 from app.utils.html_utils import nice_table_page
 from app.pydantic_models.response_models import TableCell
 
@@ -115,7 +115,7 @@ class Human(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
+    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
         """
 
         :param cls:
@@ -150,6 +150,7 @@ class Human(db.Entity):
             "keys_as_query": [ent.key_as_part_query() for ent in entities],
             "entity_name": cls.__name__,
             "db_mode": db_mode,
+            "access": access
         }
 
     def key_as_part_query(self) -> str:
@@ -230,7 +231,7 @@ class Admin(Human):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
+    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
         """
 
         :param cls:
@@ -265,6 +266,7 @@ class Admin(Human):
             "keys_as_query": [ent.key_as_part_query() for ent in entities],
             "entity_name": cls.__name__,
             "db_mode": db_mode,
+            "access": access
         }
 
     def key_as_part_query(self) -> str:
@@ -374,7 +376,7 @@ class User(Human):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
+    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
         """
 
         :param cls:
@@ -409,6 +411,7 @@ class User(Human):
             "keys_as_query": [ent.key_as_part_query() for ent in entities],
             "entity_name": cls.__name__,
             "db_mode": db_mode,
+            "access": access
         }
 
     def key_as_part_query(self) -> str:
@@ -478,7 +481,7 @@ class Smm(Human):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
+    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
         """
 
         :param cls:
@@ -513,6 +516,7 @@ class Smm(Human):
             "keys_as_query": [ent.key_as_part_query() for ent in entities],
             "entity_name": cls.__name__,
             "db_mode": db_mode,
+            "access": access
         }
 
     def key_as_part_query(self) -> str:
@@ -592,7 +596,7 @@ class Developer(Human):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
+    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
         """
 
         :param cls:
@@ -627,6 +631,7 @@ class Developer(Human):
             "keys_as_query": [ent.key_as_part_query() for ent in entities],
             "entity_name": cls.__name__,
             "db_mode": db_mode,
+            "access": access
         }
 
     def key_as_part_query(self) -> str:
@@ -700,7 +705,7 @@ class HumanContacts(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
+    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
         """
 
         :param cls:
@@ -735,6 +740,7 @@ class HumanContacts(db.Entity):
             "keys_as_query": [ent.key_as_part_query() for ent in entities],
             "entity_name": cls.__name__,
             "db_mode": db_mode,
+            "access": access
         }
 
     def key_as_part_query(self) -> str:
@@ -802,7 +808,7 @@ class DirectionExpert(Human):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
+    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
         """
 
         :param cls:
@@ -837,6 +843,7 @@ class DirectionExpert(Human):
             "keys_as_query": [ent.key_as_part_query() for ent in entities],
             "entity_name": cls.__name__,
             "db_mode": db_mode,
+            "access": access
         }
 
     def key_as_part_query(self) -> str:
@@ -904,7 +911,7 @@ class Competition(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
+    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
         """
 
         :param cls:
@@ -939,6 +946,7 @@ class Competition(db.Entity):
             "keys_as_query": [ent.key_as_part_query() for ent in entities],
             "entity_name": cls.__name__,
             "db_mode": db_mode,
+            "access": access
         }
 
     def key_as_part_query(self) -> str:
@@ -988,7 +996,7 @@ class Direction(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
+    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
         """
 
         :param cls:
@@ -1023,6 +1031,7 @@ class Direction(db.Entity):
             "keys_as_query": [ent.key_as_part_query() for ent in entities],
             "entity_name": cls.__name__,
             "db_mode": db_mode,
+            "access": access
         }
 
     def key_as_part_query(self) -> str:
@@ -1073,7 +1082,7 @@ class CompetitionDirection(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
+    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
         """
 
         :param cls:
@@ -1108,6 +1117,7 @@ class CompetitionDirection(db.Entity):
             "keys_as_query": [ent.key_as_part_query() for ent in entities],
             "entity_name": cls.__name__,
             "db_mode": db_mode,
+            "access": access
         }
 
     def key_as_part_query(self) -> str:
@@ -1188,7 +1198,7 @@ class Task(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
+    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
         """
 
         :param cls:
@@ -1223,6 +1233,7 @@ class Task(db.Entity):
             "keys_as_query": [ent.key_as_part_query() for ent in entities],
             "entity_name": cls.__name__,
             "db_mode": db_mode,
+            "access": access
         }
 
     def key_as_part_query(self) -> str:
@@ -1299,7 +1310,7 @@ class UserWork(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
+    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
         """
 
         :param cls:
@@ -1334,6 +1345,7 @@ class UserWork(db.Entity):
             "keys_as_query": [ent.key_as_part_query() for ent in entities],
             "entity_name": cls.__name__,
             "db_mode": db_mode,
+            "access": access
         }
 
     def key_as_part_query(self) -> str:
@@ -1400,7 +1412,7 @@ class Criterion(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
+    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
         """
 
         :param cls:
@@ -1435,6 +1447,7 @@ class Criterion(db.Entity):
             "keys_as_query": [ent.key_as_part_query() for ent in entities],
             "entity_name": cls.__name__,
             "db_mode": db_mode,
+            "access": access
         }
 
     def key_as_part_query(self) -> str:
@@ -1487,7 +1500,7 @@ class MarkWork(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
+    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
         """
 
         :param cls:
@@ -1522,6 +1535,7 @@ class MarkWork(db.Entity):
             "keys_as_query": [ent.key_as_part_query() for ent in entities],
             "entity_name": cls.__name__,
             "db_mode": db_mode,
+            "access": access
         }
 
     def key_as_part_query(self) -> str:
@@ -1619,7 +1633,7 @@ class Page(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
+    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
         """
 
         :param cls:
@@ -1654,6 +1668,7 @@ class Page(db.Entity):
             "keys_as_query": [ent.key_as_part_query() for ent in entities],
             "entity_name": cls.__name__,
             "db_mode": db_mode,
+            "access": access
         }
 
     def key_as_part_query(self) -> str:
@@ -1772,7 +1787,7 @@ class Question(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
+    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
         """
 
         :param cls:
@@ -1807,6 +1822,7 @@ class Question(db.Entity):
             "keys_as_query": [ent.key_as_part_query() for ent in entities],
             "entity_name": cls.__name__,
             "db_mode": db_mode,
+            "access": access
         }
 
     def key_as_part_query(self) -> str:
@@ -1850,7 +1866,7 @@ class SimpleEntity(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
+    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
         """
 
         :param cls:
@@ -1885,6 +1901,7 @@ class SimpleEntity(db.Entity):
             "keys_as_query": [ent.key_as_part_query() for ent in entities],
             "entity_name": cls.__name__,
             "db_mode": db_mode,
+            "access": access
         }
 
     def key_as_part_query(self) -> str:
@@ -1939,7 +1956,7 @@ class News(Page):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
+    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
         """
 
         :param cls:
@@ -1974,6 +1991,7 @@ class News(Page):
             "keys_as_query": [ent.key_as_part_query() for ent in entities],
             "entity_name": cls.__name__,
             "db_mode": db_mode,
+            "access": access
         }
 
     def key_as_part_query(self) -> str:

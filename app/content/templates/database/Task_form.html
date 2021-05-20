@@ -8,8 +8,7 @@
 <a href="/db/Task" class="no-effect url_as_ajax" title="Вернуться к просмотру объектов БД">
 <i class="fa fa-long-arrow-alt-left"></i></a>
 Вернуться ко всем объектам Task</h3>
-{% endif %}{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
-{#{access_mode}#}
+{% endif %}{% if (access_mode is defined and access_mode != "look") %}
 <form id="task" action="{{(action_url if action_url is defined else "/db/Task/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
 {% endif %}
 <fieldset class="margin-bottom-md">
@@ -47,7 +46,7 @@ competition_direction имеет тип select, который еще не по�
 <br><label for="Task_task_document" class="file-upload__label btn btn--primary"><span class="flex items-center"><span class="file-upload__text" id="Task_task_document_span">{% set value = 
     ('value="%s"' % (task.task_document if task.task_document else "")
         if task is defined
-        else 'value="''"'|safe)|safe  %}{{ value | replace("value=", "") | replace('"', "") if "value" in value and value | replace("value=", "") | replace('"', "") != '""' else "Загрузить" }}</span></span> </label> <input type="file" accept="application/msword,application/x-zip-compressed,application/zip,multipart/x-zip,application/x-compressed,application/msword,application/msword,application/pdf" class="file-upload__input"  name="task_document" id="Task_task_document" placeholder="" {{
+        else 'value="''"'|safe)|safe  %}{{ value | replace("value=", "") | replace('"', "") if "value" in value and value | replace("value=", "") | replace('"', "") != '""' else "Загрузить" }}</span></span> </label> <input type="file" accept="application/msword,application/msword,application/pdf,application/x-zip-compressed,application/zip,multipart/x-zip,application/x-compressed,application/msword" class="file-upload__input"  name="task_document" id="Task_task_document" placeholder="" {{
     ('value="%s"' % (task.task_document if task.task_document else "")
         if task is defined
         else 'value="''"'|safe)|safe }}  {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}  {{
@@ -117,7 +116,7 @@ competition_direction имеет тип select, который еще не по�
 {% endif %}
 >
 </div></fieldset>
-<div id="Task_end_error"></div>{% endif %}{% endif %}{% endif %}</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>
+<div id="Task_end_error"></div>{% endif %}{% endif %}{% endif %}</fieldset>{% if (access_mode is defined and access_mode != "look")  %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
 </div></form>

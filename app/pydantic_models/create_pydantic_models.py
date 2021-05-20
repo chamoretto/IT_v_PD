@@ -1,9 +1,11 @@
 from typing import Dict, List, Tuple, Any, Callable
 from itertools import chain
 from functools import reduce
+from os.path import exists
+from os import mkdir
 
 from app.db.models import db
-from app.db._change_db._create_models import db_ent_to_dict, StringDB, code_from_db_and_docs, AllInfoStr
+from app.db._change_db._create_models import db_ent_to_dict, StringDB, code_from_db_and_docs, AllInfoStr, AccessType, AccessMode
 from app.settings.config import AUTO_PYDANTIC_MODELS, split, join
 from app.db._change_db._create_models import DbDocs, info_from_docs
 from app.pydantic_models.pony_to_pydantic_rules import *
@@ -85,7 +87,7 @@ def create_pk_types(pd_db):
         new_types.append(f"SetPk{name} = Set[Union[{', '.join(val)}]]\n")
         new_types_dict[f"SetPk{name}"] = f"Set[Union[{', '.join(val)}]]"
     new_types = "".join(new_types)
-
+    new_types = ""  # новые типы не используются
     return new_types + "\n\n", pk_for_pydantic, new_types_dict
 
 
@@ -105,7 +107,8 @@ def create_pd_class_body(class_name: str, code: List[StringDB], new_types_dict: 
     return pd_class_body
 
 
-def create_header_pd_file(entities: List[db.Entity]) -> str:
+def create_header_pd_file(entities: List[db.Entity], code, create_roles=False) -> str:
+    add_types = set(entities) - set(code)
     data = '# -*- coding: utf-8 -*-\n\n' \
            '\n\"\"\" Этот код генерируется автоматически,\n' \
            'функцией create_pd_models файла app/db/create_pydantic_models.py\n' \
@@ -118,10 +121,15 @@ def create_header_pd_file(entities: List[db.Entity]) -> str:
             'from pydantic import Json, root_validator, validator\n' \
             'from datetime import date, datetime, time\n\n' \
             'from app.pydantic_models.standart_methhods_redefinition import BaseModel, as_form\n' \
-            'from app.pydantic_models.standart_methhods_redefinition import PydanticValidators\n' \
-            'from app.settings.config import HOME_DIR\n\n\n'
+            'from app.pydantic_models.standart_methhods_redefinition import PydanticValidators\n'
+    if create_roles:
+        if create_roles == AccessMode.CREATE:
+            data += '\n'.join([f'from app.pydantic_models.gen.input_ent import {i}' for i in add_types]) + '\n'
+        else:
+            data += '\n'.join([f'from app.pydantic_models.gen.output_ent import {i}' for i in add_types]) + '\n'
+    data += 'from app.settings.config import HOME_DIR\n\n\n'
 
-    for entity in entities:
+    for entity in code:
         data += f'{entity} = ForwardRef("{entity}")\n'
     return data + "\n"
 
@@ -137,9 +145,9 @@ def create_pd_class(class_name: str, code: List[AllInfoStr], new_types_dict: dic
     return data
 
 
-def create_footer_pd_file(entities: List[db.Entity]) -> str:
+def create_footer_pd_file(entities: List[db.Entity], code) -> str:
     data = ""
-    for entity in entities:
+    for entity in code:
         data += f'{entity}.update_forward_refs()\n'
     data += "\n\nif __name__ == '__main__':\n\tfrom os import chdir\n\n\tchdir(HOME_DIR)"
     return data
@@ -151,40 +159,47 @@ def add_db_docs_with_code(name: str, code: StringDB, ent: db.Entity):
 
 def create_pd_models(
         file_name: str = AUTO_PYDANTIC_MODELS,
-        filter_func: Callable = lambda *a, **k: True,
-        map_param_funcs: list[Callable[..., Tuple[str, StringDB]]] = [lambda key, val, *a, **k: (key, val)],
-        class_filter: Callable = lambda *a, **k: True
+        filter_func: Callable[[str, AllInfoStr, ...], bool] = lambda *a, **k: True,
+        map_param_funcs: list[Callable[[str, AllInfoStr, ...], Tuple[str, AllInfoStr]]] = [lambda key, val, *a, **k: (key, val)],
+        class_filter: Callable[[dict[str, AllInfoStr], ...], bool] = lambda *a, **k: True,
+        create_roles=False
 ):
     pd_db: Dict[str, Tuple[Dict[str, AllInfoStr], Dict[str, Dict[List[str], List[str]]], Any, db.Entity]] = dict()
 
     # =======! Получаем код сущности !=======
     for name, ent in db.entities.items():
         code, p_k = code_from_db_and_docs(ent)
-        print(name, p_k)
-        if not class_filter(code, p_k):
-            continue
         code.pop("Discriminator", "")
         code.pop("classtype", "")
-        code = {key: val for key, val in code.items() if filter_func(key, val, p_k)}
         for map_param_func in map_param_funcs:
             code = dict([map_param_func(key, val, p_k) for key, val in code.items()])
-
         pd_db[name] = [code, p_k, ent.__bases__[0], ent]
 
     # =======! Обрабатываем сложные типы !=======
     pd_db = get_nice_pk(pd_db)
     new_types_code, pk_for_pydantic, new_types_dict = create_pk_types(pd_db)
 
+    # =======! Фильтруем код сущности !=======
+    for name, [code, p_k, parent, ent] in pd_db.copy().items():
+        if not class_filter(code, p_k):
+            del pd_db[name]
+            continue
+        code: dict[str, AllInfoStr] = {key: val for key, val in code.items() if filter_func(key, val, p_k)}
+        if class_filter(code, p_k):
+            pd_db[name] = [code, p_k, ent.__bases__[0], ent]
+        else:
+            del pd_db[name]
+
     # ======! Превращаем класс PonyORM в pydantic-класс !=======
-    file_code: str = create_header_pd_file(db.entities)
+    file_code: str = create_header_pd_file(db.entities, pd_db, create_roles=create_roles)
     file_code += new_types_code
     for name, [code, p_k, parent, ent] in pd_db.items():
         file_code += create_pd_class(name, code.values(), new_types_dict)
-
-    file_code += create_footer_pd_file(db.entities)
-
+    file_code += create_footer_pd_file(db.entities, pd_db)
+    if not exists(split(file_name)[0]):
+        mkdir(split(file_name)[0])
     with open(file_name, "w", encoding='utf-8') as f:
-        print(file_code, file=f)
+        f.write(file_code)
 
 
 def change_hash_to_password_field(key, val, *a, **k):
@@ -195,6 +210,9 @@ def change_hash_to_password_field(key, val, *a, **k):
 
 
 if __name__ == '__main__':
+
+
+
     create_pd_models(
         map_param_funcs=[
             lambda key, val, *a, **k: (
@@ -237,3 +255,20 @@ if __name__ == '__main__':
                 1] if val.db_type != "Set" else (key, val)
         ]
     )
+
+    base_path = [split(AUTO_PYDANTIC_MODELS)[0]]
+    for role in AccessType:
+        print('+!!!!!!!!---', role, [role])
+        for mode in AccessMode:
+            print("-089654678")
+            create_pd_models(
+                file_name=join(*base_path, str(role), f'{role}_{mode}.py'),
+                filter_func=lambda key, val, *a, **k: (r := val.access.get(role)) and mode in r,
+                class_filter=lambda code, p_k, *a, **k: not print(code) and bool(code),
+                create_roles=mode
+                # map_param_funcs=[
+                #     lambda key, val, *a, **k: (setattr(val, "db_type", "Optional"), (key, val))[
+                #         1] if val.db_type != "Set" else (key, val)
+                # ]
+            )
+            print('+_**************')

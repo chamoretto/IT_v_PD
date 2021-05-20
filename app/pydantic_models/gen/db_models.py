@@ -37,67 +37,12 @@ Question = ForwardRef("Question")
 SimpleEntity = ForwardRef("SimpleEntity")
 News = ForwardRef("News")
 
-PkHuman = Union[int, Human]
-PkAdmin = Union[int, Admin]
-PkUser = Union[int, User]
-PkSmm = Union[int, Smm]
-PkDeveloper = Union[int, Developer]
-PkHumanContacts = Union[int, HumanContacts]
-PkDirectionExpert = Union[int, DirectionExpert]
-PkCompetition = Union[int, Competition]
-PkDirection = Union[str, Direction]
-PkCompetitionDirection = Union[Tuple[str, int], CompetitionDirection]
-PkTask = Union[int, Task]
-PkUserWork = Union[Tuple[int, int], UserWork]
-PkCriterion = Union[int, Criterion]
-PkMarkWork = Union[Tuple[int, int, int], MarkWork]
-PkPage = Union[int, Page]
-PkQuestion = Union[int, Question]
-PkSimpleEntity = Union[str, SimpleEntity]
-PkNews = Union[int, News]
-
-OptionalPkHuman = Union[int, Human, None]
-OptionalPkAdmin = Union[int, Admin, None]
-OptionalPkUser = Union[int, User, None]
-OptionalPkSmm = Union[int, Smm, None]
-OptionalPkDeveloper = Union[int, Developer, None]
-OptionalPkHumanContacts = Union[int, HumanContacts, None]
-OptionalPkDirectionExpert = Union[int, DirectionExpert, None]
-OptionalPkCompetition = Union[int, Competition, None]
-OptionalPkDirection = Union[str, Direction, None]
-OptionalPkCompetitionDirection = Union[Tuple[str, int], CompetitionDirection, None]
-OptionalPkTask = Union[int, Task, None]
-OptionalPkUserWork = Union[Tuple[int, int], UserWork, None]
-OptionalPkCriterion = Union[int, Criterion, None]
-OptionalPkMarkWork = Union[Tuple[int, int, int], MarkWork, None]
-OptionalPkPage = Union[int, Page, None]
-OptionalPkQuestion = Union[int, Question, None]
-OptionalPkSimpleEntity = Union[str, SimpleEntity, None]
-OptionalPkNews = Union[int, News, None]
-
-SetPkHuman = Set[Union[int, Human]]
-SetPkAdmin = Set[Union[int, Admin]]
-SetPkUser = Set[Union[int, User]]
-SetPkSmm = Set[Union[int, Smm]]
-SetPkDeveloper = Set[Union[int, Developer]]
-SetPkHumanContacts = Set[Union[int, HumanContacts]]
-SetPkDirectionExpert = Set[Union[int, DirectionExpert]]
-SetPkCompetition = Set[Union[int, Competition]]
-SetPkDirection = Set[Union[str, Direction]]
-SetPkCompetitionDirection = Set[Union[Tuple[str, int], CompetitionDirection]]
-SetPkTask = Set[Union[int, Task]]
-SetPkUserWork = Set[Union[Tuple[int, int], UserWork]]
-SetPkCriterion = Set[Union[int, Criterion]]
-SetPkMarkWork = Set[Union[Tuple[int, int, int], MarkWork]]
-SetPkPage = Set[Union[int, Page]]
-SetPkQuestion = Set[Union[int, Question]]
-SetPkSimpleEntity = Set[Union[str, SimpleEntity]]
-SetPkNews = Set[Union[int, News]]
 
 
 class Human(BaseModel):
-	id: int
+	id: Optional[int] = None
 	username: str
+	password: Optional[None] = None
 	name: str
 	surname: str
 	email: str
@@ -113,8 +58,9 @@ class Human(BaseModel):
 
 
 class Admin(BaseModel):
-	id: int
+	id: Optional[int] = None
 	username: str
+	password: Optional[None] = None
 	name: str
 	surname: str
 	email: str
@@ -130,8 +76,9 @@ class Admin(BaseModel):
 
 
 class User(BaseModel):
-	id: int
+	id: Optional[int] = None
 	username: str
+	password: Optional[None] = None
 	name: str
 	surname: str
 	email: str
@@ -151,8 +98,9 @@ class User(BaseModel):
 
 
 class Smm(BaseModel):
-	id: int
+	id: Optional[int] = None
 	username: str
+	password: Optional[None] = None
 	name: str
 	surname: str
 	email: str
@@ -168,8 +116,9 @@ class Smm(BaseModel):
 
 
 class Developer(BaseModel):
-	id: int
+	id: Optional[int] = None
 	username: str
+	password: Optional[None] = None
 	name: str
 	surname: str
 	email: str
@@ -197,8 +146,9 @@ class HumanContacts(BaseModel):
 
 
 class DirectionExpert(BaseModel):
-	id: int
+	id: Optional[int] = None
 	username: str
+	password: Optional[None] = None
 	name: str
 	surname: str
 	email: str
@@ -214,7 +164,7 @@ class DirectionExpert(BaseModel):
 
 
 class Competition(BaseModel):
-	id: int
+	id: Optional[int] = None
 	name: str
 	start: datetime
 	end: datetime
@@ -255,7 +205,7 @@ class CompetitionDirection(BaseModel):
 
 
 class Task(BaseModel):
-	id: int
+	id: Optional[int] = None
 	competition_direction: Union[Tuple[str, int], CompetitionDirection]
 	task_document: Optional[str] = ''
 	description: Optional[str] = ''
@@ -293,7 +243,7 @@ class UserWork(BaseModel):
 
 
 class Criterion(BaseModel):
-	id: int
+	id: Optional[int] = None
 	task: Union[int, Task]
 	name: str
 	description: Optional[str] = ''
@@ -314,7 +264,7 @@ class MarkWork(BaseModel):
 
 
 class Page(BaseModel):
-	id: int
+	id: Optional[int] = None
 	page_url: Optional[str] = ''
 	page_path: Optional[str] = ''
 	is_header: bool = False
@@ -323,13 +273,14 @@ class Page(BaseModel):
 	child_pages: Set[Union[int, Page]] = []
 	title: Optional[str] = ''
 	questions: Set[Union[int, Question]] = []
+	page_type: Optional[str] = ''
 
 	class Config:
 		orm_mode = True
 
 
 class Question(BaseModel):
-	id: int
+	id: Optional[int] = None
 	question_title: Optional[str] = ''
 	question: str
 	answer: Optional[str] = ''
@@ -344,7 +295,7 @@ class Question(BaseModel):
 
 
 class SimpleEntity(BaseModel):
-	key: str
+	key: Optional[str] = None
 	data: Optional[Union[Json, dict]] = {}
 
 	class Config:
@@ -352,7 +303,7 @@ class SimpleEntity(BaseModel):
 
 
 class News(BaseModel):
-	id: int
+	id: Optional[int] = None
 	page_url: Optional[str] = ''
 	page_path: Optional[str] = ''
 	is_header: bool = False
@@ -361,6 +312,7 @@ class News(BaseModel):
 	child_pages: Set[Union[int, Page]] = []
 	title: Optional[str] = ''
 	questions: Set[Union[int, Question]] = []
+	page_type: Optional[str] = ''
 	auto_publish: Optional[datetime] = None
 	image: Optional[str] = None
 	author: Optional[str] = None

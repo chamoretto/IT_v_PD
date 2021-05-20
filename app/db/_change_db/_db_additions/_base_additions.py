@@ -1,12 +1,10 @@
-from typing import List, Any
-from functools import reduce
+from typing import Any
 
-from pony.orm import db_session, show, select
+from pony.orm import db_session, select
 
 from app.db._change_db import _raw_models as _raw_m
 from app.db._change_db._db_additions._tools_for_addition import AddArrtInDbClass
-from app.pydantic_models import only_primarykey_fields_model as only_pk
-from app.utils.html_utils import nice_table_page
+from app.pydantic_models.gen import only_primarykey_fields_model as only_pk
 from app.pydantic_models.response_models import TableCell
 
 _start = set(globals())
@@ -70,7 +68,7 @@ def key_as_part_query(self) -> str:
 
 
 @classmethod
-def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
+def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
     """
 
     :param cls:
@@ -104,6 +102,7 @@ def get_entities_html(cls, *keys, db_mode: bool = True) -> dict[str, Any]:
         "keys_as_query": [ent.key_as_part_query() for ent in  entities],
         "entity_name": cls.__name__,
         "db_mode": db_mode,
+        "access": access
     }
 
 
@@ -131,7 +130,5 @@ for name, ent in _raw_m.db.entities.items():
 print(AddArrtInDbClass.change_field)
 
 if __name__ == "__main__":
-    from app.dependencies import *
-
     with db_session:
         print(_raw_m.Page.get_entities_html())

@@ -13,11 +13,10 @@ from fastapi.responses import JSONResponse
 from pony.orm import db_session
 from fastapi.templating import Jinja2Templates
 
-from app.utils.html_utils import Alert, SitePageMenu
-from app.utils.utils_of_security import app_routers_to_scopes
+from app.utils.html_utils import SitePageMenu
 from app.pydantic_models.response_models import code_to_resp, PdUrl
 from app.pydantic_models import simple_entities as easy_ent_pd
-from app.pydantic_models import output_ent as out_pd
+from app.pydantic_models.gen import output_ent as out_pd
 from app.db import models as m
 
 

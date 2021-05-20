@@ -2,10 +2,9 @@ from typing import Tuple, Dict, List, Any, Optional, Callable
 from functools import reduce
 import enum
 from collections import defaultdict
-from itertools import chain
 
 import inspect
-from pydantic import root_validator, validator
+from pydantic import root_validator
 
 from app.settings.config import HOME_DIR, join
 from app.pydantic_models.standart_methhods_redefinition import BaseModel
@@ -240,14 +239,14 @@ def create_db_models():
     header_file = "import enum\n" \
                   "from typing import Any\n\n" \
                   "try:\n" \
-                  "\tfrom app.pydantic_models import db_models as pd\n" \
-                  "\tfrom app.pydantic_models import unique_db_field_models as pk_pd\n" \
-                  "\tfrom app.pydantic_models import unique_db_field_models as pk_pd\n" \
-                  "\tfrom app.pydantic_models import input_ent as inp_pd\n" \
-                  "\tfrom app.pydantic_models import output_ent as out_pd\n" \
+                  "\tfrom app.pydantic_models.gen import db_models as pd\n" \
+                  "\tfrom app.pydantic_models.gen import unique_db_field_models as pk_pd\n" \
+                  "\tfrom app.pydantic_models.gen import unique_db_field_models as pk_pd\n" \
+                  "\tfrom app.pydantic_models.gen import input_ent as inp_pd\n" \
+                  "\tfrom app.pydantic_models.gen import output_ent as out_pd\n" \
                   "except ImportError as e:\n" \
                   "\tprint('произошла ошибка при импорте моделей pydantic. По всей видимости в них ошибка', e)\n" \
-                  "from app.pydantic_models import only_primarykey_fields_model as only_pk\n" \
+                  "from app.pydantic_models.gen import only_primarykey_fields_model as only_pk\n" \
                   "from app.utils.html_utils import nice_table_page\n" \
                   "from app.pydantic_models.response_models import TableCell\n\n" + header_file
 
@@ -301,7 +300,7 @@ def info_from_docs(ent: db.Entity) -> dict[str, DbDocs]:
 
     """
 
-    from app.pydantic_models import db_models as pd
+    from app.pydantic_models.gen import db_models as pd
 
     keys_convertor: dict[str, str] = {
         "type": "html_type",

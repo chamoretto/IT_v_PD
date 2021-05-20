@@ -1,17 +1,12 @@
-from typing import Optional, Dict, Any, Callable, Union
+from typing import Callable, Union
 from collections import defaultdict
-import enum
 from itertools import chain
 
 from app.db import models as m
-from app.pydantic_models import db_models as pd
 # from app.db._change_db._create_models import db_ent_to_dict
-from app.pydantic_models.standart_methhods_redefinition import BaseModel
 from app.pydantic_models.create_pydantic_models import create_pd_models
 from app.settings.config import HOME_DIR, join
-from app.db._change_db._create_models import DbDocs, AccessType, AccessMode, FieldHtmlType, info_from_docs
-
-
+from app.db._change_db._create_models import DbDocs, FieldHtmlType, info_from_docs
 
 
 def all_html_form(content: str, entity_name: str) -> str:
@@ -24,9 +19,7 @@ def all_html_form(content: str, entity_name: str) -> str:
            f'<i class="fa fa-long-arrow-alt-left"></i></a>\n' \
            f'Вернуться ко всем объектам {entity_name}</h3>\n' \
            f'{"{%"} endif {"%}"}' \
-           f'{"{%"} if (disabled is not defined or not disabled) or' \
-           f' (access_mode is defined and access_mode != "look") {"%}"}\n' \
-           f'{"{#{"}access_mode{"}#}"}\n' \
+           f'{"{%"} if (access_mode is defined and access_mode != "look") {"%}"}\n' \
            f'<form id="{entity_name.lower()}"' \
            f' action="{"{{"}(action_url if action_url is defined else "/db/{entity_name}/new")|safe {"}}"}"' \
            f' method="{"{{"} (send_method if send_method is defined else "post")|safe {"}}"}"' \
@@ -36,8 +29,7 @@ def all_html_form(content: str, entity_name: str) -> str:
            f'<legend class="form-legend">{entity_name}</legend>\n' \
            f'{content}' \
            f'</fieldset>' \
-           f'{"{%"} if (disabled is not defined or not disabled) or' \
-           f' (access_mode is defined and access_mode != "look")  {"%}"}' \
+           f'{"{%"} if (access_mode is defined and access_mode != "look")  {"%}"}' \
            f'<div>\n' \
            f'<button class="btn btn--primary" type="submit" id="submit">Отправить</button>\n' \
            f'<button class="btn btn--subtle" type="reset">Сбросить</button>\n' \
@@ -66,8 +58,8 @@ def field_decorator(func: Callable) -> Callable:
                '    {% endfor %}\n' \
                f'   {"{%"} if access_mode in ns.good_modes {"%}"}\n'
         text += f'      {"{%"} if ({param.class_name.lower()} is defined and' \
-               f' {param.class_name.lower()}.{param.name} != Undefined)' \
-               f' or {param.class_name.lower()} is not defined {"%}"}\n'
+                f' {param.class_name.lower()}.{param.name} != Undefined)' \
+                f' or {param.class_name.lower()} is not defined {"%}"}\n'
         text += func(param, *args, **kwargs)
         text += f'<div id="{param.class_name}_{param.name}_error"></div>'
         text += '{% endif %}{% endif %}{% endif %}'
@@ -154,7 +146,7 @@ def html_text(param: DbDocs, html_input_type="text") -> str:
     return text
 
 
-def html_number(param: DbDocs)-> str:
+def html_number(param: DbDocs) -> str:
     return html_text(param, html_input_type='number')
 
 

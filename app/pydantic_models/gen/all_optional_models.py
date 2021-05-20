@@ -37,62 +37,6 @@ Question = ForwardRef("Question")
 SimpleEntity = ForwardRef("SimpleEntity")
 News = ForwardRef("News")
 
-PkHuman = Union[int, Human]
-PkAdmin = Union[int, Admin]
-PkUser = Union[int, User]
-PkSmm = Union[int, Smm]
-PkDeveloper = Union[int, Developer]
-PkHumanContacts = Union[int, HumanContacts]
-PkDirectionExpert = Union[int, DirectionExpert]
-PkCompetition = Union[int, Competition]
-PkDirection = Union[str, Direction]
-PkCompetitionDirection = Union[Tuple[str, int], CompetitionDirection]
-PkTask = Union[int, Task]
-PkUserWork = Union[Tuple[int, int], UserWork]
-PkCriterion = Union[int, Criterion]
-PkMarkWork = Union[Tuple[int, int, int], MarkWork]
-PkPage = Union[int, Page]
-PkQuestion = Union[int, Question]
-PkSimpleEntity = Union[str, SimpleEntity]
-PkNews = Union[int, News]
-
-OptionalPkHuman = Union[int, Human, None]
-OptionalPkAdmin = Union[int, Admin, None]
-OptionalPkUser = Union[int, User, None]
-OptionalPkSmm = Union[int, Smm, None]
-OptionalPkDeveloper = Union[int, Developer, None]
-OptionalPkHumanContacts = Union[int, HumanContacts, None]
-OptionalPkDirectionExpert = Union[int, DirectionExpert, None]
-OptionalPkCompetition = Union[int, Competition, None]
-OptionalPkDirection = Union[str, Direction, None]
-OptionalPkCompetitionDirection = Union[Tuple[str, int], CompetitionDirection, None]
-OptionalPkTask = Union[int, Task, None]
-OptionalPkUserWork = Union[Tuple[int, int], UserWork, None]
-OptionalPkCriterion = Union[int, Criterion, None]
-OptionalPkMarkWork = Union[Tuple[int, int, int], MarkWork, None]
-OptionalPkPage = Union[int, Page, None]
-OptionalPkQuestion = Union[int, Question, None]
-OptionalPkSimpleEntity = Union[str, SimpleEntity, None]
-OptionalPkNews = Union[int, News, None]
-
-SetPkHuman = Set[Union[int, Human]]
-SetPkAdmin = Set[Union[int, Admin]]
-SetPkUser = Set[Union[int, User]]
-SetPkSmm = Set[Union[int, Smm]]
-SetPkDeveloper = Set[Union[int, Developer]]
-SetPkHumanContacts = Set[Union[int, HumanContacts]]
-SetPkDirectionExpert = Set[Union[int, DirectionExpert]]
-SetPkCompetition = Set[Union[int, Competition]]
-SetPkDirection = Set[Union[str, Direction]]
-SetPkCompetitionDirection = Set[Union[Tuple[str, int], CompetitionDirection]]
-SetPkTask = Set[Union[int, Task]]
-SetPkUserWork = Set[Union[Tuple[int, int], UserWork]]
-SetPkCriterion = Set[Union[int, Criterion]]
-SetPkMarkWork = Set[Union[Tuple[int, int, int], MarkWork]]
-SetPkPage = Set[Union[int, Page]]
-SetPkQuestion = Set[Union[int, Question]]
-SetPkSimpleEntity = Set[Union[str, SimpleEntity]]
-SetPkNews = Set[Union[int, News]]
 
 
 class Human(BaseModel):
@@ -329,6 +273,7 @@ class Page(BaseModel):
 	child_pages: Set[Union[int, Page]] = []
 	title: Optional[str] = ''
 	questions: Set[Union[int, Question]] = []
+	page_type: Optional[str] = ''
 
 	class Config:
 		orm_mode = True
@@ -367,6 +312,7 @@ class News(BaseModel):
 	child_pages: Set[Union[int, Page]] = []
 	title: Optional[str] = ''
 	questions: Set[Union[int, Question]] = []
+	page_type: Optional[str] = ''
 	auto_publish: Optional[datetime] = None
 	image: Optional[str] = None
 	author: Optional[str] = None

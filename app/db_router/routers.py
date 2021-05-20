@@ -1,35 +1,17 @@
-from typing import Callable, Any
-import time
-import enum
-from typing import Optional, Set, Union
-from functools import wraps
-from functools import partial
+from typing import Any
 
-from fastapi import APIRouter, Depends, Security, Response, Request, HTTPException, status, Path, Form, Body, Header, \
-    Query
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi import APIRouter, Security, Request, HTTPException, status, Path, Body
+from fastapi.responses import JSONResponse
 from pony.orm import db_session, commit
-from pydantic import Json
 from pony.orm.dbapiprovider import IntegrityError
 
-from fastapi.routing import APIRoute
-
 from app.db import models as m
-from app.pydantic_models import db_models as pd
-from app.pydantic_models import unique_db_field_models as pk_pd
-from app.pydantic_models import input_ent as inp_pd
-from app.pydantic_models import output_ent as out_pd
-from app.pydantic_models import only_primarykey_fields_model as only_pk
-from app.pydantic_models import all_optional_models as op_pd
-from app.dependencies import *
+from app.pydantic_models.gen import all_optional_models as op_pd, output_ent as out_pd, input_ent as inp_pd, \
+    unique_db_field_models as pk_pd, only_primarykey_fields_model as only_pk
 from app.utils.jinja2_utils import db_templates
 from app.developers.security import get_current_dev
 from app.utils.utils_of_security import get_password_hash
-from app.db.db_utils import open_db_session
-from app.utils.pydantic_security import HumanInDB
-from app.pydantic_models.standart_methhods_redefinition import BaseModel, as_form
-from app.pydantic_models.db_models import OptionalPkHumanContacts, HumanContacts, PkQuestion, SetPkQuestion, \
-    OptionalPkQuestion, Question
+from app.db_router.security import get_current_human_for_db
 
 db_route = APIRouter(
     # route_class=TimedRoute,
@@ -37,7 +19,7 @@ db_route = APIRouter(
     tags=["DataBase"],
     dependencies=[
         # Depends(open_db_session),
-        Security(get_current_dev, scopes=["developer"])
+        Security(get_current_human_for_db, scopes=["developer"])
     ],  #
     responses={404: {"description": "Not found------"},
                401: {"description": "Пользователь не был авторизировани"}}, )
@@ -49,7 +31,7 @@ db_route = APIRouter(
 
 @db_route.get('/')
 @db_session
-def all_entities(request: Request):
+def all_entities(request: Request, me=Security(get_current_dev, scopes=["developer"])):
     return db_templates.TemplateResponse(
         "main_db.html", {"request": request, "entities": m.db.entities})
 
@@ -57,6 +39,7 @@ def all_entities(request: Request):
 @db_route.get('/{entity}')
 @db_session
 def entity_screen(request: Request,
+                  me=Security(get_current_dev, scopes=["developer"]),
                   entity: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")):
     # print("---ESMg mf k", x_part)
     if entity.value not in m.db.entities and type(m.db.entities[entity.value]) == m.db.Entity:

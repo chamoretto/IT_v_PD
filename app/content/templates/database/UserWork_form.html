@@ -8,8 +8,7 @@
 <a href="/db/UserWork" class="no-effect url_as_ajax" title="Вернуться к просмотру объектов БД">
 <i class="fa fa-long-arrow-alt-left"></i></a>
 Вернуться ко всем объектам UserWork</h3>
-{% endif %}{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
-{#{access_mode}#}
+{% endif %}{% if (access_mode is defined and access_mode != "look") %}
 <form id="userwork" action="{{(action_url if action_url is defined else "/db/UserWork/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
 {% endif %}
 <fieldset class="margin-bottom-md">
@@ -45,7 +44,7 @@ user имеет тип select, который еще не поддерживае
 {% set value = 
     ('value="%s"' % (userwork.upload_date if userwork.upload_date else "")
         if userwork is defined
-        else 'value="<function UserWork.<lambda> at 0x0000020127E91790>"'|safe)|safe  %}
+        else 'value="<function UserWork.<lambda> at 0x0000020D73119940>"'|safe)|safe  %}
 {% if "value" in value and value.split()|length == 2 %}
 {{value.split() | join("T")}}
 {% else %}
@@ -53,7 +52,7 @@ user имеет тип select, который еще не поддерживае
 {% endif %}
 >
 </div></fieldset>
-<div id="UserWork_upload_date_error"></div>{% endif %}{% endif %}{% endif %}</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>
+<div id="UserWork_upload_date_error"></div>{% endif %}{% endif %}{% endif %}</fieldset>{% if (access_mode is defined and access_mode != "look")  %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
 </div></form>

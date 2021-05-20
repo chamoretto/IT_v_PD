@@ -1,16 +1,10 @@
-from typing import Callable
-import time
-
-from fastapi import APIRouter, Depends, Security, Response, Request
+from fastapi import APIRouter, Security, Response, Request
 from pony.orm import db_session
 
-from app.dependencies import *
 from app.admins.security import get_current_admin
-from app.db.db_utils import open_db_session
 from app.utils.pydantic_security import HumanInDB
-from fastapi.routing import APIRoute
 from app.utils.jinja2_utils import admin_templates, db_templates
-from app.pydantic_models import output_ent as out_pd
+from app.pydantic_models.gen import output_ent as out_pd
 from app.db import models as m
 
 
@@ -60,10 +54,10 @@ def read_users_me(response: Response, request: Request, current_user: HumanInDB 
             "request": request,
             "personal_data": db_templates.get_cooked_template(
                 "Admin_form.html", {"request": request,
-                                        "developer": out_pd.Admin(**current_user.dict()),
-                                        "action_url": f"/db/Admin/look/",
-                                        "send_method": "POST",
-                                        "disabled": True,
+                                        "admin": out_pd.Admin(**current_user.dict()),
+                                        # "action_url": f"/db/Admin/look/",
+                                        # "send_method": "POST",
+                                        # "disabled": True,
                                         'access_mode': 'look',
                                         "db_mode": False})
         })
@@ -77,8 +71,7 @@ def read_users_me(response: Response, request: Request, current_user: HumanInDB 
         "personal_page.html", {
             "request": request,
             "personal_data": db_templates.get_cooked_template("show_entity.html",
-                                                              {"request": request,
-                                                               "table": m.Admin.get_entities_html(),
+                                                              {"request": request, **m.Admin.get_entities_html(db_mode=False, access=["admin"]),
                                                                "access": ["admin"]})
         })
 # db_templates.TemplateResponse(f"{class_entity_name.value}_form.html", {"request": request, 'access_mode': 'create'})

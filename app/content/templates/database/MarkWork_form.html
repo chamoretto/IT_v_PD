@@ -8,8 +8,7 @@
 <a href="/db/MarkWork" class="no-effect url_as_ajax" title="Вернуться к просмотру объектов БД">
 <i class="fa fa-long-arrow-alt-left"></i></a>
 Вернуться ко всем объектам MarkWork</h3>
-{% endif %}{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look") %}
-{#{access_mode}#}
+{% endif %}{% if (access_mode is defined and access_mode != "look") %}
 <form id="markwork" action="{{(action_url if action_url is defined else "/db/MarkWork/new")|safe }}" method="{{ (send_method if send_method is defined else "post")|safe }}" enctype="multipart/form-data" onsubmit="return false">
 {% endif %}
 <fieldset class="margin-bottom-md">
@@ -37,7 +36,7 @@ user_work имеет тип select, который еще не поддержи�
     ('value="%s"' % (markwork.value if markwork.value else "")
         if markwork is defined
         else "")|safe }}  required {{ ("disabled" if (disabled is defined and disabled) or (access_mode is defined and access_mode == "look")  else "")|safe }}>
-</div><div id="MarkWork_value_error"></div>{% endif %}{% endif %}{% endif %}</fieldset>{% if (disabled is not defined or not disabled) or (access_mode is defined and access_mode != "look")  %}<div>
+</div><div id="MarkWork_value_error"></div>{% endif %}{% endif %}{% endif %}</fieldset>{% if (access_mode is defined and access_mode != "look")  %}<div>
 <button class="btn btn--primary" type="submit" id="submit">Отправить</button>
 <button class="btn btn--subtle" type="reset">Сбросить</button>
 </div></form>

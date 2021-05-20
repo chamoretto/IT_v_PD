@@ -1,20 +1,14 @@
-from fastapi import APIRouter, Request
+from fastapi import Request
 from fastapi.responses import HTMLResponse
 from pony.orm import db_session
 
-from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi import Depends, HTTPException, status, APIRouter
+from fastapi import HTTPException, status, APIRouter
 
 from app.dependencies import *
 from app.db import models as m
-from app.pydantic_models import db_models as pd
-from app.pydantic_models import output_ent as out_pd
+from app.pydantic_models.gen import db_models as pd, output_ent as out_pd
 from app.pydantic_models import simple_entities as easy_ent_pd
-from app.pydantic_models.standart_methhods_redefinition import BaseModel
 from app.utils.jinja2_utils import public_templates
-from app.utils.html_utils import Alert
-
 
 public_router = APIRouter()
 error_404_Page = HTTPException(
