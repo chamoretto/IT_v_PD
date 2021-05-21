@@ -141,4 +141,11 @@ if __name__ == "__main__":
         pass
     with db_session:
         show(m.Human.select().show())
+        # m.Admin(
+        #     username="Kalekdfi34nsDdanijjil55",
+        #     hash_password="KalekinDaniijjl123",
+        #     name="Даниил",
+        #     surname="Калекин",
+        #     email="Kalek4sdf3injjDa5d5niil123@mail.ru",
+        # )
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=False)

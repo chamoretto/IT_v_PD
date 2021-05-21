@@ -7,49 +7,11 @@ import inspect
 from pydantic import root_validator
 
 from app.settings.config import HOME_DIR, join
-from app.pydantic_models.standart_methhods_redefinition import BaseModel
+from app.pydantic_models.standart_methhods_redefinition import BaseModel, AccessType, AccessMode
 from app.db._change_db._raw_models import db
 from app.db._change_db import _raw_models
 # from app.db._change_db._db_additions._base_additions import *
 from app.db._change_db._all_db_additions import AddArrtInDbClass
-
-
-@enum.unique
-class AccessType(enum.Enum):
-    PUBLIC = "public"
-    USER = "user"
-    SMMER = "smm"
-    DIRECTION_EXPERT = "expert"
-    ADMIN = "admin"
-    DEVELOPER = "dev"
-    SELF = "self"
-
-    @classmethod
-    def get_obj(cls, val: str):
-        if val in cls._value2member_map_:
-            return cls._value2member_map_[val]
-        print(val)
-        raise AttributeError
-
-    def __str__(self):
-        return self.value
-
-
-@enum.unique
-class AccessMode(enum.Enum):
-    CREATE = "create"
-    EDIT = "edit"
-    LOOK = "look"
-
-    @classmethod
-    def get_obj(cls, val: str):
-        if val in cls._value2member_map_:
-            return cls._value2member_map_[val]
-        print(val)
-        raise AttributeError
-
-    def __str__(self):
-        return self.value
 
 
 @enum.unique
@@ -121,10 +83,12 @@ class AllInfoStr(StringDB, DbDocs):
     default: Any = None  # параметр по умолчанию
     other_params: dict = dict()  # другие параметры
     is_primary_key: bool = False  #
+    is_not_db: bool = False  # если такой параметр есть только в документации
 
     @root_validator
     def check_passwords_match(cls, values: dict):
         if "db_type" not in values or values['db_type'] is None:
+            values["is_not_db"] = True
             if "is_set" in values and values["is_set"]:
                 values["db_type"] = "Set"
             elif "required" in values and values["is_set"]:
@@ -373,12 +337,24 @@ def code_from_db_and_docs(ent: db.Entity) -> tuple[
     """
     all_ent_code, p_k, *_ = db_ent_to_dict(ent)
     all_ent_docs: dict[str, DbDocs] = info_from_docs(ent)
-    all_ent_docs: dict[str, AllInfoStr] = {name: AllInfoStr(
-        **(code.dict(exclude_unset=True) |
-           (all_ent_code[name].dict(exclude_unset=True) if all_ent_code.get(name, ) else dict())))
-        for name, code in all_ent_docs.items()}
 
-    return all_ent_docs, p_k
+    if "password" in all_ent_code:
+        print("code", all_ent_code["password"].dict().items(), " ", sep='\n')
+    if "password" in all_ent_docs:
+        print("docs", all_ent_docs["password"].dict().items(), " ", sep='\n')
+
+    _all_ent_docs: dict[str, AllInfoStr] = {
+        name: AllInfoStr(**(
+                (all_ent_docs[name].dict(exclude_unset=True, exclude_none=True, exclude_defaults=True)
+                 if all_ent_docs.get(name) else dict()) |
+                (all_ent_code[name].dict(exclude_unset=True, exclude_none=True, exclude_defaults=True)
+                 if all_ent_code.get(name) else dict()) |
+                {"class_name": ent.__name__}
+        ))
+        for name in (all_ent_docs | all_ent_code).keys()}
+    if "password" in all_ent_code or  "password" in all_ent_docs:
+        print("all_code", _all_ent_docs["password"].dict().items(), " ", sep='\n')
+    return _all_ent_docs, p_k
 
 
 if __name__ == "__main__":

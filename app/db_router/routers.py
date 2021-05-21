@@ -4,14 +4,22 @@ from fastapi import APIRouter, Security, Request, HTTPException, status, Path, B
 from fastapi.responses import JSONResponse
 from pony.orm import db_session, commit
 from pony.orm.dbapiprovider import IntegrityError
+from pydantic import create_model
 
 from app.db import models as m
-from app.pydantic_models.gen import all_optional_models as op_pd, output_ent as out_pd, input_ent as inp_pd, \
-    unique_db_field_models as pk_pd, only_primarykey_fields_model as only_pk
+from app.pydantic_models.gen import all_optional_models as op_pd
+from app.pydantic_models.gen import output_ent as out_pd
+from app.pydantic_models.gen import input_ent as inp_pd
+from app.pydantic_models.gen import unique_db_field_models as pk_pd
+from app.pydantic_models.gen import only_primarykey_fields_model as only_pk
+from app.pydantic_models.gen import db_models as pd
+
+from app.pydantic_models.standart_methhods_redefinition import get_pd_class, AccessType, AccessMode
 from app.utils.jinja2_utils import db_templates
 from app.developers.security import get_current_dev
 from app.utils.utils_of_security import get_password_hash
 from app.db_router.security import get_current_human_for_db
+from app.pydantic_models import gen as role_m
 
 db_route = APIRouter(
     # route_class=TimedRoute,
@@ -19,7 +27,7 @@ db_route = APIRouter(
     tags=["DataBase"],
     dependencies=[
         # Depends(open_db_session),
-        Security(get_current_human_for_db, scopes=["developer"])
+        Security(get_current_human_for_db)
     ],  #
     responses={404: {"description": "Not found------"},
                401: {"description": "Пользователь не был авторизировани"}}, )
@@ -56,11 +64,10 @@ def entity_screen(request: Request,
 # enum.Enum('DynamicEnum', {key: key for key, val in m.db.entities.items()})
 
 
-
-
 @db_route.get('/{class_entity_name}/new')
 @db_session
 def entity_screen(request: Request,
+                  human=Security(get_current_human_for_db),
                   class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")):
     print("---ESMg mf k")
     if class_entity_name.value not in m.db.entities and type(m.db.entities[class_entity_name.value]) == m.db.Entity:
@@ -70,22 +77,30 @@ def entity_screen(request: Request,
             headers={"WWW-Authenticate": 'Bearer Basic realm="Restricted Area"'},
         )
 
-    return db_templates.TemplateResponse(f"{class_entity_name.value}_form.html", {"request": request, 'access_mode': 'create'})
+    return db_templates.TemplateResponse(f"{class_entity_name.value}_form.html", {
+        "request": request, 'access_mode': 'create',
+        "access": human.scopes
+    })
 
 
 @db_route.post('/{class_entity_name}/new')
 @db_session
 def create_entity(request: Request,
-                  new_ent_data:  dict[str, Any] = Body(..., title="Данные нового объекта в базе данных"),
+                  new_ent_data: dict[str, Any] = Body(..., title="Данные нового объекта в базе данных"),
+                  human=Security(get_current_human_for_db),
                   class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")
                   ):
-
     name = class_entity_name.value
-    new_ent_data = getattr(inp_pd, name)(**new_ent_data)
+    # print(new_ent_data)
+    model = get_pd_class(name, human.scopes, AccessMode.CREATE)
+    print('==-$$$$-------', type(model), model, model.__bases__)
+    new_ent_data = model(**new_ent_data)
     ent = m.db.entities[name]
-
-    data = dict(getattr(pk_pd, name)(**dict(new_ent_data))).items()
-    chek_unique = {key: val for key, val in data if ent.exists(**{key: val})}
+    try:
+        data = dict(getattr(pk_pd, name)(**dict(new_ent_data)))
+    except ImportError as e:
+        print('ошибка в ', __file__, "при сохранении созданной сущноси")
+    chek_unique = {key: val for key, val in data.items() if ent.exists(**{key: val})}
     print(chek_unique)
     if bool(chek_unique):
         return JSONResponse(
@@ -97,7 +112,7 @@ def create_entity(request: Request,
     password = dict(new_ent_data).get("password")
     if password:
         password = get_password_hash(password)
-    new_ent_data = getattr(op_pd, name)(**dict(new_ent_data), hash_password=password)
+    new_ent_data = getattr(pd, name)(**dict(new_ent_data), hash_password=password)
     try:
         ent(**dict(new_ent_data))
         commit()

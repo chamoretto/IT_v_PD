@@ -15,9 +15,9 @@ from datetime import date, datetime, time
 
 from app.pydantic_models.standart_methhods_redefinition import BaseModel, as_form
 from app.pydantic_models.standart_methhods_redefinition import PydanticValidators
+from app.pydantic_models.gen.input_ent import Developer
 from app.pydantic_models.gen.input_ent import Human
 from app.pydantic_models.gen.input_ent import HumanContacts
-from app.pydantic_models.gen.input_ent import Developer
 from app.settings.config import HOME_DIR
 
 
@@ -41,7 +41,7 @@ News = ForwardRef("News")
 
 class Admin(BaseModel):
 	username: str
-	password: Optional[None] = None
+	password: Optional[str] = None
 	name: str
 	surname: str
 	email: str
@@ -49,7 +49,7 @@ class Admin(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict]] = {}
+	scopes: Optional[Union[Json, dict, list]] = {}
 	questions: Set[Union[int, Question]] = []
 
 	class Config:
@@ -58,7 +58,7 @@ class Admin(BaseModel):
 
 class User(BaseModel):
 	username: str
-	password: Optional[None] = None
+	password: Optional[str] = None
 	name: str
 	surname: str
 	email: str
@@ -66,7 +66,7 @@ class User(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict]] = {}
+	scopes: Optional[Union[Json, dict, list]] = {}
 	questions: Set[Union[int, Question]] = []
 	date_of_birth: date
 	about_program: Optional[str] = None
@@ -79,7 +79,7 @@ class User(BaseModel):
 
 class Smm(BaseModel):
 	username: str
-	password: Optional[None] = None
+	password: Optional[str] = None
 	name: str
 	surname: str
 	email: str
@@ -87,7 +87,7 @@ class Smm(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict]] = {}
+	scopes: Optional[Union[Json, dict, list]] = {}
 	questions: Set[Union[int, Question]] = []
 
 	class Config:
@@ -96,7 +96,7 @@ class Smm(BaseModel):
 
 class DirectionExpert(BaseModel):
 	username: str
-	password: Optional[None] = None
+	password: Optional[str] = None
 	name: str
 	surname: str
 	email: str
@@ -104,7 +104,7 @@ class DirectionExpert(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict]] = {}
+	scopes: Optional[Union[Json, dict, list]] = {}
 	questions: Set[Union[int, Question]] = []
 
 	class Config:
@@ -112,7 +112,6 @@ class DirectionExpert(BaseModel):
 
 
 class Competition(BaseModel):
-	id: int
 	name: str
 	start: datetime
 	end: datetime
@@ -136,14 +135,14 @@ class Competition(BaseModel):
 class Direction(BaseModel):
 	name: str
 	icon: str
-	video_lessons: Optional[Union[Json, dict]] = {}
+	video_lessons: Optional[Union[Json, dict, list]] = {}
 
 	class Config:
 		orm_mode = True
 
 
 class CompetitionDirection(BaseModel):
-	questions: Optional[None] = None
+	questions: Optional[str] = None
 
 	class Config:
 		orm_mode = True
@@ -225,8 +224,7 @@ class Question(BaseModel):
 
 
 class SimpleEntity(BaseModel):
-	key: str
-	data: Optional[Union[Json, dict]] = {}
+	data: Optional[Union[Json, dict, list]] = {}
 
 	class Config:
 		orm_mode = True

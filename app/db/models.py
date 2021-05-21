@@ -158,6 +158,14 @@ class Human(db.Entity):
         _dict = "&".join([f"{key}={val}" for key, val in _dict.items()])
         return _dict
 
+    def before_insert(self):
+        """ вызывается до создания объекта """
+
+        from app.utils.utils_of_security import scopes_to_db
+
+        if not bool(self.scopes):
+            self.scopes = scopes_to_db.get(self.__class__, [])
+
 
 class Admin(Human):
     """

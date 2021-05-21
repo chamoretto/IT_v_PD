@@ -286,7 +286,7 @@ class Developer(Human):
         :mod username dev: look
         :mod username self: create edit look
 
-        :access password: dev
+        :access password: dev self
         :mod password dev: create
         :mod password self: create
 

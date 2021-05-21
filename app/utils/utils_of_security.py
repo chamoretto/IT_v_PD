@@ -16,6 +16,7 @@ from app.db import models as m
 
 from app.settings.config import cfg
 from app.utils.pydantic_security import TokenData, HumanInDB, Token, BaseModel
+from app.pydantic_models.standart_methhods_redefinition import AccessType, AccessMode
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 ALGORITHM = cfg.get('db', "hash_algorithm")
@@ -61,13 +62,16 @@ oauth2_scheme = OAuth2PasswordBearer(
 #     "developer": m.Developer
 # }
 
-scopes_to_db: Dict[m.db.Entity, List[str]] = {
-    m.User: ["user"],
-    m.Smm: ["smmer"],
-    m.DirectionExpert: ["direction_expert"],
-    m.Admin: ["admin", "smmer"],
-    m.Developer: ["developer", "user", "direction_expert", "admin", "smmer"]
+scopes_to_db: Dict[m.db.Entity, List[AccessType]] = {
+    m.User: [AccessType.USER],
+    m.Smm: [AccessType.SMMER],
+    m.DirectionExpert: [AccessType.DIRECTION_EXPERT],
+    m.Admin: [AccessType.ADMIN, AccessType.SMMER],
+    m.Developer: [AccessType.DEVELOPER, AccessType.USER,
+                  AccessType.DIRECTION_EXPERT, AccessType.ADMIN,
+                  AccessType.SMMER]
 }
+scopes_to_db: Dict[m.db.Entity, List[str]] = {key: [i.value for i in val] for key, val in scopes_to_db.items()}
 app_routers_to_scopes: dict[str, list[str]] = defaultdict(lambda i: [])
 app_routers_to_scopes.update({
     "admin": scopes_to_db[m.Admin],

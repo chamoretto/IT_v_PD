@@ -5,12 +5,12 @@ from os.path import exists
 from os import mkdir
 
 from app.db.models import db
-from app.db._change_db._create_models import db_ent_to_dict, StringDB, code_from_db_and_docs, AllInfoStr, AccessType, AccessMode
+from app.db._change_db._create_models import db_ent_to_dict, StringDB, code_from_db_and_docs, AllInfoStr, AccessType, \
+    AccessMode, FieldHtmlType
 from app.settings.config import AUTO_PYDANTIC_MODELS, split, join
 from app.db._change_db._create_models import DbDocs, info_from_docs
 from app.pydantic_models.pony_to_pydantic_rules import *
 from app.pydantic_models.standart_methhods_redefinition import PydanticValidators
-
 
 
 def db_string_to_pydantic_string(data: StringDB):
@@ -160,7 +160,8 @@ def add_db_docs_with_code(name: str, code: StringDB, ent: db.Entity):
 def create_pd_models(
         file_name: str = AUTO_PYDANTIC_MODELS,
         filter_func: Callable[[str, AllInfoStr, ...], bool] = lambda *a, **k: True,
-        map_param_funcs: list[Callable[[str, AllInfoStr, ...], Tuple[str, AllInfoStr]]] = [lambda key, val, *a, **k: (key, val)],
+        map_param_funcs: list[Callable[[str, AllInfoStr, ...], Tuple[str, AllInfoStr]]] = [
+            lambda key, val, *a, **k: (key, val)],
         class_filter: Callable[[dict[str, AllInfoStr], ...], bool] = lambda *a, **k: True,
         create_roles=False
 ):
@@ -202,18 +203,19 @@ def create_pd_models(
         f.write(file_code)
 
 
-def change_hash_to_password_field(key, val, *a, **k):
-    if key == "hash_password":
+def change_hash_to_password_field(key: str, val: AllInfoStr, *a, **k):
+    if key == "password":
         key = "password"
         setattr(val, "name", "password")
+        setattr(val, "param_type", "str")
+        print('+========================================', key, val)
     return key, val
 
 
 if __name__ == '__main__':
 
-
-
     create_pd_models(
+        filter_func=lambda key, val, *a, **k: not val.is_not_db,
         map_param_funcs=[
             lambda key, val, *a, **k: (
                 [setattr(val, "db_type", "Optional"), (key, val)][1] if val.other_params.get("auto") else (key, val))
@@ -241,7 +243,7 @@ if __name__ == '__main__':
         ])  # Сущности, которые будут приниматься с сайта
     create_pd_models(  # сущности, которые должен возвращать сайт
         file_name=join(split(AUTO_PYDANTIC_MODELS)[0], "output_ent.py"),
-        filter_func=lambda key, val, *a, **k: all(i not in key for i in ["password", "hash"]))
+        filter_func=lambda key, val, *a, **k: all(i not in key for i in ["password", "hash"]) and val.html_type != FieldHtmlType.PASSWORD)
 
     create_pd_models(
         file_name=join(split(AUTO_PYDANTIC_MODELS)[0], "only_primarykey_fields_model.py"),
@@ -249,6 +251,7 @@ if __name__ == '__main__':
         (val.is_primary_key or any(val.name in j for j in p_k))
     )
     create_pd_models(
+        filter_func=lambda key, val, *a, **k: not val.is_not_db,
         file_name=join(split(AUTO_PYDANTIC_MODELS)[0], "all_optional_models.py"),
         map_param_funcs=[
             lambda key, val, *a, **k: (setattr(val, "db_type", "Optional"), (key, val))[
@@ -257,18 +260,35 @@ if __name__ == '__main__':
     )
 
     base_path = [split(AUTO_PYDANTIC_MODELS)[0]]
+    true_print = lambda val, *a: not (print(val.class_name, *val.dict().items(), *a, " ", sep='\n') if val.name == "password" else False)
+    true_print = lambda *a: True
     for role in AccessType:
-        print('+!!!!!!!!---', role, [role])
+        # print('+!!!!!!!!---', role, [role])
+
         for mode in AccessMode:
-            print("-089654678")
+
+            # print("-089654678")
+            maps = []
+            filters = []
+            if mode == AccessMode.CREATE:
+                maps = [change_hash_to_password_field,
+                        lambda key, val, *a, **k: (
+                            [setattr(val, "db_type", "Optional"), (key, val)][1] if val.other_params.get("auto") else (
+                                key, val))
+                        ]
+                filters = [lambda key, val, p_k, *a, **k: not val.other_params.get("auto")]
+            else:
+                filters = [lambda key, val, p_k, *a, **k: val.html_type != FieldHtmlType.PASSWORD]
             create_pd_models(
                 file_name=join(*base_path, str(role), f'{role}_{mode}.py'),
-                filter_func=lambda key, val, *a, **k: (r := val.access.get(role)) and mode in r,
-                class_filter=lambda code, p_k, *a, **k: not print(code) and bool(code),
-                create_roles=mode
+                filter_func=lambda key, val, *a, **k: true_print(val) and (r := val.access.get(role)) and true_print(val, r, mode) and mode in r and true_print(val) and all(i(key, val, *a, **k) for i in filters) and true_print(val),
+                class_filter=lambda code, p_k, *a, **k: bool(code),
+                create_roles=mode,
+                map_param_funcs=maps
+
                 # map_param_funcs=[
                 #     lambda key, val, *a, **k: (setattr(val, "db_type", "Optional"), (key, val))[
                 #         1] if val.db_type != "Set" else (key, val)
                 # ]
             )
-            print('+_**************')
+            # print('+_**************')

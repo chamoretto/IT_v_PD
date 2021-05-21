@@ -85,6 +85,7 @@ class Developer(BaseModel):
 
 
 class HumanContacts(BaseModel):
+	human: Union[int, Human]
 
 	class Config:
 		orm_mode = True

@@ -42,7 +42,6 @@ News = ForwardRef("News")
 class Human(BaseModel):
 	id: Optional[int] = None
 	username: Optional[str] = None
-	password: Optional[None] = None
 	name: Optional[str] = None
 	surname: Optional[str] = None
 	email: Optional[str] = None
@@ -50,8 +49,9 @@ class Human(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict]] = {}
+	scopes: Optional[Union[Json, dict, list]] = {}
 	questions: Set[Union[int, Question]] = []
+	hash_password: Optional[str] = None
 
 	class Config:
 		orm_mode = True
@@ -60,7 +60,6 @@ class Human(BaseModel):
 class Admin(BaseModel):
 	id: Optional[int] = None
 	username: Optional[str] = None
-	password: Optional[None] = None
 	name: Optional[str] = None
 	surname: Optional[str] = None
 	email: Optional[str] = None
@@ -68,8 +67,9 @@ class Admin(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict]] = {}
+	scopes: Optional[Union[Json, dict, list]] = {}
 	questions: Set[Union[int, Question]] = []
+	hash_password: Optional[str] = None
 
 	class Config:
 		orm_mode = True
@@ -78,7 +78,6 @@ class Admin(BaseModel):
 class User(BaseModel):
 	id: Optional[int] = None
 	username: Optional[str] = None
-	password: Optional[None] = None
 	name: Optional[str] = None
 	surname: Optional[str] = None
 	email: Optional[str] = None
@@ -86,12 +85,14 @@ class User(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict]] = {}
+	scopes: Optional[Union[Json, dict, list]] = {}
 	questions: Set[Union[int, Question]] = []
 	date_of_birth: Optional[date] = None
 	about_program: Optional[str] = None
 	direction: Optional[str] = None
 	visible_about_program_field: Optional[bool] = False
+	hash_password: Optional[str] = None
+	user_works: Set[Union[Tuple[int, int], UserWork]] = []
 
 	class Config:
 		orm_mode = True
@@ -100,7 +101,6 @@ class User(BaseModel):
 class Smm(BaseModel):
 	id: Optional[int] = None
 	username: Optional[str] = None
-	password: Optional[None] = None
 	name: Optional[str] = None
 	surname: Optional[str] = None
 	email: Optional[str] = None
@@ -108,8 +108,9 @@ class Smm(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict]] = {}
+	scopes: Optional[Union[Json, dict, list]] = {}
 	questions: Set[Union[int, Question]] = []
+	hash_password: Optional[str] = None
 
 	class Config:
 		orm_mode = True
@@ -118,7 +119,6 @@ class Smm(BaseModel):
 class Developer(BaseModel):
 	id: Optional[int] = None
 	username: Optional[str] = None
-	password: Optional[None] = None
 	name: Optional[str] = None
 	surname: Optional[str] = None
 	email: Optional[str] = None
@@ -126,8 +126,9 @@ class Developer(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict]] = {}
+	scopes: Optional[Union[Json, dict, list]] = {}
 	questions: Set[Union[int, Question]] = []
+	hash_password: Optional[str] = None
 
 	class Config:
 		orm_mode = True
@@ -140,6 +141,7 @@ class HumanContacts(BaseModel):
 	facebook: Optional[str] = ''
 	telegram: Optional[str] = ''
 	home_adress: Optional[str] = ''
+	human: Union[int, Human, None] = None
 
 	class Config:
 		orm_mode = True
@@ -148,7 +150,6 @@ class HumanContacts(BaseModel):
 class DirectionExpert(BaseModel):
 	id: Optional[int] = None
 	username: Optional[str] = None
-	password: Optional[None] = None
 	name: Optional[str] = None
 	surname: Optional[str] = None
 	email: Optional[str] = None
@@ -156,8 +157,10 @@ class DirectionExpert(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict]] = {}
+	scopes: Optional[Union[Json, dict, list]] = {}
 	questions: Set[Union[int, Question]] = []
+	hash_password: Optional[str] = None
+	competition_directions: Set[Union[Tuple[str, int], CompetitionDirection]] = []
 
 	class Config:
 		orm_mode = True
@@ -170,6 +173,7 @@ class Competition(BaseModel):
 	end: Optional[datetime] = None
 	description: Optional[str] = ''
 	document: Optional[str] = ''
+	competition_direction: Set[Union[Tuple[str, int], CompetitionDirection]] = []
 
 
 	@validator("start", pre=True, always=True)
@@ -188,7 +192,8 @@ class Competition(BaseModel):
 class Direction(BaseModel):
 	name: Optional[str] = None
 	icon: Optional[str] = None
-	video_lessons: Optional[Union[Json, dict]] = {}
+	video_lessons: Optional[Union[Json, dict, list]] = {}
+	competition_direction: Set[Union[Tuple[str, int], CompetitionDirection]] = []
 
 	class Config:
 		orm_mode = True
@@ -196,9 +201,9 @@ class Direction(BaseModel):
 
 class CompetitionDirection(BaseModel):
 	directions: Union[str, Direction, None] = None
-	questions: Optional[None] = None
 	competition: Union[int, Competition, None] = None
 	direction_experts: Set[Union[int, DirectionExpert]] = []
+	tasks: Set[Union[int, Task]] = []
 
 	class Config:
 		orm_mode = True
@@ -211,6 +216,8 @@ class Task(BaseModel):
 	description: Optional[str] = ''
 	start: Optional[datetime] = None
 	end: Optional[datetime] = None
+	criterions: Set[Union[int, Criterion]] = []
+	user_works: Set[Union[Tuple[int, int], UserWork]] = []
 
 
 	@validator("start", pre=True, always=True)
@@ -232,6 +239,7 @@ class UserWork(BaseModel):
 	mark_works: Set[Union[Tuple[int, int, int], MarkWork]] = []
 	user: Union[int, User, None] = None
 	upload_date: Optional[datetime] = None
+	mark: Optional[str] = ''
 
 
 	@validator("upload_date", pre=True, always=True)
@@ -296,7 +304,7 @@ class Question(BaseModel):
 
 class SimpleEntity(BaseModel):
 	key: Optional[str] = None
-	data: Optional[Union[Json, dict]] = {}
+	data: Optional[Union[Json, dict, list]] = {}
 
 	class Config:
 		orm_mode = True

@@ -15,21 +15,21 @@ from datetime import date, datetime, time
 
 from app.pydantic_models.standart_methhods_redefinition import BaseModel, as_form
 from app.pydantic_models.standart_methhods_redefinition import PydanticValidators
-from app.pydantic_models.gen.input_ent import Human
-from app.pydantic_models.gen.input_ent import Smm
-from app.pydantic_models.gen.input_ent import News
-from app.pydantic_models.gen.input_ent import Competition
+from app.pydantic_models.gen.input_ent import Task
+from app.pydantic_models.gen.input_ent import MarkWork
 from app.pydantic_models.gen.input_ent import DirectionExpert
+from app.pydantic_models.gen.input_ent import SimpleEntity
+from app.pydantic_models.gen.input_ent import Smm
+from app.pydantic_models.gen.input_ent import CompetitionDirection
+from app.pydantic_models.gen.input_ent import Human
+from app.pydantic_models.gen.input_ent import User
+from app.pydantic_models.gen.input_ent import News
+from app.pydantic_models.gen.input_ent import Direction
+from app.pydantic_models.gen.input_ent import Criterion
+from app.pydantic_models.gen.input_ent import Page
+from app.pydantic_models.gen.input_ent import Competition
 from app.pydantic_models.gen.input_ent import Question
 from app.pydantic_models.gen.input_ent import UserWork
-from app.pydantic_models.gen.input_ent import SimpleEntity
-from app.pydantic_models.gen.input_ent import Task
-from app.pydantic_models.gen.input_ent import Page
-from app.pydantic_models.gen.input_ent import Direction
-from app.pydantic_models.gen.input_ent import User
-from app.pydantic_models.gen.input_ent import Criterion
-from app.pydantic_models.gen.input_ent import CompetitionDirection
-from app.pydantic_models.gen.input_ent import MarkWork
 from app.settings.config import HOME_DIR
 
 
@@ -41,7 +41,7 @@ HumanContacts = ForwardRef("HumanContacts")
 
 class Admin(BaseModel):
 	username: str
-	password: Optional[None] = None
+	password: Optional[str] = None
 	name: str
 	surname: str
 	email: str
@@ -49,7 +49,7 @@ class Admin(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict]] = {}
+	scopes: Optional[Union[Json, dict, list]] = {}
 	questions: Set[Union[int, Question]] = []
 
 	class Config:
@@ -58,7 +58,7 @@ class Admin(BaseModel):
 
 class Developer(BaseModel):
 	username: str
-	password: Optional[None] = None
+	password: Optional[str] = None
 	name: str
 	surname: str
 	email: str
@@ -66,7 +66,7 @@ class Developer(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict]] = {}
+	scopes: Optional[Union[Json, dict, list]] = {}
 	questions: Set[Union[int, Question]] = []
 
 	class Config:

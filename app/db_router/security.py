@@ -55,6 +55,8 @@ def get_current_human_for_db(
             raise credentials_exception
         if (human := m.Human.get(username=token_data.username)) is None:
             raise credentials_exception
+        print('roles from db', human.scopes)
+        print('roles from token', token_data.scopes)
         human: pd.Human = getattr(pd, human.__class__.__name__).from_pony_orm(human)
         human.scopes = list(set(token_data.scopes) & set(human.scopes))
         return human

@@ -2,9 +2,10 @@ from functools import reduce
 
 # =======! Правила изменения типа pony-атрибутов !=======
 change_attr_type_rules = {
-    "Json": "Union[Json, dict]",
+    "Json": "Union[Json, dict, list]",
     "time": "time",
-    "datetime": "datetime"
+    "datetime": "datetime",
+    None: "str"
 }
 change_attr_type = {
     lambda i, db: i.param_type in change_attr_type_rules:
