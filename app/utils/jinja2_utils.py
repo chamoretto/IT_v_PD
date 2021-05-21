@@ -111,7 +111,7 @@ class MyJinja2Templates:
         params['access_mode'] = params.get('access_mode') or "look"
         if type(params['access']) == str:
             params['access'] = [params['access']]
-        params['access'] += ['self']
+        # params['access'] += ['self']
 
 
         [params.update(val()) for key, val in includes.items() if params.get(key)]

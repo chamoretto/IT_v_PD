@@ -19,6 +19,9 @@
    {% for a in access %}
        {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
     {% endfor %}
+    <p>{{ns.good_modes}}</p>
+    <p>{{access}}</p>
+    <p>{{access_mode}}</p>
    {% if access_mode in ns.good_modes %}
       {% if (developer is defined and developer.id != Undefined) or developer is not defined %}
 <div class="margin-bottom-sm">
@@ -35,6 +38,9 @@
    {% for a in access %}
        {% set ns.good_modes = ns.good_modes + access_dict.get(a, []) %}
     {% endfor %}
+    <p>{{ns.good_modes}}</p>
+    <p>{{access}}</p>
+    <p>{{access_mode}}</p>
    {% if access_mode in ns.good_modes %}
       {% if (developer is defined and developer.username != Undefined) or developer is not defined %}
 <div class="margin-bottom-sm">

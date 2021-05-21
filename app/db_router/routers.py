@@ -69,16 +69,10 @@ def entity_screen(request: Request,
 def entity_screen(request: Request,
                   human=Security(get_current_human_for_db),
                   class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")):
-    print("---ESMg mf k")
-    if class_entity_name.value not in m.db.entities and type(m.db.entities[class_entity_name.value]) == m.db.Entity:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Такая Сущность в базе данных не найдена...",
-            headers={"WWW-Authenticate": 'Bearer Basic realm="Restricted Area"'},
-        )
 
     return db_templates.TemplateResponse(f"{class_entity_name.value}_form.html", {
-        "request": request, 'access_mode': 'create',
+        "request": request,
+        'access_mode': str(AccessMode.CREATE),
         "access": human.scopes
     })
 
@@ -148,9 +142,10 @@ def edit_entity(
     class_entity = m.db.entities[name]
     if class_entity.exists(**dict(ent_model)):
         entity = class_entity.get(**dict(ent_model))
-        pd_entity = getattr(out_pd, name).from_pony_orm(entity)
+        pd_entity = get_pd_class(name, human.scopes, AccessMode.EDIT).from_pony_orm(entity)
         return db_templates.TemplateResponse(
-            f"{name}_form.html", {"request": request, name.lower(): pd_entity,
+            f"{name}_form.html", {"request": request,
+                                  name.lower(): pd_entity,
                                   "action_url": f"/db/{name}/edit/save?{entity.key_as_part_query()}",
                                   "send_method": "POST",
                                   'access_mode': 'edit',
