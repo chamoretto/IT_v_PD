@@ -91,10 +91,7 @@ def create_entity(request: Request,
                   class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")
                   ):
     name = class_entity_name.value
-    # print(new_ent_data)
-    model = get_pd_class(name, human.scopes, AccessMode.CREATE)
-    print('==-$$$$-------', type(model), model, model.__bases__)
-    new_ent_data = model(**new_ent_data)
+    new_ent_data = get_pd_class(name, human.scopes, AccessMode.CREATE)(**new_ent_data)
     ent = m.db.entities[name]
     try:
         data = dict(getattr(pk_pd, name)(**dict(new_ent_data)))
@@ -137,6 +134,7 @@ def create_entity(request: Request,
 @db_session
 def edit_entity(
         request: Request,
+        human=Security(get_current_human_for_db),
         ent_model: dict[str, Any] = Body(
             ...,
             title="словарь, однозначно определяющий объект в БД, через задание всех primaryKey"
@@ -155,7 +153,9 @@ def edit_entity(
             f"{name}_form.html", {"request": request, name.lower(): pd_entity,
                                   "action_url": f"/db/{name}/edit/save?{entity.key_as_part_query()}",
                                   "send_method": "POST",
-                                  'access_mode': 'edit'})
+                                  'access_mode': 'edit',
+                                  "access": human.scopes
+                                  })
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Сущность для редактирования в базе данных не найдена..."
@@ -166,14 +166,20 @@ def edit_entity(
 @db_session
 def save_edited_entity(
         request: Request,
+        human=Security(get_current_human_for_db),
         new_ent_data: dict[str, Any] = Body(..., title="данные, которые требуется изменить в объектк базы данных"),
         class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")
 ):
-    print("query", dict(request.query_params))
+    # print("query", dict(request.query_params))
+    print(human.scopes)
     name = class_entity_name.value
     class_entity = m.db.entities[name]
     old_ent_model = getattr(only_pk, name)(**request.query_params)
-    new_ent_data = getattr(op_pd, name)(**new_ent_data)
+    # new_ent_data = getattr(op_pd, name)(**new_ent_data)
+    model = get_pd_class(name, human.scopes, AccessMode.EDIT)
+    print(model)
+    print(model.__fields__)
+    new_ent_data=    model(**new_ent_data)
     print(new_ent_data.dict(exclude_unset=True))
     if class_entity.exists(**old_ent_model.dict(exclude_unset=True)):
         entity = class_entity.get(**old_ent_model.dict(exclude_unset=True))
@@ -184,7 +190,7 @@ def save_edited_entity(
                 {"answer_for_user": "Объект базыданных отредактирован успешно!",
                  "type": "success edit"}, status_code=201)
         except IntegrityError as e:
-            print(e)
+            print("Ошибка в save_edited_entity", __file__, e)
             if str(e).startswith("UNIQUE constraint failed:"):
                 param = str(e).split()[-1].strip('.')[-1]
                 return JSONResponse({"answer_for_user": "следующие поля уже существуют",
@@ -207,6 +213,7 @@ def save_edited_entity(
 @db_session
 def look_entity(
         request: Request,
+        human=Security(get_current_human_for_db),
         ent_model: dict[str, Any] = Body(
             ...,
             title="словарь, однозначно определяющий объект в БД, через задание всех primaryKey"
@@ -223,9 +230,12 @@ def look_entity(
         pd_entity = getattr(out_pd, name).from_pony_orm(entity)
         return db_templates.TemplateResponse(
             f"{name}_form.html", {"request": request, name.lower(): pd_entity,
-                                  "action_url": f"/db/{name}/look/",
-                                  "send_method": "POST",
-                                  "disabled": True, 'access_mode': 'look'})
+                                  # "action_url": f"/db/{name}/look/",
+                                  # "send_method": "POST",
+                                  # "disabled": True,
+                                  'access_mode': 'look',
+                                  "access": human.scopes,
+                                  })
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Сущность для редактирования в базе данных не найдена..."
@@ -236,6 +246,7 @@ def look_entity(
 @db_session
 def delete_entity(
         request: Request,
+        human=Security(get_current_human_for_db),
         ent_model: dict[str, Any] = Body(
             ...,
             title="словарь, однозначно определяющий объект в БД, через задание всех primaryKey"

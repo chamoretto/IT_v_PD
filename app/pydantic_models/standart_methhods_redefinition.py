@@ -7,10 +7,11 @@ from pydantic.fields import ModelField
 from pydantic import BaseModel, BaseConfig, ConfigError
 from pydantic.utils import is_valid_field
 from pydantic.main import inherit_config
+from fastapi import HTTPException, status
+
 import enum
 from importlib import import_module
 import inspect
-
 
 DictStrAny = dict[str, Any]
 Model = TypeVar('Model', bound='BaseModel')
@@ -119,7 +120,6 @@ def create_model(
         __validators__: Dict[str, classmethod] = None,
         **field_definitions: Any,
 ) -> Type['Model']:
-
     """
     Dynamically create a model.
     :param __model_name: name of the created model
@@ -180,6 +180,8 @@ def create_model(
 _roles = [i.value for i in AccessType]
 _modes = [i.value for i in AccessMode]
 _access_level = [(str(role), str(mode)) for role in _roles for mode in _modes]
+
+
 # print(_access_level)
 
 
@@ -194,8 +196,14 @@ def get_pd_class(ent_name: str,
             roles: str = roles[0]
         if type(modes) not in [str, AccessMode]:
             modes: str = modes[0]
-        return getattr(import_module(f"app.pydantic_models.gen.{roles}.{roles}_{modes}"), ent_name)
-
+        model = getattr(import_module(f"app.pydantic_models.gen.{roles}.{roles}_{modes}"), ent_name)
+        if f"{roles}_{modes}.py" in inspect.getfile(model):
+            return model
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Вы не обладаете домтаточными правами доступа для совершения данного действия",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     if type(roles) in [str, AccessType]:
         roles: list[str] = [roles]
     if type(modes) in [str, AccessMode]:
@@ -211,8 +219,13 @@ def get_pd_class(ent_name: str,
         except (ImportError, AttributeError, AssertionError) as e:
             print(f"ошибка при импорте модуля {role}_{mode}, {ent_name}", __file__, e)
     # print(bases)
-    return create_model('ModelForDb', __base__=bases)
-
+    if bool(bases):
+        return create_model('ModelForDb', __base__=bases)
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Вы не обладаете домтаточными правами доступа для совершения данного действия",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
 
 # from app.pydantic_models import gen
 
