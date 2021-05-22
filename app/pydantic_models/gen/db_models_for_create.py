@@ -40,7 +40,7 @@ News = ForwardRef("News")
 
 
 class Human(BaseModel):
-	id: int
+	id: Optional[int] = None
 	username: str
 	name: str
 	surname: str
@@ -58,7 +58,7 @@ class Human(BaseModel):
 
 
 class Admin(BaseModel):
-	id: int
+	id: Optional[int] = None
 	username: str
 	name: str
 	surname: str
@@ -76,7 +76,7 @@ class Admin(BaseModel):
 
 
 class User(BaseModel):
-	id: int
+	id: Optional[int] = None
 	username: str
 	name: str
 	surname: str
@@ -99,7 +99,7 @@ class User(BaseModel):
 
 
 class Smm(BaseModel):
-	id: int
+	id: Optional[int] = None
 	username: str
 	name: str
 	surname: str
@@ -117,7 +117,7 @@ class Smm(BaseModel):
 
 
 class Developer(BaseModel):
-	id: int
+	id: Optional[int] = None
 	username: str
 	name: str
 	surname: str
@@ -148,7 +148,7 @@ class HumanContacts(BaseModel):
 
 
 class DirectionExpert(BaseModel):
-	id: int
+	id: Optional[int] = None
 	username: str
 	name: str
 	surname: str
@@ -167,7 +167,7 @@ class DirectionExpert(BaseModel):
 
 
 class Competition(BaseModel):
-	id: int
+	id: Optional[int] = None
 	name: str
 	start: datetime
 	end: datetime
@@ -210,7 +210,7 @@ class CompetitionDirection(BaseModel):
 
 
 class Task(BaseModel):
-	id: int
+	id: Optional[int] = None
 	competition_direction: Union[Tuple[str, int], CompetitionDirection]
 	task_document: Optional[str] = ''
 	description: Optional[str] = ''
@@ -251,7 +251,7 @@ class UserWork(BaseModel):
 
 
 class Criterion(BaseModel):
-	id: int
+	id: Optional[int] = None
 	task: Union[int, Task]
 	name: str
 	description: Optional[str] = ''
@@ -272,7 +272,7 @@ class MarkWork(BaseModel):
 
 
 class Page(BaseModel):
-	id: int
+	id: Optional[int] = None
 	page_url: Optional[str] = ''
 	page_path: Optional[str] = ''
 	is_header: bool = False
@@ -288,7 +288,7 @@ class Page(BaseModel):
 
 
 class Question(BaseModel):
-	id: int
+	id: Optional[int] = None
 	question_title: Optional[str] = ''
 	question: str
 	answer: Optional[str] = ''
@@ -303,7 +303,7 @@ class Question(BaseModel):
 
 
 class SimpleEntity(BaseModel):
-	key: str
+	key: Optional[str] = None
 	data: Optional[Union[Json, dict, list]] = []
 
 	class Config:
@@ -311,7 +311,7 @@ class SimpleEntity(BaseModel):
 
 
 class News(BaseModel):
-	id: int
+	id: Optional[int] = None
 	page_url: Optional[str] = ''
 	page_path: Optional[str] = ''
 	is_header: bool = False

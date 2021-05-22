@@ -82,7 +82,7 @@ _admin_shell: dict[str, PdUrl] = {
     "Добавить админа":  PdUrl(href="/admin/add_admin", is_ajax=True),
     "Добавить редактора":  PdUrl(href="/admin/add_smm", is_ajax=True),
     "Добавить эксперта по направлению":  PdUrl(href="/admin/add_expert", is_ajax=True),
-    "Добавить событие":  PdUrl(href="/admin/add_event", is_ajax=True),
+    "Добавить страницу":  PdUrl(href="/admin/add_event", is_ajax=True),
     "Написать новость": PdUrl(href="/admin/add_news", is_ajax=True),
     "Вопросы участников": PdUrl(href="/admin/look_question", is_ajax=True),
 }

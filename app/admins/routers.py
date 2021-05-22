@@ -101,6 +101,72 @@ def read_users_me(response: Response,
                  })
         })
 
+@admin.get("/add_expert")
+@db_session
+def read_users_me(response: Response,
+                  request: Request,
+                  current_user: pd_db.Human = Security(get_current_admin, scopes=["admin"])):
+    print(response)
+    return admin_templates.TemplateResponse(
+        "personal_page.html", {
+            "request": request,
+            "personal_data": db_templates.get_cooked_template(
+                "show_entity.html",
+                {"request": request,
+                 **m.DirectionExpert.get_entities_html(db_mode=False, access=["admin"]),
+                 })
+        })
+
+
+@admin.get("/add_event")
+@db_session
+def read_users_me(response: Response,
+                  request: Request,
+                  current_user: pd_db.Human = Security(get_current_admin, scopes=["admin"])):
+    print(response)
+    return admin_templates.TemplateResponse(
+        "personal_page.html", {
+            "request": request,
+            "personal_data": db_templates.get_cooked_template(
+                "show_entity.html",
+                {"request": request,
+                 **m.Page.get_entities_html(db_mode=False, access=["admin"]),
+                 })
+        })
+
+
+@admin.get("/add_news")
+@db_session
+def read_users_me(response: Response,
+                  request: Request,
+                  current_user: pd_db.Human = Security(get_current_admin, scopes=["admin"])):
+    print(response)
+    return admin_templates.TemplateResponse(
+        "personal_page.html", {
+            "request": request,
+            "personal_data": db_templates.get_cooked_template(
+                "show_entity.html",
+                {"request": request,
+                 **m.News.get_entities_html(db_mode=False, access=["admin"]),
+                 })
+        })
+
+
+@admin.get("/look_question")
+@db_session
+def read_users_me(response: Response,
+                  request: Request,
+                  current_user: pd_db.Human = Security(get_current_admin, scopes=["admin"])):
+    print(response)
+    return admin_templates.TemplateResponse(
+        "personal_page.html", {
+            "request": request,
+            "personal_data": db_templates.get_cooked_template(
+                "show_entity.html",
+                {"request": request,
+                 **m.Question.get_entities_html(db_mode=False, access=["admin"]),
+                 })
+        })
 
 
 @admin.get("/me/items/")
