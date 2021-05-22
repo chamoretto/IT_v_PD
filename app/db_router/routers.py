@@ -1,6 +1,6 @@
 from typing import Any
 
-from fastapi import APIRouter, Security, Request, HTTPException, status, Path, Body
+from fastapi import APIRouter, Security, Request, status, Path, Body
 from fastapi.responses import JSONResponse
 from pony.orm import db_session, commit
 from pony.orm.dbapiprovider import IntegrityError
@@ -22,6 +22,8 @@ from app.developers.security import get_current_dev
 from app.utils.utils_of_security import get_password_hash
 from app.db_router.security import get_current_human_for_db
 from app.pydantic_models import gen as role_m
+from app.utils.exceptions import ChildHTTPException as HTTPException
+
 
 db_route = APIRouter(
     # route_class=TimedRoute,
@@ -54,6 +56,7 @@ def entity_screen(request: Request,
     # print("---ESMg mf k", x_part)
     if entity.value not in m.db.entities and type(m.db.entities[entity.value]) == m.db.Entity:
         raise HTTPException(
+            request=request,
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Такая Сущность в базе данных не найдена...",
             headers={"WWW-Authenticate": 'Bearer Basic realm="Restricted Area"'},
@@ -87,7 +90,7 @@ def create_entity(request: Request,
                   class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")
                   ):
     name = class_entity_name.value
-    new_ent_data = get_pd_class(name, human.scopes, AccessMode.CREATE)(**new_ent_data)
+    new_ent_data = get_pd_class(name, request, human.scopes, AccessMode.CREATE)(**new_ent_data)
     ent = m.db.entities[name]
     try:
         data = dict(getattr(pk_pd, name)(**dict(new_ent_data)))
@@ -144,7 +147,7 @@ def edit_entity(
     class_entity = m.db.entities[name]
     if class_entity.exists(**dict(ent_model)):
         entity = class_entity.get(**dict(ent_model))
-        pd_entity = get_pd_class(name, human.scopes, AccessMode.EDIT).from_pony_orm(entity)
+        pd_entity = get_pd_class(name, request, human.scopes, AccessMode.EDIT).from_pony_orm(entity)
         if getattr(only_pk, name)(**human.dict()).dict() == ent_model.dict():
             human.scopes += [AccessType.SELF]
         return db_templates.TemplateResponse(
@@ -156,6 +159,7 @@ def edit_entity(
                                   "access": human.scopes
                                   })
     raise HTTPException(
+        request=request,
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Сущность для редактирования в базе данных не найдена..."
     )
@@ -175,7 +179,7 @@ def save_edited_entity(
     class_entity = m.db.entities[name]
     old_ent_model = getattr(only_pk, name)(**request.query_params)
     # new_ent_data = getattr(op_pd, name)(**new_ent_data)
-    model = get_pd_class(name, human.scopes, AccessMode.EDIT)
+    model = get_pd_class(name, request, human.scopes, AccessMode.EDIT)
     print(model)
     print(model.__fields__)
     new_ent_data = model(**new_ent_data)
@@ -203,6 +207,7 @@ def save_edited_entity(
                  "type": "fields_create_entity"}, status_code=400)
 
     raise HTTPException(
+        request=request,
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Сущность для редактирования в базе данных не найдена..."
     )
@@ -236,6 +241,7 @@ def look_entity(
                                   "access": human.scopes,
                                   })
     raise HTTPException(
+        request=request,
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Сущность для редактирования в базе данных не найдена..."
     )
@@ -262,6 +268,8 @@ def delete_entity(
         entity.delete()
         return {"redirect": ""}
     raise HTTPException(
+        request=request,
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Сущность для редактирования в базе данных не найдена..."
+
     )

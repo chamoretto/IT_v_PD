@@ -57,6 +57,10 @@ class _MyTemplateResponse(Response):
 
 
 _public_teamplate = Jinja2Templates("content/templates/public_temp")
+layout_env = Jinja2Templates("content/templates/layout")
+_skeleton_template = layout_env.get_template("skeleton.html")
+_alert_template = layout_env.get_template("alert.html")
+_admin_shell_template = layout_env.get_template("admin_shell.html")
 
 
 # event_box_template = _public_teamplate.get_template("/events_box.html")
@@ -72,17 +76,18 @@ includes = {
     "events": _get_event_box_params
 }
 
-_developer_shell: dict[str, PdUrl] = {"Управление БД": PdUrl(href="/db", is_ajax=True),
-                    "Мой профиль": PdUrl(href="/dev/me", is_ajax=True),
-                    "Скачать логи": PdUrl(href="/dev/logs"),
-                    "Выключить сайт": PdUrl(href="/dev/stop_server", is_ajax=True),
-                    }
+_developer_shell: dict[str, PdUrl] = {
+    "Управление БД": PdUrl(href="/db", is_ajax=True),
+    "Мой профиль": PdUrl(href="/dev/me", is_ajax=True),
+    "Скачать логи": PdUrl(href="/dev/logs"),
+    "Выключить сайт": PdUrl(href="/dev/stop_server", is_ajax=True),
+}
 _admin_shell: dict[str, PdUrl] = {
     "Мой профиль": PdUrl(href="/admin/me", is_ajax=True),
-    "Добавить админа":  PdUrl(href="/admin/add_admin", is_ajax=True),
-    "Добавить редактора":  PdUrl(href="/admin/add_smm", is_ajax=True),
-    "Добавить эксперта по направлению":  PdUrl(href="/admin/add_expert", is_ajax=True),
-    "Добавить страницу":  PdUrl(href="/admin/add_event", is_ajax=True),
+    "Добавить админа": PdUrl(href="/admin/add_admin", is_ajax=True),
+    "Добавить редактора": PdUrl(href="/admin/add_smm", is_ajax=True),
+    "Добавить эксперта по направлению": PdUrl(href="/admin/add_expert", is_ajax=True),
+    "Добавить страницу": PdUrl(href="/admin/add_event", is_ajax=True),
     "Написать новость": PdUrl(href="/admin/add_news", is_ajax=True),
     "Вопросы участников": PdUrl(href="/admin/look_question", is_ajax=True),
 }
@@ -128,17 +133,17 @@ class MyJinja2Templates:
     def _params_addition(self, params: dict):
         if "request" not in params:
             raise ValueError('context must include a "request" key')
-
+        print('Есть ли человек в request-е', hasattr(params["request"], "current_human"))
         if hasattr(params["request"], "current_human"):
             human = getattr(params["request"], "current_human")
             params['access'] = params.get('access') or human.scopes or self.access or [AccessType.PUBLIC]
             params['access_mode'] = params.get('access_mode', "")
-            params['admin_shell'] = params.get('admin_shell') or _all_shells.get(human.__class__.__name__) or self.admin_shell
+            params['admin_shell'] = params.get('admin_shell') or _all_shells.get(
+                human.__class__.__name__) or self.admin_shell
         else:
             params['access'] = params.get('access') or self.access or [AccessType.PUBLIC]
             params['access_mode'] = params.get('access_mode', "")
             params['admin_shell'] = params.get('admin_shell', self.admin_shell)
-
 
             # params['access_mode'] = params.get('access_mode') or AccessMode.LOOK
         if type(params['access']) == str:
@@ -146,10 +151,6 @@ class MyJinja2Templates:
         # params['access'] += ['self']
         params['access'] = [str(i) for i in params['access']]
         params['access_mode'] = str(params['access_mode'])
-
-
-        # [params.update(val()) for key, val in includes.items() if params.get(key)]
-
 
         return params
 
@@ -164,13 +165,16 @@ class MyJinja2Templates:
             only_part: bool = False
     ) -> Union[_MyTemplateResponse, JSONResponse]:
 
-        local_context = self._params_addition(local_context)
+        template_response_params = dict(
+            status_code=status_code,
+            headers=headers,
+            media_type=media_type,
+            background=background
+        )
 
+        local_context = self._params_addition(local_context)
+        skeleton_template = _skeleton_template
         template = self.get_template(name)
-        layout_env = self.get_env("content/templates/layout")
-        skeleton_template = layout_env.get_template("skeleton.html")
-        alert_template = layout_env.get_template("alert.html")
-        admin_shell_template = layout_env.get_template("admin_shell.html")
 
         if dict(local_context['request'].headers).get("x-part") == "basic-content":
 
@@ -178,18 +182,14 @@ class MyJinja2Templates:
                 basic_data = {"request": local_context['request']}
                 response_data = dict(
                     basic_data=basic_data,
-                    alert=alert_template.render(basic_data | {"alert": local_context.pop('alert', None)}),
-                    admin_shell=admin_shell_template.render(basic_data | {"pages": local_context['admin_shell']}),
+                    alert=_alert_template.render(basic_data | {"alert": local_context.pop('alert', None)}),
+                    admin_shell=_admin_shell_template.render(basic_data | {"pages": local_context['admin_shell']}),
                     main=template.render(local_context),
                 )
                 response_data = {key: val for key, val in response_data.items() if val is not None and bool(val)}
-                print(*basic_data.items(), sep='\n')
                 return JSONResponse(
-                    code_to_resp[status_code](**response_data).dict(),
-                    status_code=status_code,
-                    headers=headers,
-                    media_type=media_type,
-                    background=background)
+                    code_to_resp[status_code](**response_data).dict(), **template_response_params
+                )
             context = local_context | {
                 "response_status_code": status_code,
             }
@@ -203,14 +203,14 @@ class MyJinja2Templates:
             # print(admin_shell_context)
             with db_session:
                 context = dict(
-                    alert=alert_template if local_context.get('alert') else None,
+                    alert=_alert_template if local_context.get('alert') else None,
                     alert_context=dict(alert=local_context.pop('alert', None)),
                     current_page=template,
                     current_page_context=local_context,
-                    admin_shell=admin_shell_template,
+                    admin_shell=_admin_shell_template,
                     admin_shell_context=admin_shell_context,
                     request=local_context['request'],
-                    header=[SitePageMenu(name=i) for i in ["Новатор_WEB", "События", "Новости", "Результы"]],
+                    # header=[SitePageMenu(name=i) for i in ["Новатор_WEB", "События", "Новости", "Результы"]],
                     title=local_context.get('title', None),
                     response_status_code=status_code,
                     current_method="POST",
@@ -222,10 +222,7 @@ class MyJinja2Templates:
         return _MyTemplateResponse(
             skeleton_template,
             context,
-            status_code=status_code,
-            headers=headers,
-            media_type=media_type,
-            background=background,
+            **template_response_params,
         )
 
 
@@ -237,4 +234,4 @@ public_templates = MyJinja2Templates(directory="content/templates/public_temp")
 developer_templates = MyJinja2Templates(directory="content/templates/developers", admin_shell=_developer_shell,
                                         access=['dev'])
 admin_templates = MyJinja2Templates(directory="content/templates/admins", admin_shell=_admin_shell,
-                                        access=['admin'])
+                                    access=['admin'])

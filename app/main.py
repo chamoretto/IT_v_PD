@@ -6,7 +6,7 @@ import uvicorn
 from fastapi.responses import FileResponse
 from fastapi.responses import HTMLResponse
 
-from fastapi import FastAPI, Request, HTTPException, Query, status
+from fastapi import FastAPI, Request, Query, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -33,6 +33,7 @@ from app.db_router.routers import db_route
 from app.pydantic_models.standart_methhods_redefinition import BaseModel
 from app.db import models as m
 from app.utils.jinja2_utils import public_templates
+from app.utils.exceptions import ChildHTTPException as HTTPException
 
 
 app = FastAPI()
@@ -90,10 +91,11 @@ async def root():
 def custom_http_exception_handler(request: Request, exc: HTTPException):
     try:
         if exc.status_code == 401:
+            print(request.__dict__)
             return error_templates.TemplateResponse(
                 "401.html",
                 {
-                    "request": request,
+                    "request": (exc.burning_request if hasattr(exc, "burning_request") else request),
                     "current_url": request.url,
                     "current_method": request.method,
                     "alert": Alert("Вы не обладаете достаточными правами для просмотра этой страницы!"
@@ -104,7 +106,7 @@ def custom_http_exception_handler(request: Request, exc: HTTPException):
 
         elif exc.status_code == 404:
             return error_templates.TemplateResponse("404.html", {
-                "request": request,
+                "request": (exc.burning_request if hasattr(exc, "burning_request") else request),
                 "detail": exc.detail,
                 "alert": Alert("Похоже данной страницы не существует...", Alert.ERROR)})
         return JSONResponse(
@@ -117,21 +119,6 @@ def custom_http_exception_handler(request: Request, exc: HTTPException):
             status_code=exc.status_code,
             content={"message": f"Oops! did something. There goes a rainbow..."},
         )
-
-
-class TestQuery(BaseModel):
-    a: int
-    b: int
-
-
-@app.get("/t")
-async def root(request: Request, item: TestQuery = None):
-    print([request.query_params.items()], item)
-    print([request.body()], item)
-    return {"message": "Hello Bigger Applications!"}
-
-
-
 
 
 if __name__ == "__main__":

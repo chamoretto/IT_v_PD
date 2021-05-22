@@ -2,16 +2,19 @@ import inspect
 from typing import Type, Union, Dict, Any, cast, TypeVar
 import warnings
 
-from fastapi import Form
+from fastapi import Form, Request
 from pydantic.fields import ModelField
 from pydantic import BaseModel, BaseConfig, ConfigError
 from pydantic.utils import is_valid_field
 from pydantic.main import inherit_config
-from fastapi import HTTPException, status
+from fastapi import status
 
 import enum
 from importlib import import_module
 import inspect
+
+from app.utils.exceptions import ChildHTTPException as HTTPException
+
 
 DictStrAny = dict[str, Any]
 Model = TypeVar('Model', bound='BaseModel')
@@ -185,7 +188,7 @@ _access_level = [(str(role), str(mode)) for role in _roles for mode in _modes]
 # print(_access_level)
 
 
-def get_pd_class(ent_name: str,
+def get_pd_class(ent_name: str, request: Request,
                  roles: Union[AccessType, str, list[Union[AccessType, str]]],
                  modes: Union[AccessMode, str, list[Union[AccessMode, str]]]
                  ) -> Type[BaseModel]:
@@ -200,6 +203,7 @@ def get_pd_class(ent_name: str,
         if f"{roles}_{modes}.py" in inspect.getfile(model):
             return model
         raise HTTPException(
+            request=request,
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Вы не обладаете домтаточными правами доступа для совершения данного действия",
             headers={"WWW-Authenticate": "Bearer"},
@@ -222,6 +226,7 @@ def get_pd_class(ent_name: str,
     if bool(bases):
         return create_model('ModelForDb', __base__=bases)
     raise HTTPException(
+        request=request,
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Вы не обладаете домтаточными правами доступа для совершения данного действия",
         headers={"WWW-Authenticate": "Bearer"},

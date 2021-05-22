@@ -9,25 +9,6 @@ from app.db import models as m
 from app.pydantic_models.gen import db_models as pd_db
 
 
-
-# class TimedRoute(APIRoute):
-#     def get_route_handler(self) -> Callable:
-#         original_route_handler = super().get_route_handler()
-#
-#         async def custom_route_handler(request: Request) -> Response:
-#             before = time.time()
-#             response: Response = await original_route_handler(request)
-#             duration = time.time() - before
-#             response.headers["X-Response-Time"] = str(duration)
-#             print(f"route duration: {duration}")
-#             print(f"route response: {response}")
-#             print(f"------------------------route response headers: {response.headers}")
-#             print(response.body)
-#             return response
-#
-#         return custom_route_handler
-
-
 admin = APIRouter(
     # route_class=TimedRoute,
     prefix="/admin",
@@ -39,12 +20,6 @@ admin = APIRouter(
     responses={404: {"description": "Not found------"},
                401: {"description": "Пользователь не был авторизировани"}},
 )
-
-
-@admin.get('/test')
-@db_session
-async def start_admin():
-    return {1: 1}
 
 
 @admin.get("/me")
@@ -64,7 +39,7 @@ def read_users_me(response: Response,
                                         # "send_method": "POST",
                                         # "disabled": True,
                                         'access_mode': 'look',
-                                        "db_mode": False})
+                                        "db_mode": False,})
         })
 
 
@@ -80,7 +55,7 @@ def read_users_me(response: Response,
             "personal_data": db_templates.get_cooked_template(
                 "show_entity.html",
                 {"request": request,
-                 **m.Admin.get_entities_html(db_mode=False, access=["admin"]),
+                 **m.Admin.get_entities_html(db_mode=False, access=current_user.scopes),
                  })
         })
 
@@ -97,9 +72,10 @@ def read_users_me(response: Response,
             "personal_data": db_templates.get_cooked_template(
                 "show_entity.html",
                 {"request": request,
-                 **m.Smm.get_entities_html(db_mode=False, access=["admin"]),
+                 **m.Smm.get_entities_html(db_mode=False, access=current_user.scopes),
                  })
         })
+
 
 @admin.get("/add_expert")
 @db_session
@@ -113,7 +89,7 @@ def read_users_me(response: Response,
             "personal_data": db_templates.get_cooked_template(
                 "show_entity.html",
                 {"request": request,
-                 **m.DirectionExpert.get_entities_html(db_mode=False, access=["admin"]),
+                 **m.DirectionExpert.get_entities_html(db_mode=False, access=current_user.scopes),
                  })
         })
 
@@ -130,7 +106,7 @@ def read_users_me(response: Response,
             "personal_data": db_templates.get_cooked_template(
                 "show_entity.html",
                 {"request": request,
-                 **m.Page.get_entities_html(db_mode=False, access=["admin"]),
+                 **m.Page.get_entities_html(db_mode=False, access=current_user.scopes),
                  })
         })
 
@@ -147,7 +123,7 @@ def read_users_me(response: Response,
             "personal_data": db_templates.get_cooked_template(
                 "show_entity.html",
                 {"request": request,
-                 **m.News.get_entities_html(db_mode=False, access=["admin"]),
+                 **m.News.get_entities_html(db_mode=False, access=current_user.scopes),
                  })
         })
 
@@ -164,13 +140,7 @@ def read_users_me(response: Response,
             "personal_data": db_templates.get_cooked_template(
                 "show_entity.html",
                 {"request": request,
-                 **m.Question.get_entities_html(db_mode=False, access=["admin"]),
+                 **m.Question.get_entities_html(db_mode=False, access=current_user.scopes),
                  })
         })
-
-
-@admin.get("/me/items/")
-@db_session
-def read_own_items(current_user: pd_db.Human = Security(get_current_admin, scopes=["admin"])):
-    return {"item_id": "Foo", "owner": current_user.username}
 

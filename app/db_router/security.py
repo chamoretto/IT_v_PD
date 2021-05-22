@@ -4,7 +4,7 @@ from typing import Optional, List, Dict, Tuple, Union
 from pydantic import ValidationError
 from collections import defaultdict
 
-from fastapi import Depends, HTTPException, status, APIRouter, Request
+from fastapi import Depends, status, APIRouter, Request
 from jose import JWTError, jwt
 from pony.orm import db_session
 from fastapi.security import (
@@ -18,6 +18,7 @@ from app.settings.config import cfg
 from app.utils.pydantic_security import TokenData, HumanInDB, Token, BaseModel
 from app.utils.utils_of_security import oauth2_scheme, PassScopes, SECRET_KEY, ALGORITHM
 from app.pydantic_models.gen import db_models_for_create as pd
+from app.utils.exceptions import ChildHTTPException as HTTPException
 
 
 @db_session
@@ -41,6 +42,7 @@ def get_current_human_for_db(
         else:
             authenticate_value = f"Bearer"
         credentials_exception = HTTPException(
+            request=request,
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": authenticate_value},
@@ -68,6 +70,7 @@ def get_current_human_for_db(
     except Exception as e:
         print("Произошла ошибка в текущем пользователе!!! (бд роут)", [e])
         raise HTTPException(
+            request=request,
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},

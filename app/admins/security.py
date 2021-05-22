@@ -8,7 +8,7 @@ from app.utils.pydantic_security import *
 from app.settings.config import cfg
 from app.dependencies import *
 from app.db import models as m
-from app.utils.utils_of_security import generate_security, basic_login
+from app.utils.utils_of_security import generate_security, basic_login, scopes_to_db
 
 SECRET_KEY = cfg.get('keys', "admin")
 ACCESS_TOKEN_TIME = int(cfg.get('keys', "admin_time"))
@@ -32,9 +32,9 @@ admin = APIRouter(
 @db_session
 def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     if form_data.scopes:
-        form_data.scopes = set(form_data.scopes.extend(["admin", "smmer"]))
+        form_data.scopes = set(form_data.scopes.extend(scopes_to_db[m.Admin]))
     else:
-        form_data.scopes = ["admin", "smmer"]
+        form_data.scopes = scopes_to_db[m.Admin]
     return basic_login(form_data, access_token_time=ACCESS_TOKEN_TIME)
 
 

@@ -2,16 +2,18 @@ from fastapi import Request
 from fastapi.responses import HTMLResponse
 from pony.orm import db_session
 
-from fastapi import HTTPException, status, APIRouter
+from fastapi import status, APIRouter
 
 from app.dependencies import *
 from app.db import models as m
 from app.pydantic_models.gen import db_models_for_create as pd, output_ent as out_pd
 from app.pydantic_models import simple_entities as easy_ent_pd
 from app.utils.jinja2_utils import public_templates
+from app.utils.exceptions import ChildHTTPException as HTTPException
+
 
 public_router = APIRouter()
-error_404_Page = HTTPException(
+error_404_Page = dict(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Страниа не найдена",
     )
@@ -54,7 +56,7 @@ def get_public_pages(request: Request):
         return public_templates.TemplateResponse(ent.page_path, {
             "request": request,
             "directions": [out_pd.Direction.from_pony_orm(i) for i in m.Direction.select()[:]]})
-    raise error_404_Page
+    raise HTTPException(request=request, **error_404_Page)
 
 
 @public_router.get("/videostudy/{direction}")
@@ -66,7 +68,7 @@ def get_public_pages(request: Request, direction: str):
             "request": request,
             "direction": out_pd.Direction.from_pony_orm(ent)})
 
-    raise error_404_Page
+    raise HTTPException(request=request, **error_404_Page)
 
 
 
@@ -78,7 +80,7 @@ def get_public_pages(request: Request, event: str):
         return public_templates.TemplateResponse(ent.page_path, {
             "request": request})
 
-    raise error_404_Page
+    raise HTTPException(request=request, **error_404_Page)
 
 
 @public_router.get("/news")
@@ -89,7 +91,7 @@ def get_public_pages(request: Request):
         return public_templates.TemplateResponse(ent.page_path, {
             "request": request,
             "news": [out_pd.News.from_pony_orm(i) for i in m.News.select()[:]]})
-    raise error_404_Page
+    raise HTTPException(request=request, **error_404_Page)
 
 
 @public_router.get("/news/{post}")
@@ -103,7 +105,7 @@ def get_public_pages(request: Request, post: str):
             "post": out_pd.News.from_pony_orm(ent)
         })
 
-    raise error_404_Page
+    raise HTTPException(request=request, **error_404_Page)
 
 
 @public_router.get("/about_program")
@@ -112,7 +114,7 @@ def get_public_pages(request: Request):
     if (ent := m.Page.get(page_url="/about_program")) or (ent := m.Page.get(page_url="about_program")):
         return public_templates.TemplateResponse(ent.page_path, {
             "request": request})
-    raise error_404_Page
+    raise HTTPException(request=request, **error_404_Page)
 
 
 # @public_router.get("/competition")
@@ -122,7 +124,7 @@ def get_public_pages(request: Request):
 #         return public_templates.TemplateResponse(ent.page_path, {
 #             "request": request,
 #             "directions": [out_pd.Direction.from_pony_orm(i) for i in m.Direction.select()[:]]})
-#     raise error_404_Page
+#     raise HTTPException(request=request, **error_404_Page)
 #
 #
 # @public_router.get("/competition/{direction}")
@@ -133,7 +135,7 @@ def get_public_pages(request: Request):
 #             "request": request,
 #             "direction": out_pd.Direction.from_pony_orm(ent)})
 #
-#     raise error_404_Page
+#     raise HTTPException(request=request, **error_404_Page)
 
 # @public_router.get("/{file_path:path}")
 # @db_session
@@ -151,4 +153,4 @@ def get_public_pages(request: Request):
 #     print(ent)
 #     if ent:
 #         return public_templates.TemplateResponse(ent.page_path, {"request": request})
-#     raise error_404_Page
+#     raise HTTPException(request=request, **error_404_Page)

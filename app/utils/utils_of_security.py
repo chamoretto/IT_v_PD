@@ -4,7 +4,7 @@ from typing import Optional, List, Dict, Tuple, Union
 from pydantic import ValidationError
 from collections import defaultdict
 
-from fastapi import Depends, HTTPException, status, APIRouter, Request
+from fastapi import Depends, status, APIRouter, Request
 from jose import JWTError, jwt
 from pony.orm import db_session
 from fastapi.security import (
@@ -12,12 +12,14 @@ from fastapi.security import (
     OAuth2PasswordRequestForm,
     SecurityScopes,
 )
-from app.db import models as m
 
+from app.db import models as m
 from app.settings.config import cfg
 from app.utils.pydantic_security import TokenData, HumanInDB, Token, BaseModel
 from app.pydantic_models.standart_methhods_redefinition import AccessType, AccessMode
 from app.pydantic_models.gen import db_models as pd_db
+from app.utils.exceptions import ChildHTTPException as HTTPException
+
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 ALGORITHM = cfg.get('db', "hash_algorithm")
@@ -105,7 +107,7 @@ def generate_security(entity, getter_human=None):
     def _getter_human(username: str) -> Optional[pd_db.Human]:
         if m.Human.exists(username=username):
             human_db = m.Human.get(username=username)
-            return pd_db.Human.from_pony_orm(human_db)
+            return getattr(pd_db, human_db.__class__.__name__).from_pony_orm(human_db)
 
     def authenticate_human(username: str, password: str):
 
@@ -133,6 +135,7 @@ def generate_security(entity, getter_human=None):
             else:
                 authenticate_value = f"Bearer"
             credentials_exception = HTTPException(
+                request=request,
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Could not validate credentials",
                 headers={"WWW-Authenticate": authenticate_value},
@@ -154,6 +157,7 @@ def generate_security(entity, getter_human=None):
             for scope in security_scopes.scopes:
                 if scope not in token_data.scopes:
                     raise HTTPException(
+                        request=request,
                         status_code=status.HTTP_401_UNAUTHORIZED,
                         detail="Not enough permissions",
                         headers={"WWW-Authenticate": authenticate_value},
@@ -166,6 +170,7 @@ def generate_security(entity, getter_human=None):
         except Exception as e:
             print("Произошла ошибка в текущем пользователе!!!", [e], __file__)
             raise HTTPException(
+                request=request,
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Could not validate credentials",
                 headers={"WWW-Authenticate": "Bearer"},
@@ -208,6 +213,7 @@ def check_scopes(username: str, password: str, scopes: List[str]) \
 @db_session
 def basic_login(form_data: OAuth2PasswordRequestForm = Depends(), access_token_time=0):
     error = HTTPException(
+        request=None,
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Incorrect username or password",
         headers={"WWW-Authenticate": 'Bearer Basic realm="Restricted Area"'},
