@@ -7,7 +7,8 @@ function urls_as_ajax(){
     *
     * */
 
-    $('a[href].url_as_ajax').not('a[href^=http]').not('a[href="#"]').not('a[href="*"]').click((event) => {
+    $('a[href].url_as_ajax').not('a[href^=http]').not('a[href="#"]').not('a[href="*"]').off(
+    "click.ajax_url_click").on({'click.ajax_url_click': (event) => {
         event.preventDefault();
         let target = $(event.target);
         if (!target.attr("href")){
@@ -39,8 +40,8 @@ function urls_as_ajax(){
             );
         }
 
-    });
-    console.log('Ссылки перезаписаны на ajax')
+    }});
+    console.log('Ссылки перезаписаны на ajax');
 }
 
 // urls_as_ajax();

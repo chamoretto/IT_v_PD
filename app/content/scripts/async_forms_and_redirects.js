@@ -109,7 +109,7 @@ function send_form_as_ajax() {
     const token = localStorage.getItem('token')
     console.log('--------------------');
     console.log("Новоя асинхронность формы запущена");
-    $('[type=submit], #submit').click((event) => {
+    $('[type=submit], #submit').off("click.ajax_form_click").on({'click.ajax_form_click': (event) => {
         event.preventDefault();
         setTimeout(() => {
             const $current_form = $(event.target).parents("form");
@@ -145,7 +145,7 @@ function send_form_as_ajax() {
 
             send_ajax(action, method, authorization_response_processing, send_data, true, true, authorization)
         });
-    });
+    }});
 }
 
 
