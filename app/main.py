@@ -92,10 +92,12 @@ def custom_http_exception_handler(request: Request, exc: HTTPException):
     try:
         if exc.status_code == 401:
             print(request.__dict__)
+            if hasattr(exc, "burning_request") and hasattr(exc.burning_request, "__dict__"):
+                request.__dict__.update(exc.burning_request.__dict__)
             return error_templates.TemplateResponse(
                 "401.html",
                 {
-                    "request": (exc.burning_request if hasattr(exc, "burning_request") else request),
+                    "request": request,
                     "current_url": request.url,
                     "current_method": request.method,
                     "alert": Alert("Вы не обладаете достаточными правами для просмотра этой страницы!"

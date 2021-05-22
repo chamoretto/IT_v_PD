@@ -6,13 +6,15 @@ from app.pydantic_models.standart_methhods_redefinition import BaseModel
 from app.users.security import get_current_user
 from app.db.db_utils import open_db_session
 from app.utils.pydantic_security import HumanInDB
+from app.db import models as m
+from app.pydantic_models.standart_methhods_redefinition import AccessType
 
 user = APIRouter(
     prefix="/user",
     tags=["user"],
     dependencies=[
         # Depends(open_db_session),
-        Security(get_current_user, scopes=["user"])
+        Security(get_current_user, scopes=[str(AccessType.USER)])
     ],
     responses={404: {"description": "Not found"}},
 )

@@ -211,6 +211,7 @@ def get_pd_class(ent_name: str, request: Request,
     if type(roles) in [str, AccessType]:
         roles: list[str] = [roles]
     if type(modes) in [str, AccessMode]:
+
         modes: list[str] = [modes]
     print(_access_level)
     _bases = sorted([(str(role), str(mode)) for role in roles for mode in modes], key=lambda i: -_access_level.index(i))

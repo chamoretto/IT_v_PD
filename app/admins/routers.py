@@ -7,7 +7,7 @@ from app.utils.jinja2_utils import admin_templates, db_templates
 from app.pydantic_models.gen import output_ent as out_pd
 from app.db import models as m
 from app.pydantic_models.gen import db_models as pd_db
-
+from app.pydantic_models.standart_methhods_redefinition import AccessType, AccessMode
 
 admin = APIRouter(
     # route_class=TimedRoute,
@@ -15,7 +15,7 @@ admin = APIRouter(
     tags=["admin"],
     dependencies=[
         # Depends(open_db_session),
-        Security(get_current_admin, scopes=["admin"])
+        Security(get_current_admin, scopes=[str(AccessType.ADMIN)])
     ],  #
     responses={404: {"description": "Not found------"},
                401: {"description": "Пользователь не был авторизировани"}},
@@ -26,20 +26,19 @@ admin = APIRouter(
 @db_session
 def read_users_me(response: Response,
                   request: Request,
-                  current_user: pd_db.Human = Security(get_current_admin, scopes=["admin"])):
+                  current_user: pd_db.Human = Security(get_current_admin, scopes=[str(AccessType.ADMIN)])):
     print("current_user.dict^ ", type(current_user), current_user)
     print(dict(current_user))
+    current_user.scopes += [str(AccessType.SELF)]
     return admin_templates.TemplateResponse(
         "personal_page.html", {
             "request": request,
             "personal_data": db_templates.get_cooked_template(
                 "Admin_form.html", {"request": request,
-                                        "admin": out_pd.Admin(**(dict(current_user))),
-                                        # "action_url": f"/db/Admin/look/",
-                                        # "send_method": "POST",
-                                        # "disabled": True,
-                                        'access_mode': 'look',
-                                        "db_mode": False,})
+                                    "admin": out_pd.Admin(**(dict(current_user))),
+                                    "access": current_user.scopes,
+                                    'access_mode': AccessMode.LOOK,
+                                    "db_mode": False})
         })
 
 
@@ -47,7 +46,7 @@ def read_users_me(response: Response,
 @db_session
 def read_users_me(response: Response,
                   request: Request,
-                  current_user: pd_db.Human = Security(get_current_admin, scopes=["admin"])):
+                  current_user: pd_db.Human = Security(get_current_admin, scopes=[str(AccessType.ADMIN)])):
     print(response)
     return admin_templates.TemplateResponse(
         "personal_page.html", {
@@ -64,7 +63,7 @@ def read_users_me(response: Response,
 @db_session
 def read_users_me(response: Response,
                   request: Request,
-                  current_user: pd_db.Human = Security(get_current_admin, scopes=["admin"])):
+                  current_user: pd_db.Human = Security(get_current_admin, scopes=[str(AccessType.ADMIN)])):
     print(response)
     return admin_templates.TemplateResponse(
         "personal_page.html", {
@@ -81,7 +80,7 @@ def read_users_me(response: Response,
 @db_session
 def read_users_me(response: Response,
                   request: Request,
-                  current_user: pd_db.Human = Security(get_current_admin, scopes=["admin"])):
+                  current_user: pd_db.Human = Security(get_current_admin, scopes=[str(AccessType.ADMIN)])):
     print(response)
     return admin_templates.TemplateResponse(
         "personal_page.html", {
@@ -98,7 +97,7 @@ def read_users_me(response: Response,
 @db_session
 def read_users_me(response: Response,
                   request: Request,
-                  current_user: pd_db.Human = Security(get_current_admin, scopes=["admin"])):
+                  current_user: pd_db.Human = Security(get_current_admin, scopes=[str(AccessType.ADMIN)])):
     print(response)
     return admin_templates.TemplateResponse(
         "personal_page.html", {
@@ -115,7 +114,7 @@ def read_users_me(response: Response,
 @db_session
 def read_users_me(response: Response,
                   request: Request,
-                  current_user: pd_db.Human = Security(get_current_admin, scopes=["admin"])):
+                  current_user: pd_db.Human = Security(get_current_admin, scopes=[str(AccessType.ADMIN)])):
     print(response)
     return admin_templates.TemplateResponse(
         "personal_page.html", {
@@ -132,7 +131,7 @@ def read_users_me(response: Response,
 @db_session
 def read_users_me(response: Response,
                   request: Request,
-                  current_user: pd_db.Human = Security(get_current_admin, scopes=["admin"])):
+                  current_user: pd_db.Human = Security(get_current_admin, scopes=[str(AccessType.ADMIN)])):
     print(response)
     return admin_templates.TemplateResponse(
         "personal_page.html", {
@@ -143,4 +142,3 @@ def read_users_me(response: Response,
                  **m.Question.get_entities_html(db_mode=False, access=current_user.scopes),
                  })
         })
-

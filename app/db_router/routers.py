@@ -43,7 +43,7 @@ db_route = APIRouter(
 
 @db_route.get('/')
 @db_session
-def all_entities(request: Request, me=Security(get_current_dev, scopes=["developer"])):
+def all_entities(request: Request, me=Security(get_current_dev, scopes=[str(AccessType.DEVELOPER)])):
     return db_templates.TemplateResponse(
         "main_db.html", {"request": request, "entities": m.db.entities})
 
@@ -51,7 +51,7 @@ def all_entities(request: Request, me=Security(get_current_dev, scopes=["develop
 @db_route.get('/{entity}')
 @db_session
 def entity_screen(request: Request,
-                  me=Security(get_current_dev, scopes=["developer"]),
+                  me=Security(get_current_dev, scopes=[str(AccessType.DEVELOPER)]),
                   entity: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")):
     # print("---ESMg mf k", x_part)
     if entity.value not in m.db.entities and type(m.db.entities[entity.value]) == m.db.Entity:
@@ -156,7 +156,8 @@ def edit_entity(
                                   "action_url": f"/db/{name}/edit/save?{entity.key_as_part_query()}",
                                   "send_method": "POST",
                                   'access_mode': 'edit',
-                                  "access": human.scopes
+                                  "access": human.scopes,
+                                  # "entity_primary_keys":
                                   })
     raise HTTPException(
         request=request,
@@ -232,6 +233,8 @@ def look_entity(
     if class_entity.exists(**dict(ent_model)):
         entity = class_entity.get(**dict(ent_model))
         pd_entity = getattr(out_pd, name).from_pony_orm(entity)
+        if getattr(only_pk, name)(**human.dict()).dict() == ent_model.dict():
+            human.scopes += [AccessType.SELF]
         return db_templates.TemplateResponse(
             f"{name}_form.html", {"request": request, name.lower(): pd_entity,
                                   # "action_url": f"/db/{name}/look/",
@@ -265,6 +268,8 @@ def delete_entity(
     class_entity = m.db.entities[name]
     if class_entity.exists(**dict(ent_model)):
         entity = class_entity.get(**dict(ent_model))
+        if getattr(only_pk, name)(**human.dict()).dict() == ent_model.dict():
+            human.scopes += [AccessType.SELF]
         entity.delete()
         return {"redirect": ""}
     raise HTTPException(
