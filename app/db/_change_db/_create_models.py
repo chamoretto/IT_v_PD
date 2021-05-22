@@ -71,7 +71,7 @@ class DbDocs(BaseModel):
     required: bool = False
     class_name: str
     placeholder: str = ""
-    default: str = None
+    default: Any = None
     is_entity: bool = False
     is_set: bool = False
 
@@ -264,7 +264,7 @@ def info_from_docs(ent: db.Entity) -> dict[str, DbDocs]:
 
     """
 
-    from app.pydantic_models.gen import db_models as pd
+    from app.pydantic_models.gen import db_models_for_create as pd
 
     keys_convertor: dict[str, str] = {
         "type": "html_type",

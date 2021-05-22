@@ -91,7 +91,7 @@ def create_pk_types(pd_db):
     return new_types + "\n\n", pk_for_pydantic, new_types_dict
 
 
-def create_pd_class_body(class_name: str, code: List[StringDB], new_types_dict: dict[str, str]) -> str:
+def create_pd_class_body(class_name: str, code: List[AllInfoStr], new_types_dict: dict[str, str]) -> str:
     """Создаёт тела pydantic-класса"""
 
     #       приводим тип атрибута к типу, понятному pydantic
@@ -216,11 +216,15 @@ if __name__ == '__main__':
 
     create_pd_models(
         filter_func=lambda key, val, *a, **k: not val.is_not_db,
+    )  # Обычнве модели из базы данных
+    create_pd_models(
+        file_name=join(split(AUTO_PYDANTIC_MODELS)[0], "db_models_for_create.py"),
+        filter_func=lambda key, val, *a, **k: not val.is_not_db,
         map_param_funcs=[
             lambda key, val, *a, **k: (
                 [setattr(val, "db_type", "Optional"), (key, val)][1] if val.other_params.get("auto") else (key, val))
         ]
-    )  # Обычнве модели из базы данных
+    )  # модели для создания новой сущности БД
     create_pd_models(  # модель только с уникальными параметрами
         file_name=join(split(AUTO_PYDANTIC_MODELS)[0], "unique_db_field_models.py"),
         filter_func=lambda key, val, p_k, *a, **k:
@@ -260,7 +264,7 @@ if __name__ == '__main__':
     )
 
     base_path = [split(AUTO_PYDANTIC_MODELS)[0]]
-    true_print = lambda val, *a: not (print(val.class_name, *val.dict().items(), *a, " ", sep='\n') if val.name == "password" else False)
+    # true_print = lambda val, *a: not (print(val.class_name, *val.dict().items(), *a, " ", sep='\n') if val.name == "password" else False)
     true_print = lambda *a: True
     for role in AccessType:
         # print('+!!!!!!!!---', role, [role])

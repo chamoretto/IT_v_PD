@@ -12,7 +12,9 @@ from app.pydantic_models.gen import output_ent as out_pd
 from app.pydantic_models.gen import input_ent as inp_pd
 from app.pydantic_models.gen import unique_db_field_models as pk_pd
 from app.pydantic_models.gen import only_primarykey_fields_model as only_pk
-from app.pydantic_models.gen import db_models as pd
+from app.pydantic_models.gen import db_models_for_create as pd
+from app.pydantic_models.gen import db_models as pd_db
+
 
 from app.pydantic_models.standart_methhods_redefinition import get_pd_class, AccessType, AccessMode
 from app.utils.jinja2_utils import db_templates
@@ -128,7 +130,7 @@ def create_entity(request: Request,
 @db_session
 def edit_entity(
         request: Request,
-        human=Security(get_current_human_for_db),
+        human: pd_db.Human = Security(get_current_human_for_db),
         ent_model: dict[str, Any] = Body(
             ...,
             title="словарь, однозначно определяющий объект в БД, через задание всех primaryKey"
@@ -143,6 +145,8 @@ def edit_entity(
     if class_entity.exists(**dict(ent_model)):
         entity = class_entity.get(**dict(ent_model))
         pd_entity = get_pd_class(name, human.scopes, AccessMode.EDIT).from_pony_orm(entity)
+        if getattr(only_pk, name)(**human.dict()).dict() == ent_model.dict():
+            human.scopes += [AccessType.SELF]
         return db_templates.TemplateResponse(
             f"{name}_form.html", {"request": request,
                                   name.lower(): pd_entity,
@@ -174,7 +178,7 @@ def save_edited_entity(
     model = get_pd_class(name, human.scopes, AccessMode.EDIT)
     print(model)
     print(model.__fields__)
-    new_ent_data=    model(**new_ent_data)
+    new_ent_data = model(**new_ent_data)
     print(new_ent_data.dict(exclude_unset=True))
     if class_entity.exists(**old_ent_model.dict(exclude_unset=True)):
         entity = class_entity.get(**old_ent_model.dict(exclude_unset=True))

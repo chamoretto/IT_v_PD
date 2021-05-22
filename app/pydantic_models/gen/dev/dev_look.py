@@ -50,7 +50,7 @@ class Human(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict, list]] = {}
+	scopes: Optional[Union[Json, dict, list]] = []
 	questions: Set[Union[int, Question]] = []
 
 	class Config:
@@ -67,7 +67,7 @@ class Admin(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict, list]] = {}
+	scopes: Optional[Union[Json, dict, list]] = []
 	questions: Set[Union[int, Question]] = []
 
 	class Config:
@@ -84,7 +84,7 @@ class User(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict, list]] = {}
+	scopes: Optional[Union[Json, dict, list]] = []
 	questions: Set[Union[int, Question]] = []
 	date_of_birth: date
 	about_program: Optional[str] = None
@@ -105,7 +105,7 @@ class Smm(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict, list]] = {}
+	scopes: Optional[Union[Json, dict, list]] = []
 	questions: Set[Union[int, Question]] = []
 
 	class Config:
@@ -122,7 +122,7 @@ class Developer(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict, list]] = {}
+	scopes: Optional[Union[Json, dict, list]] = []
 	questions: Set[Union[int, Question]] = []
 
 	class Config:
@@ -151,7 +151,7 @@ class DirectionExpert(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict, list]] = {}
+	scopes: Optional[Union[Json, dict, list]] = []
 	questions: Set[Union[int, Question]] = []
 
 	class Config:
@@ -183,7 +183,7 @@ class Competition(BaseModel):
 class Direction(BaseModel):
 	name: str
 	icon: str
-	video_lessons: Optional[Union[Json, dict, list]] = {}
+	video_lessons: Optional[Union[Json, dict, list]] = []
 
 	class Config:
 		orm_mode = True
@@ -287,7 +287,7 @@ class Question(BaseModel):
 
 class SimpleEntity(BaseModel):
 	key: str
-	data: Optional[Union[Json, dict, list]] = {}
+	data: Optional[Union[Json, dict, list]] = []
 
 	class Config:
 		orm_mode = True

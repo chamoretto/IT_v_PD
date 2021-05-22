@@ -6,7 +6,7 @@ from fastapi import HTTPException, status, APIRouter
 
 from app.dependencies import *
 from app.db import models as m
-from app.pydantic_models.gen import db_models as pd, output_ent as out_pd
+from app.pydantic_models.gen import db_models_for_create as pd, output_ent as out_pd
 from app.pydantic_models import simple_entities as easy_ent_pd
 from app.utils.jinja2_utils import public_templates
 

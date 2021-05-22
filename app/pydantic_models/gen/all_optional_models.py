@@ -49,7 +49,7 @@ class Human(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict, list]] = {}
+	scopes: Optional[Union[Json, dict, list]] = []
 	questions: Set[Union[int, Question]] = []
 	hash_password: Optional[str] = None
 
@@ -67,7 +67,7 @@ class Admin(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict, list]] = {}
+	scopes: Optional[Union[Json, dict, list]] = []
 	questions: Set[Union[int, Question]] = []
 	hash_password: Optional[str] = None
 
@@ -85,7 +85,7 @@ class User(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict, list]] = {}
+	scopes: Optional[Union[Json, dict, list]] = []
 	questions: Set[Union[int, Question]] = []
 	date_of_birth: Optional[date] = None
 	about_program: Optional[str] = None
@@ -108,7 +108,7 @@ class Smm(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict, list]] = {}
+	scopes: Optional[Union[Json, dict, list]] = []
 	questions: Set[Union[int, Question]] = []
 	hash_password: Optional[str] = None
 
@@ -126,7 +126,7 @@ class Developer(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict, list]] = {}
+	scopes: Optional[Union[Json, dict, list]] = []
 	questions: Set[Union[int, Question]] = []
 	hash_password: Optional[str] = None
 
@@ -157,7 +157,7 @@ class DirectionExpert(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict, list]] = {}
+	scopes: Optional[Union[Json, dict, list]] = []
 	questions: Set[Union[int, Question]] = []
 	hash_password: Optional[str] = None
 	competition_directions: Set[Union[Tuple[str, int], CompetitionDirection]] = []
@@ -192,7 +192,7 @@ class Competition(BaseModel):
 class Direction(BaseModel):
 	name: Optional[str] = None
 	icon: Optional[str] = None
-	video_lessons: Optional[Union[Json, dict, list]] = {}
+	video_lessons: Optional[Union[Json, dict, list]] = []
 	competition_direction: Set[Union[Tuple[str, int], CompetitionDirection]] = []
 
 	class Config:
@@ -304,7 +304,7 @@ class Question(BaseModel):
 
 class SimpleEntity(BaseModel):
 	key: Optional[str] = None
-	data: Optional[Union[Json, dict, list]] = {}
+	data: Optional[Union[Json, dict, list]] = []
 
 	class Config:
 		orm_mode = True

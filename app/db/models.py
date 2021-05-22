@@ -2,7 +2,7 @@ import enum
 from typing import Any
 
 try:
-    from app.pydantic_models.gen import db_models as pd
+    from app.pydantic_models.gen import db_models_for_create as pd
     from app.pydantic_models.gen import unique_db_field_models as pk_pd
     from app.pydantic_models.gen import unique_db_field_models as pk_pd
     from app.pydantic_models.gen import input_ent as inp_pd

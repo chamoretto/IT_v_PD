@@ -15,22 +15,22 @@ from datetime import date, datetime, time
 
 from app.pydantic_models.standart_methhods_redefinition import BaseModel, as_form
 from app.pydantic_models.standart_methhods_redefinition import PydanticValidators
-from app.pydantic_models.gen.input_ent import Task
-from app.pydantic_models.gen.input_ent import MarkWork
-from app.pydantic_models.gen.input_ent import DirectionExpert
-from app.pydantic_models.gen.input_ent import SimpleEntity
 from app.pydantic_models.gen.input_ent import Smm
-from app.pydantic_models.gen.input_ent import HumanContacts
-from app.pydantic_models.gen.input_ent import CompetitionDirection
-from app.pydantic_models.gen.input_ent import Admin
-from app.pydantic_models.gen.input_ent import Human
-from app.pydantic_models.gen.input_ent import News
-from app.pydantic_models.gen.input_ent import Direction
-from app.pydantic_models.gen.input_ent import Criterion
+from app.pydantic_models.gen.input_ent import SimpleEntity
 from app.pydantic_models.gen.input_ent import Page
-from app.pydantic_models.gen.input_ent import Competition
-from app.pydantic_models.gen.input_ent import Question
+from app.pydantic_models.gen.input_ent import Criterion
+from app.pydantic_models.gen.input_ent import Direction
+from app.pydantic_models.gen.input_ent import Human
+from app.pydantic_models.gen.input_ent import Task
+from app.pydantic_models.gen.input_ent import News
+from app.pydantic_models.gen.input_ent import Admin
 from app.pydantic_models.gen.input_ent import Developer
+from app.pydantic_models.gen.input_ent import MarkWork
+from app.pydantic_models.gen.input_ent import Question
+from app.pydantic_models.gen.input_ent import CompetitionDirection
+from app.pydantic_models.gen.input_ent import DirectionExpert
+from app.pydantic_models.gen.input_ent import Competition
+from app.pydantic_models.gen.input_ent import HumanContacts
 from app.settings.config import HOME_DIR
 
 
@@ -49,7 +49,7 @@ class User(BaseModel):
 	photo: Optional[str] = ''
 	status: Optional[str] = ''
 	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict, list]] = {}
+	scopes: Optional[Union[Json, dict, list]] = []
 	questions: Set[Union[int, Question]] = []
 	date_of_birth: date
 	about_program: Optional[str] = None

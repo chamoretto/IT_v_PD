@@ -4,7 +4,7 @@ from typing import Optional, List, Dict, Tuple, Union
 from pydantic import ValidationError
 from collections import defaultdict
 
-from fastapi import Depends, HTTPException, status, APIRouter
+from fastapi import Depends, HTTPException, status, APIRouter, Request
 from jose import JWTError, jwt
 from pony.orm import db_session
 from fastapi.security import (
@@ -17,6 +17,7 @@ from app.db import models as m
 from app.settings.config import cfg
 from app.utils.pydantic_security import TokenData, HumanInDB, Token, BaseModel
 from app.pydantic_models.standart_methhods_redefinition import AccessType, AccessMode
+from app.pydantic_models.gen import db_models as pd_db
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 ALGORITHM = cfg.get('db', "hash_algorithm")
@@ -100,32 +101,33 @@ def generate_security(entity, getter_human=None):
     :return:
     """
 
-    if getter_human is None:
-        @db_session
-        def getter_human(username: str):
-            if m.Human.exists(username=username):
-                human_db = m.Human.get(username=username)
-                return HumanInDB.from_pony_orm(human_db)
+    @db_session
+    def _getter_human(username: str) -> Optional[pd_db.Human]:
+        if m.Human.exists(username=username):
+            human_db = m.Human.get(username=username)
+            return pd_db.Human.from_pony_orm(human_db)
 
     def authenticate_human(username: str, password: str):
 
         """ Аунтидификация пользователя"""
 
-        human = getter_human(username)
-        if not human:
-            return False
-        if not verify_password(password, human.hash_password):
-            return False
-        return human
+        # human = getter_human(username)
+        # if not human:
+        #     return False
+        # if not verify_password(password, human.hash_password):
+        #     return False
+        # return human
+        pass
 
     def get_current_human(
+            request: Request,
             security_scopes: SecurityScopes = PassScopes(),
-            token: str = Depends(oauth2_scheme)):
+            token: str = Depends(oauth2_scheme)) -> pd_db.Human:
 
         """ Получение текущего пользователя"""
 
         try:
-            print(security_scopes.scopes)
+            print("from get_current_human", security_scopes.scopes, __file__)
             if security_scopes.scopes and bool(security_scopes.scopes):
                 authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
             else:
@@ -144,11 +146,11 @@ def generate_security(entity, getter_human=None):
                 token_data = TokenData(scopes=token_scopes, username=username)
             except (JWTError, ValidationError):
                 raise credentials_exception
-            human = getter_human(username=token_data.username)
+            human = _getter_human(username=token_data.username)
             if human is None:
                 raise credentials_exception
-            print(security_scopes.scopes)
-            print(token_data.scopes)
+            print("from get_current_human", security_scopes.scopes, __file__)
+            print("from get_current_human", token_data.scopes, __file__)
             for scope in security_scopes.scopes:
                 if scope not in token_data.scopes:
                     raise HTTPException(
@@ -156,12 +158,13 @@ def generate_security(entity, getter_human=None):
                         detail="Not enough permissions",
                         headers={"WWW-Authenticate": authenticate_value},
                     )
+            setattr(request, "current_human", _getter_human(username=token_data.username))
             return human
         except HTTPException as e:
-            print("---===", [e])
+            print(__file__, "---===", [e])
             raise e
         except Exception as e:
-            print("Произошла ошибка в текущем пользователе!!!", [e])
+            print("Произошла ошибка в текущем пользователе!!!", [e], __file__)
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Could not validate credentials",

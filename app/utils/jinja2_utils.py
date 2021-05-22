@@ -12,12 +12,14 @@ from starlette.types import Receive, Scope, Send
 from fastapi.responses import JSONResponse
 from pony.orm import db_session
 from fastapi.templating import Jinja2Templates
+from fastapi import Request
 
 from app.utils.html_utils import SitePageMenu
 from app.pydantic_models.response_models import code_to_resp, PdUrl
 from app.pydantic_models import simple_entities as easy_ent_pd
 from app.pydantic_models.gen import output_ent as out_pd
 from app.db import models as m
+from app.pydantic_models.standart_methhods_redefinition import AccessType, AccessMode
 
 
 class _MyTemplateResponse(Response):
@@ -70,6 +72,26 @@ includes = {
     "events": _get_event_box_params
 }
 
+_developer_shell: dict[str, PdUrl] = {"Управление БД": PdUrl(href="/db", is_ajax=True),
+                    "Мой профиль": PdUrl(href="/dev/me", is_ajax=True),
+                    "Скачать логи": PdUrl(href="/dev/logs"),
+                    "Выключить сайт": PdUrl(href="/dev/stop_server", is_ajax=True),
+                    }
+_admin_shell: dict[str, PdUrl] = {
+    "Мой профиль": PdUrl(href="/admin/me", is_ajax=True),
+    "Добавить админа":  PdUrl(href="/admin/add_admin", is_ajax=True),
+    "Добавить редактора":  PdUrl(href="/admin/add_smm", is_ajax=True),
+    "Добавить эксперта по направлению":  PdUrl(href="/admin/add_expert", is_ajax=True),
+    "Добавить событие":  PdUrl(href="/admin/add_event", is_ajax=True),
+    "Написать новость": PdUrl(href="/admin/add_news", is_ajax=True),
+    "Вопросы участников": PdUrl(href="/admin/look_question", is_ajax=True),
+}
+
+_all_shells: dict[str, dict[str, PdUrl]] = {
+    "Developer": _developer_shell,
+    "Admin": _admin_shell,
+}
+
 
 class MyJinja2Templates:
     """
@@ -107,14 +129,28 @@ class MyJinja2Templates:
         if "request" not in params:
             raise ValueError('context must include a "request" key')
 
-        params['access'] = params.get('access') or self.access or ["public"]
-        params['access_mode'] = params.get('access_mode') or "look"
+        if hasattr(params["request"], "current_human"):
+            human = getattr(params["request"], "current_human")
+            params['access'] = params.get('access') or human.scopes or self.access or [AccessType.PUBLIC]
+            params['access_mode'] = params.get('access_mode', "")
+            params['admin_shell'] = params.get('admin_shell') or _all_shells.get(human.__class__.__name__) or self.admin_shell
+        else:
+            params['access'] = params.get('access') or self.access or [AccessType.PUBLIC]
+            params['access_mode'] = params.get('access_mode', "")
+            params['admin_shell'] = params.get('admin_shell', self.admin_shell)
+
+
+            # params['access_mode'] = params.get('access_mode') or AccessMode.LOOK
         if type(params['access']) == str:
             params['access'] = [params['access']]
         # params['access'] += ['self']
+        params['access'] = [str(i) for i in params['access']]
+        params['access_mode'] = str(params['access_mode'])
 
 
-        [params.update(val()) for key, val in includes.items() if params.get(key)]
+        # [params.update(val()) for key, val in includes.items() if params.get(key)]
+
+
         return params
 
     def TemplateResponse(
@@ -143,7 +179,7 @@ class MyJinja2Templates:
                 response_data = dict(
                     basic_data=basic_data,
                     alert=alert_template.render(basic_data | {"alert": local_context.pop('alert', None)}),
-                    admin_shell=admin_shell_template.render(basic_data | {"pages": self.admin_shell}),
+                    admin_shell=admin_shell_template.render(basic_data | {"pages": local_context['admin_shell']}),
                     main=template.render(local_context),
                 )
                 response_data = {key: val for key, val in response_data.items() if val is not None and bool(val)}
@@ -160,11 +196,11 @@ class MyJinja2Templates:
             skeleton_template = template
 
         else:
-            print('Генерируем весь сайт с нуля', admin_shell_template, )
-            admin_shell_context = {"pages": self.admin_shell, "request": local_context['request']}
+            # print('Генерируем весь сайт с нуля', admin_shell_template, )
+            admin_shell_context = {"pages": local_context['admin_shell'], "request": local_context['request']}
             admin_shell_context = {key: val for key, val in admin_shell_context.items() if
                                    val is not None and bool(val)}
-            print(admin_shell_context)
+            # print(admin_shell_context)
             with db_session:
                 context = dict(
                     alert=alert_template if local_context.get('alert') else None,
@@ -192,21 +228,6 @@ class MyJinja2Templates:
             background=background,
         )
 
-
-_developer_shell = {"Управление БД": PdUrl(href="/db", is_ajax=True),
-                    "Мой профиль": PdUrl(href="/dev/me", is_ajax=True),
-                    "Скачать логи": PdUrl(href="/dev/logs"),
-                    "Выключить сайт": PdUrl(href="/dev/stop_server", is_ajax=True),
-                    }
-_admin_shell = {
-    "Мой профиль": PdUrl(href="/admin/me", is_ajax=True),
-    "Добавить админа":  PdUrl(href="/admin/add_admin", is_ajax=True),
-    "Добавить редактора":  PdUrl(href="/admin/add_smm", is_ajax=True),
-    "Добавить эксперта по направлению":  PdUrl(href="/admin/add_expert", is_ajax=True),
-    "Добавить событие":  PdUrl(href="/admin/add_event", is_ajax=True),
-    "Написать новость": PdUrl(href="/admin/add_news", is_ajax=True),
-    "Вопросы участников": PdUrl(href="/admin/look_question", is_ajax=True),
-}
 
 login_templates = MyJinja2Templates(directory="content/templates/login")
 error_templates = MyJinja2Templates(directory="content/templates/errors")

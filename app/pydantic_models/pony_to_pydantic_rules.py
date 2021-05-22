@@ -42,12 +42,16 @@ change_default_rules = {
     "Set": "[]"
 }
 change_default = {
-    lambda i: i.default is not None and "lambda" not in i.default and i.param_type == "bool":
+    lambda i: i.default is not None and "lambda" not in i.default and i.param_type in ["bool", change_attr_type_rules.get("bool", " ")]:
         lambda i: setattr(i, 'default', ("True" if any(j in i.default.lower() for j in ["1", "true"]) else "False")),
-    lambda i: i.default is not None and "lambda" not in i.default and i.param_type in ["int", "float"]:
+    lambda i: i.default is not None and "lambda" not in i.default and i.param_type in ["int", "float",  change_attr_type_rules.get("int", " "), change_attr_type_rules.get("float", " ")]:
         lambda i: setattr(i, 'default', reduce(lambda st, i: st.replace(i), ["'", '"'], i.default)),
-    lambda i: i.default is not None and "lambda" not in i.default and i.param_type == "Json":
+    lambda i: i.param_type in ["Json", change_attr_type_rules.get("Json", " ")] and i.default == "{}":
+        lambda i: [setattr(i, 'default', "[]")],
+    lambda i: i.default is not None and "lambda" not in i.default and i.param_type in ["Json", change_attr_type_rules.get("Json", " ")] and i.default not in ["[]", "{}"]:
         lambda i: setattr(i, 'default', '"' + i.default + '"'),
+    lambda i: i.param_type in ["Json", change_attr_type_rules.get("Json", " ")] and i.default is None:
+        lambda i: [setattr(i, 'default', [])],
     lambda i: i.default is None or "lambda" in i.default:
         lambda i: setattr(i, 'default', change_default_rules[i.db_type]),
     lambda i: (i.default is None or "lambda" in i.default) and "Set" in i.param_type:
