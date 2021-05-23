@@ -73,6 +73,11 @@ class User(BaseModel):
 	direction: Optional[str] = None
 	visible_about_program_field: bool = False
 
+
+	@validator("date_of_birth", pre=True, always=True)
+	def date_of_birth_to_date_validator(cls, value):
+		return PydanticValidators.date(cls, value)
+
 	class Config:
 		orm_mode = True
 

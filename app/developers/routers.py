@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Security, Request
 from pony.orm import db_session
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 
 from app.developers.security import get_current_dev
 from app.utils.jinja2_utils import developer_templates, db_templates
@@ -53,3 +53,8 @@ def get_logs():
     print('Restarting program. Arguments {}'.format(changed_args), python)
     yield {"answer": "Сервер будет остановлен"}
     execl(python, python, *changed_args)
+
+
+@dev.get("/test_redirect", response_class=RedirectResponse)
+def test_redirect(request: Request):
+    return RedirectResponse("https://typer.tiangolo.com")

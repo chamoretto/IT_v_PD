@@ -15,22 +15,22 @@ from datetime import date, datetime, time
 
 from app.pydantic_models.standart_methhods_redefinition import BaseModel, as_form
 from app.pydantic_models.standart_methhods_redefinition import PydanticValidators
-from app.pydantic_models.gen.input_ent import Smm
-from app.pydantic_models.gen.input_ent import SimpleEntity
+from app.pydantic_models.gen.input_ent import DirectionExpert
 from app.pydantic_models.gen.input_ent import Page
 from app.pydantic_models.gen.input_ent import Criterion
+from app.pydantic_models.gen.input_ent import Admin
+from app.pydantic_models.gen.input_ent import Question
+from app.pydantic_models.gen.input_ent import Competition
+from app.pydantic_models.gen.input_ent import CompetitionDirection
+from app.pydantic_models.gen.input_ent import SimpleEntity
+from app.pydantic_models.gen.input_ent import HumanContacts
+from app.pydantic_models.gen.input_ent import Smm
+from app.pydantic_models.gen.input_ent import Task
+from app.pydantic_models.gen.input_ent import MarkWork
 from app.pydantic_models.gen.input_ent import Direction
 from app.pydantic_models.gen.input_ent import Human
-from app.pydantic_models.gen.input_ent import Task
 from app.pydantic_models.gen.input_ent import News
-from app.pydantic_models.gen.input_ent import Admin
 from app.pydantic_models.gen.input_ent import Developer
-from app.pydantic_models.gen.input_ent import MarkWork
-from app.pydantic_models.gen.input_ent import Question
-from app.pydantic_models.gen.input_ent import CompetitionDirection
-from app.pydantic_models.gen.input_ent import DirectionExpert
-from app.pydantic_models.gen.input_ent import Competition
-from app.pydantic_models.gen.input_ent import HumanContacts
 from app.settings.config import HOME_DIR
 
 
@@ -54,6 +54,11 @@ class User(BaseModel):
 	date_of_birth: date
 	about_program: Optional[str] = None
 	direction: Optional[str] = None
+
+
+	@validator("date_of_birth", pre=True, always=True)
+	def date_of_birth_to_date_validator(cls, value):
+		return PydanticValidators.date(cls, value)
 
 	class Config:
 		orm_mode = True

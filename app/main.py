@@ -110,7 +110,9 @@ def custom_http_exception_handler(request: Request, exc: HTTPException):
             return error_templates.TemplateResponse("404.html", {
                 "request": (exc.burning_request if hasattr(exc, "burning_request") else request),
                 "detail": exc.detail,
-                "alert": Alert("Похоже данной страницы не существует...", Alert.ERROR)})
+                "alert": Alert("Похоже данной страницы не существует...", Alert.ERROR)
+            }
+                                                    )
         return JSONResponse(
             status_code=exc.status_code,
             content={"message": f"Oops! did something. There goes a rainbow..."},

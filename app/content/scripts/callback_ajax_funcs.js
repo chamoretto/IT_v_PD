@@ -24,10 +24,26 @@ function change_html_from_ajax(json_data){
         help_to_change_html_from_ajax("#alert", data.alert);
         help_to_change_html_from_ajax("#admin_shell", data.admin_shell);
     }
+    if (data.my_response_type === "redirect"){
+        help_to_change_html_from_ajax("#main", data.main);
+        help_to_change_html_from_ajax("#alert", data.alert);
+        help_to_change_html_from_ajax("#admin_shell", data.admin_shell);
+    }
+}
+
+function redirect_with_body_processing(json_data){
+    const data = JSON.parse(json_data);
+    console.log(data, data["url"], data["method"], data["send_redirect_data"]);
+    send_ajax(data["url"],
+        data["method"],
+        url_processing,
+        JSON.stringify(data["send_redirect_data"]),
+        true, false);
 }
 
 function url_processing(event){
     const xhr = event.target;
+    console.log("статус ajax-а", xhr.status);
     if (xhr.readyState === 2){
         // получены загаловки
     }
@@ -44,6 +60,10 @@ function url_processing(event){
     } else if (xhr.status === 404){
         change_html_from_ajax(xhr.responseText);
         // document.querySelectorAll("main")[0].innerHTML = " " + xhr.responseText;
+    } else if (xhr.status === 300){
+        console.log("redirect_data: ", xhr.responseText);
+        change_html_from_ajax(xhr.responseText);
+        redirect_with_body_processing(xhr.responseText);
     }
     after_load_funcs_run();
     // urls_as_ajax();
@@ -53,6 +73,7 @@ function url_processing(event){
 
 function authorization_response_processing(event){
     const xhr = event.target;
+    console.log("статус ajax-а как формы", xhr.status, xhr.readyState);
     if (xhr.readyState === 2){
         // получены загаловки
     }
@@ -67,8 +88,9 @@ function authorization_response_processing(event){
             localStorage.setItem('token', json_data["access_token"]);
             console.log('записывали токен');
         }
-        // url_processing(event);
+
     }
+    url_processing(event);
     // urls_as_ajax();
     // send_form_as_ajax();
     // set_fixed_position_event();

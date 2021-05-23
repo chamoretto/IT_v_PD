@@ -15,10 +15,10 @@ from datetime import date, datetime, time
 
 from app.pydantic_models.standart_methhods_redefinition import BaseModel, as_form
 from app.pydantic_models.standart_methhods_redefinition import PydanticValidators
+from app.pydantic_models.gen.output_ent import Developer
 from app.pydantic_models.gen.output_ent import Human
 from app.pydantic_models.gen.output_ent import HumanContacts
 from app.pydantic_models.gen.output_ent import Admin
-from app.pydantic_models.gen.output_ent import Developer
 from app.settings.config import HOME_DIR
 
 
@@ -55,6 +55,11 @@ class User(BaseModel):
 	about_program: Optional[str] = None
 	direction: Optional[str] = None
 	visible_about_program_field: bool = False
+
+
+	@validator("date_of_birth", pre=True, always=True)
+	def date_of_birth_to_date_validator(cls, value):
+		return PydanticValidators.date(cls, value)
 
 	class Config:
 		orm_mode = True

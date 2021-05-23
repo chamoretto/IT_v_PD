@@ -20,6 +20,7 @@ from app.pydantic_models import simple_entities as easy_ent_pd
 from app.pydantic_models.gen import output_ent as out_pd
 from app.db import models as m
 from app.pydantic_models.standart_methhods_redefinition import AccessType, AccessMode
+from app.utils.html_utils import _public_template, _skeleton_template, _alert_template, _admin_shell_template
 
 
 class _MyTemplateResponse(Response):
@@ -56,18 +57,12 @@ class _MyTemplateResponse(Response):
         await super().__call__(scope, receive, send)
 
 
-_public_teamplate = Jinja2Templates("content/templates/public_temp")
-layout_env = Jinja2Templates("content/templates/layout")
-_skeleton_template = layout_env.get_template("skeleton.html")
-_alert_template = layout_env.get_template("alert.html")
-_admin_shell_template = layout_env.get_template("admin_shell.html")
 
-
-# event_box_template = _public_teamplate.get_template("/events_box.html")
+# event_box_template = _public_template.get_template("/events_box.html")
 
 
 def _get_event_box_params():
-    return {"events_box": _public_teamplate.get_template("events/events_box.html"),
+    return {"events_box": _public_template.get_template("events/events_box.html"),
             "events_context": {"events": [getattr(out_pd, e.__class__.__name__).from_pony_orm(e) for e in
                                           m.Page.select(lambda i: i.page_type == "event")]}}
 
@@ -106,7 +101,7 @@ class MyJinja2Templates:
     """
 
     def __init__(self, directory: str, admin_shell: dict[str, PdUrl] = dict(),
-                 access: Optional[list[str]] = None) -> None:
+                 access: Optional[list[AccessType]] = None) -> None:
         assert jinja2 is not None, "jinja2 must be installed to use Jinja2Templates"
         self.env = self.get_env(directory)
         self.admin_shell = admin_shell
@@ -162,6 +157,19 @@ class MyJinja2Templates:
             headers: dict = None,
             media_type: str = None,
             background: BackgroundTask = None,
+            only_part: bool = False):
+        return self.TemplateRedirectResponse(None, name, local_context, status_code=status_code, headers=headers, media_type=media_type,
+                                             background=background, only_part=only_part)
+
+    def TemplateRedirectResponse(
+            self,
+            url: str,
+            name: str,
+            local_context: dict,
+            status_code: int = 200,
+            headers: dict = None,
+            media_type: str = None,
+            background: BackgroundTask = None,
             only_part: bool = False
     ) -> Union[_MyTemplateResponse, JSONResponse]:
 
@@ -187,8 +195,10 @@ class MyJinja2Templates:
                     main=template.render(local_context),
                 )
                 response_data = {key: val for key, val in response_data.items() if val is not None and bool(val)}
+                data = code_to_resp[status_code](**response_data).dict()
+                print(data)
                 return JSONResponse(
-                    code_to_resp[status_code](**response_data).dict(), **template_response_params
+                    data, **template_response_params
                 )
             context = local_context | {
                 "response_status_code": status_code,
@@ -228,10 +238,10 @@ class MyJinja2Templates:
 
 login_templates = MyJinja2Templates(directory="content/templates/login")
 error_templates = MyJinja2Templates(directory="content/templates/errors")
-db_templates = MyJinja2Templates(directory="content/templates/database", admin_shell=_developer_shell, access=['dev'])
+db_templates = MyJinja2Templates(directory="content/templates/database", admin_shell=_developer_shell, access=[AccessType.DEVELOPER])
 public_templates = MyJinja2Templates(directory="content/templates/public_temp")
 
 developer_templates = MyJinja2Templates(directory="content/templates/developers", admin_shell=_developer_shell,
-                                        access=['dev'])
+                                        access=[AccessType.DEVELOPER])
 admin_templates = MyJinja2Templates(directory="content/templates/admins", admin_shell=_admin_shell,
-                                    access=['admin'])
+                                    access=[AccessType.ADMIN])

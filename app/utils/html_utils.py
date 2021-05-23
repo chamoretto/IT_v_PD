@@ -1,7 +1,10 @@
+from __future__ import annotations
 from functools import reduce, wraps
 
-from app.pydantic_models.standart_methhods_redefinition import BaseModel
+from fastapi.templating import Jinja2Templates
+from fastapi import Request
 
+from app.pydantic_models.standart_methhods_redefinition import BaseModel
 
 
 class Alert:
@@ -26,6 +29,10 @@ class Alert:
             "content": self.content,
             "type": self.alert_type
         }
+
+    def alert_renderer(self, request: Request = None, basic_data: dict = dict) -> str:
+        """ Переопределён ниже """
+        return str(self)
 
     def __dir__(self):
         return self.conv
@@ -75,3 +82,29 @@ def nice_table_page(func):
         return get_nice_table_page(func(cls, *a, **k), href=f'/db/{cls.__name__}/new')
 
     return decorator
+
+
+_public_template = Jinja2Templates("content/templates/public_temp")
+_layout_env = Jinja2Templates("content/templates/layout")
+_skeleton_template = _layout_env.get_template("skeleton.html")
+_alert_template = _layout_env.get_template("alert.html")
+_admin_shell_template = _layout_env.get_template("admin_shell.html")
+
+
+def alert_renderer(alert: Alert, request: Request = None, basic_data: dict = dict()) -> str:
+    if "request" not in basic_data:
+        basic_data['request'] = request
+    if basic_data['request']:
+        return _alert_template.render(basic_data | {"alert": alert})
+    raise AttributeError
+
+
+def shell_renderer(shell: dict[str, 'PdUrl'], request: Request = None, basic_data: dict = dict()) -> str:
+    if "request" not in basic_data:
+        basic_data['request'] = request
+    if basic_data['request']:
+        return _admin_shell_template.render(basic_data | {"pages": shell})
+    raise AttributeError
+
+
+Alert.alert_renderer = alert_renderer

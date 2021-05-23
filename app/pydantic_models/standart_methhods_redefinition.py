@@ -1,3 +1,4 @@
+from __future__ import annotations
 import inspect
 from typing import Type, Union, Dict, Any, cast, TypeVar
 import warnings
@@ -62,13 +63,19 @@ def as_form(cls: Type[BaseModel]):
 class PydanticValidators:
 
     @staticmethod
-    def datetime(cls, value):
+    def datetime(cls: BaseModel, value):
         if value is None or not bool(value):
             return None
         return value
 
-    def __class_getitem__(cls, code) -> str:
-        # print('----------------', [code.html_type])
+    @staticmethod
+    def date(cls: BaseModel, value):
+        if value is None or not bool(value):
+            return None
+        return value
+
+    def __class_getitem__(cls, code: 'AllInfoStr') -> str:
+        print('----------------', code.html_type or [str(code.html_type)])
         if hasattr(PydanticValidators, str(code.html_type)):
             return f'\n\n\t@validator("{code.name}", pre=True, always=True)\n' \
                    f'\tdef {code.name}_to_{code.html_type}_validator(cls, value):\n' \

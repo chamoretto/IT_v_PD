@@ -46,16 +46,7 @@ def basic_create_access_token(data: dict, expires_delta: Optional[timedelta] = N
     return encoded_jwt
 
 
-oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="token",
-    scopes={
-        "user": "Участник программы 1000ln",
-        "smmer": "Редактор различного контента на сайте",
-        "direction_expert": "Проверяющий работы на конкурсе",
-        "admin": "Управляющий сайтом",
-        "developer": "Разработчик сайта"
-    },
-)
+
 
 # scopes_to_db = {
 #     "user": m.User,
@@ -84,6 +75,17 @@ app_routers_to_scopes.update({
     "dev": scopes_to_db[m.Developer],
     "direction_expert": scopes_to_db[m.DirectionExpert],
 })
+
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="token",
+    scopes={
+        str(AccessType.USER): "Участник программы 1000ln",
+        str(AccessType.SMMER): "Редактор различного контента на сайте",
+        str(AccessType.DIRECTION_EXPERT): "Проверяющий работы на конкурсе",
+        str(AccessType.ADMIN): "Управляющий сайтом",
+        str(AccessType.DEVELOPER): "Разработчик сайта"
+    },
+)
 
 
 class PassScopes(BaseModel):

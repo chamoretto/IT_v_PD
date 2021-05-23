@@ -8,4 +8,4 @@ function set_fixed_position_event() {
     });
 }
 
-jQuery(document).ready(set_fixed_position_event);
+// jQuery(document).ready(set_fixed_position_event);

@@ -23,6 +23,9 @@ from app.utils.utils_of_security import get_password_hash
 from app.db_router.security import get_current_human_for_db
 from app.pydantic_models import gen as role_m
 from app.utils.exceptions import ChildHTTPException as HTTPException
+from app.utils.responses import RedirectResponseWithBody
+from app.pydantic_models.response_models import Ajax300Answer
+from app.utils.html_utils import Alert
 
 
 db_route = APIRouter(
@@ -95,9 +98,10 @@ def create_entity(request: Request,
     try:
         data = dict(getattr(pk_pd, name)(**dict(new_ent_data)))
     except ImportError as e:
-        print('ошибка в ', __file__, "при сохранении созданной сущноси")
+        print('ошибка в create_entity', __file__, "при сохранении созданной сущноси", e)
+        raise e
     chek_unique = {key: val for key, val in data.items() if ent.exists(**{key: val})}
-    print(chek_unique)
+    print('chek_unique', chek_unique)
     if bool(chek_unique):
         return JSONResponse(
             {"answer_for_user": "следующие поля уже существуют",
@@ -112,8 +116,11 @@ def create_entity(request: Request,
     try:
         ent(**dict(new_ent_data))
         commit()
-        return JSONResponse({"answer_for_user": "Данные успешно внесены в базу данных",
-                             "type": "success_creation"}, status_code=201)
+        return RedirectResponseWithBody(f"/db/{name}", Ajax300Answer(
+            url=f"/db/{name}",
+            alert=Alert("Новый объект успешно создан!"),
+            request=request))
+
     except IntegrityError as e:
         print(e)
         if str(e).startswith("UNIQUE constraint failed:"):
@@ -123,7 +130,7 @@ def create_entity(request: Request,
                                  "errors": {name + "_" + param + "_error": "этот параметр должен быть уникальным"}
                                  }, status_code=400)
     except Exception as e:
-        print("возникла непредвиденная ошибка в", __file__, "create_entity", e)
+        print("возникла непредвиденная ошибка в", __file__, "create_entity", e, [e])
         return JSONResponse(
             {"answer_for_user": "Возникла непонятная ошибка, попробуйте еще раз",
              "type": "fields_create_entity"}, status_code=400)

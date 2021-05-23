@@ -94,6 +94,11 @@ class User(BaseModel):
 	hash_password: str
 	user_works: Set[Union[Tuple[int, int], UserWork]] = []
 
+
+	@validator("date_of_birth", pre=True, always=True)
+	def date_of_birth_to_date_validator(cls, value):
+		return PydanticValidators.date(cls, value)
+
 	class Config:
 		orm_mode = True
 

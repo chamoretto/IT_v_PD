@@ -15,24 +15,24 @@ from datetime import date, datetime, time
 
 from app.pydantic_models.standart_methhods_redefinition import BaseModel, as_form
 from app.pydantic_models.standart_methhods_redefinition import PydanticValidators
-from app.pydantic_models.gen.output_ent import Smm
-from app.pydantic_models.gen.output_ent import SimpleEntity
+from app.pydantic_models.gen.output_ent import DirectionExpert
 from app.pydantic_models.gen.output_ent import Page
 from app.pydantic_models.gen.output_ent import Criterion
+from app.pydantic_models.gen.output_ent import Admin
+from app.pydantic_models.gen.output_ent import Question
+from app.pydantic_models.gen.output_ent import Competition
+from app.pydantic_models.gen.output_ent import CompetitionDirection
+from app.pydantic_models.gen.output_ent import UserWork
+from app.pydantic_models.gen.output_ent import User
+from app.pydantic_models.gen.output_ent import SimpleEntity
+from app.pydantic_models.gen.output_ent import HumanContacts
+from app.pydantic_models.gen.output_ent import Smm
+from app.pydantic_models.gen.output_ent import Task
+from app.pydantic_models.gen.output_ent import MarkWork
 from app.pydantic_models.gen.output_ent import Direction
 from app.pydantic_models.gen.output_ent import Human
-from app.pydantic_models.gen.output_ent import Task
-from app.pydantic_models.gen.output_ent import User
-from app.pydantic_models.gen.output_ent import UserWork
 from app.pydantic_models.gen.output_ent import News
-from app.pydantic_models.gen.output_ent import Admin
 from app.pydantic_models.gen.output_ent import Developer
-from app.pydantic_models.gen.output_ent import MarkWork
-from app.pydantic_models.gen.output_ent import Question
-from app.pydantic_models.gen.output_ent import CompetitionDirection
-from app.pydantic_models.gen.output_ent import DirectionExpert
-from app.pydantic_models.gen.output_ent import Competition
-from app.pydantic_models.gen.output_ent import HumanContacts
 from app.settings.config import HOME_DIR
 
 
