@@ -9,6 +9,8 @@ from app.settings.config import cfg
 from app.dependencies import *
 from app.db import models as m
 from app.utils.utils_of_security import generate_security, basic_login, scopes_to_db
+from app.utils.jinja2_utils import _roles_to_home_urls
+
 
 SECRET_KEY = cfg.get('keys', "admin")
 ACCESS_TOKEN_TIME = int(cfg.get('keys', "admin_time"))
@@ -42,4 +44,4 @@ def login_for_access_token(request: Request, form_data: OAuth2PasswordRequestFor
 async def login_admin(request: Request):
     return login_templates.TemplateResponse(
         "login.html",
-        {"request": request, "who": "Админа", "auth_url": "/" + token_path})
+        {"request": request, "who": "Админа", "auth_url": "/" + token_path, "roles_to_home_urls": _roles_to_home_urls})

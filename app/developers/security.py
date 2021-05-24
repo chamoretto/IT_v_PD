@@ -9,6 +9,7 @@ from app.settings.config import cfg
 from app.dependencies import *
 from app.db import models as m
 from app.utils.utils_of_security import generate_security, basic_login, scopes_to_db
+from app.utils.jinja2_utils import _roles_to_home_urls
 
 
 SECRET_KEY = cfg.get('keys', "developer")
@@ -43,5 +44,5 @@ async def login_dev(request: Request):
     print(request.headers)
     return login_templates.TemplateResponse(
         "login.html",
-        {"request": request, "who": "Разработчика", "auth_url": "/" + token_path})
+        {"request": request, "who": "Разработчика", "auth_url": "/" + token_path, "roles_to_home_urls": _roles_to_home_urls})
 

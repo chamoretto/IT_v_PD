@@ -16,6 +16,7 @@ class ResponseType(Enum):
     JSON = "json"
     REDIRECT = "redirect"
     AUTHORIZATION_REDIRECT = "authorization_redirect"
+    SAVE_FILE = "save_file"
 
     def __str__(self) -> str:
         return self.value
@@ -50,7 +51,7 @@ class PdUrl(BaseModel):
 
 
 class BaseResponse(BaseModel):
-    my_response_type: ResponseType = ResponseType.HTML
+    my_response_type: Union[ResponseType, str] = str(ResponseType.HTML)
 
     def __str__(self) -> str:
         return self.value
@@ -182,8 +183,16 @@ class Ajax300Answer(BaseHTMLDataResponse):
     def args_to_kwargs(cls, url: str, method: str, *args) -> dict[str, Any]:
         return dict(url=url, method=method)
 
+
 class TableCell(BaseModel):
     name: str
+
+
+class SaveFileResponse(BaseResponse):
+    my_response_type: Union[ResponseType, str] = str(ResponseType.SAVE_FILE)
+    filename: str
+    success: bool = True
+    file_id: str
 
 
 code_to_resp: dict[int, Type[BaseResponse]] = {

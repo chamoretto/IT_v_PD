@@ -112,6 +112,14 @@ _all_shells: dict[str, dict[str, PdUrl]] = {
     "DirectionExpert": _expert_shell,
 }
 
+_roles_to_home_urls: dict[str, str] = {
+    m.Admin.__name__: "admin",
+    m.Smm.__name__: "smm",
+    m.Developer.__name__: "dev",
+    m.User.__name__: "user",
+    m.DirectionExpert.__name__: "direction_expert"
+}
+
 
 class MyJinja2Templates:
     """
@@ -255,6 +263,7 @@ class MyJinja2Templates:
                     socials=[easy_ent_pd.Socials(id=key, **val) for key, val in
                              dict(m.SimpleEntity['socials'].data).items()],
                     header_pages=[i.get_header_menu_html_code() for i in m.Page.select(lambda i: i.is_header)[:]],
+                    roles_to_home_urls=_roles_to_home_urls,
 
                 )
         return _MyTemplateResponse(

@@ -131,7 +131,15 @@
           {% endif %}
           <li class="margin-right-sm">|</li>
           <li><a class="icon dark-mode-switchers"></a></li>
+            {% if request.current_human != Undefined %}
+            {% if roles_to_home_urls is defined%}
+            <li class="f-header__item margin-x-sm">
+                <a href="{{roles_to_home_urls[request.current_human.__class__.__name__]}}/me" class="f-header__link">{{request.current_human.username}}</a>
+            </li>
+            {% endif %}
+            {% else %}
             <li class="f-header__item margin-x-sm"><a href="/log_in" class="f-header__link">Войти</a></li>
+            {% endif %}
         </ul>
       </div>
     </nav>

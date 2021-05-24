@@ -1,8 +1,11 @@
+from os import path, makedirs
+
 from fastapi import Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse, Response
 from pony.orm import db_session
 
-from fastapi import status, APIRouter
+import aiofiles
+from fastapi import status, APIRouter, UploadFile, File, Form
 
 from app.dependencies import *
 from app.db import models as m
@@ -10,6 +13,8 @@ from app.pydantic_models.gen import db_models_for_create as pd, output_ent as ou
 from app.pydantic_models import simple_entities as easy_ent_pd
 from app.utils.jinja2_utils import public_templates
 from app.utils.exceptions import ChildHTTPException as HTTPException
+from app.settings.config import join, HOME_DIR
+from app.pydantic_models.response_models import SaveFileResponse
 
 
 public_router = APIRouter()
@@ -115,6 +120,34 @@ def get_public_pages(request: Request):
         return public_templates.TemplateResponse(ent.page_path, {
             "request": request})
     raise HTTPException(request=request, **error_404_Page)
+
+
+@public_router.post("/upload_file", response_model=SaveFileResponse, status_code=status.HTTP_201_CREATED)
+@db_session
+async def upload_file(
+        # request: Request,
+        # response: Response,
+        file: UploadFile=File(...),
+        # file_id: str = Form(" ")
+):
+    out_file_path = join(HOME_DIR, "content", "public", "users_files", "no_name")  # , in_file.filename
+    if not path.exists(out_file_path):
+        makedirs(out_file_path, mode=0o777, exist_ok=False)
+    out_file_path = join(out_file_path, file.filename)
+    return_filename = join("content", "public", "users_files", "no_name", file.filename)
+    try:
+        async with aiofiles.open(out_file_path, 'wb') as out_file:
+            content = await file.read()  # async read
+            await out_file.write(content)  # async write
+
+        return SaveFileResponse(filename=return_filename, file_id=file_id)
+    except ValueError as e:
+        print("ошибка в upload_file", e, [e], __file__)
+        # response.status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+        return SaveFileResponse(filename="", success=False, file_id=file_id)
+
+
+
 
 
 # @public_router.get("/competition")

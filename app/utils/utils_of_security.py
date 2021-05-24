@@ -22,6 +22,7 @@ from app.utils.exceptions import ChildHTTPException as HTTPException
 from app.utils.responses import RedirectResponseWithBody
 from app.pydantic_models.response_models import Ajax300Answer, ResponseType
 from app.utils.html_utils import Alert
+from app.utils.jinja2_utils import _roles_to_home_urls
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -209,6 +210,9 @@ def check_scopes(username: str, password: str, scopes: List[str]) \
     return None, False
 
 
+
+
+
 @security.post("/token")
 @db_session
 def basic_login(request: Request,
@@ -236,15 +240,15 @@ def basic_login(request: Request,
         expires_delta=access_token_expires,
     )
     print(form_data.scopes, "access_token", access_token)
-    print(ent.__class__.__name__.lower())
+    print(_roles_to_home_urls[ent.__class__.__name__])
     return RedirectResponseWithBody(
-        f"/{ent.__class__.__name__.lower()}/me",
+        f"/{_roles_to_home_urls[ent.__class__.__name__]}/me",
         Ajax300Answer(
-        url=f"/{ent.__class__.__name__.lower()}/me",
-        alert=Alert("Вы успешно авторизовались!"),
-        data={"access_token": access_token, "token_type": "bearer"},
-        my_response_type=str(ResponseType.AUTHORIZATION_REDIRECT),
-        request=request
+            url=f"/{_roles_to_home_urls[ent.__class__.__name__]}/me",
+            alert=Alert("Вы успешно авторизовались!"),
+            data={"access_token": access_token, "token_type": "bearer"},
+            my_response_type=str(ResponseType.AUTHORIZATION_REDIRECT),
+            request=request
         )
-   )
+    )
     # return {"access_token": access_token, "token_type": "bearer"}

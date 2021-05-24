@@ -40,6 +40,14 @@ function change_html_from_ajax(json_data){
         help_to_change_html_from_ajax("#alert", data.alert);
         help_to_change_html_from_ajax("#admin_shell", data.admin_shell);
     }
+    if (data.my_response_type === "save_file"){
+        console.log(data);
+        if (data['success']){
+            $(data['file_id']).attr("value", data['filename'])
+        } else {
+            $(data['file_id']).attr("value", data['filename'])
+        }
+    }
 }
 
 function redirect_with_body_processing(json_data){
@@ -64,10 +72,8 @@ function url_processing(event){
         change_html_from_ajax(xhr.responseText);
         // document.querySelectorAll("main")[0].innerHTML = " " + xhr.responseText;
     } else if (xhr.status === 201){
-        document.querySelectorAll("main")[0].innerHTML = " " + xhr.responseText;
-    } else if (xhr.status === 401){
         change_html_from_ajax(xhr.responseText);
-        // document.querySelectorAll("main")[0].innerHTML = " " + xhr.responseText;
+//        document.querySelectorAll("main")[0].innerHTML = " " + xhr.responseText;
     } else if (xhr.status === 404){
         change_html_from_ajax(xhr.responseText);
         // document.querySelectorAll("main")[0].innerHTML = " " + xhr.responseText;
@@ -75,6 +81,12 @@ function url_processing(event){
         console.log("redirect_data: ", xhr.responseText);
         change_html_from_ajax(xhr.responseText);
         redirect_with_body_processing(xhr.responseText);
+    } else if (xhr.status === 401){
+        change_html_from_ajax(xhr.responseText);
+        // document.querySelectorAll("main")[0].innerHTML = " " + xhr.responseText;
+    } else if (xhr.status === 422){
+        change_html_from_ajax(xhr.responseText);
+        // document.querySelectorAll("main")[0].innerHTML = " " + xhr.responseText;
     }
     after_load_funcs_run();
     // urls_as_ajax();
@@ -107,3 +119,14 @@ function authorization_response_processing(event){
     // set_fixed_position_event();
     after_load_funcs_run()
 }
+
+//function get_filename_after_load(event){
+//    const xhr = event.target;
+//    console.log("статус ajax-а как формы", xhr.status, xhr.readyState);
+//    if (xhr.status === 200) {
+//
+//        const json_data = JSON.parse(xhr.responseText);
+//        console.log(json_data);
+//
+//    }
+//}
