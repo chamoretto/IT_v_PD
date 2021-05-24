@@ -125,10 +125,10 @@ def get_public_pages(request: Request):
 @public_router.post("/upload_file", response_model=SaveFileResponse, status_code=status.HTTP_201_CREATED)
 @db_session
 async def upload_file(
-        # request: Request,
-        # response: Response,
+        request: Request,
+        response: Response,
         file: UploadFile=File(...),
-        # file_id: str = Form(" ")
+        file_id: str = Form(" ")
 ):
     out_file_path = join(HOME_DIR, "content", "public", "users_files", "no_name")  # , in_file.filename
     if not path.exists(out_file_path):
@@ -143,11 +143,15 @@ async def upload_file(
         return SaveFileResponse(filename=return_filename, file_id=file_id)
     except ValueError as e:
         print("ошибка в upload_file", e, [e], __file__)
-        # response.status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+        response.status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
         return SaveFileResponse(filename="", success=False, file_id=file_id)
 
 
 
+# @public_router
+# @db_session
+# def get_question(request: Request, answer_email = Form(...)):
+#     pass
 
 
 # @public_router.get("/competition")

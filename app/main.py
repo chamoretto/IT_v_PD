@@ -121,6 +121,7 @@ def custom_http_exception_handler(request: Request, exc: HTTPException):
             if hasattr(exc, "burning_request") and hasattr(exc.burning_request, "__dict__"):
                 request.__dict__.update(exc.burning_request.__dict__)
             return error_templates.TemplateRedirectResponse("/log_in", "403.html", {
+                "url": "/log_in",
                 "request": request,
                 "alert": Alert("Вам необходимо авторизоваться, чтобы просматривать эту страницу", Alert.ERROR),
             }, )

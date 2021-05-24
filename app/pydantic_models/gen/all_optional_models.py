@@ -53,8 +53,8 @@ class Human(BaseModel):
 	questions: Set[Union[int, Question]] = []
 	hash_password: Optional[str] = None
 
-	class Config:
-		orm_mode = True
+	# class Config:
+	# 	orm_mode = True
 
 
 class Admin(BaseModel):

@@ -18,7 +18,9 @@ from app.settings.config import cfg
 from app.utils.pydantic_security import TokenData, HumanInDB, Token, BaseModel
 from app.utils.utils_of_security import oauth2_scheme, PassScopes, SECRET_KEY, ALGORITHM
 from app.pydantic_models.gen import db_models_for_create as pd
+from app.pydantic_models.gen import all_optional_models as op_pd
 from app.utils.exceptions import ChildHTTPException as HTTPException
+from app.pydantic_models.standart_methhods_redefinition import AccessType
 
 
 @db_session
@@ -34,7 +36,9 @@ def get_current_human_for_db(
         security_scopes: SecurityScopes = PassScopes(),
         token: str = Depends(oauth2_scheme)):
     """ Получение текущего пользователя"""
-
+    print('---------------------------------sdsdcasdcascdascdasdc')
+    if token is None:
+        return op_pd.Human(scopes=[str(AccessType.PUBLIC)])
     try:
         print(security_scopes.scopes)
         if security_scopes.scopes and bool(security_scopes.scopes):

@@ -182,19 +182,19 @@
 
 <!-- ------- Form -------- -->
 <div class="max-width-adaptive-md margin-x-auto margin-top-md">
-  <form id="questions_form" action="" method="post" enctype="multipart/form-data">
+  <form id="questions_form" action="/db/Question/new" method="post" enctype="multipart/form-data">
     <fieldset class="margin-bottom-md">
       <legend class="form-legend text-center">Остались вопросы?</legend>
       <div class="margin-bottom-sm">
         <div class="grid grid-gap-sm">
           <div class="col-6@md">
-            <label class="form-label margin-bottom-xxs" for="human_names" >Имя</label>
-            <input class="form-control text-sm width-100%" type="text" name="human_names" id="human_names" required>
+            <label class="form-label margin-bottom-xxs" for="human_names" >Тема вопроса</label>
+            <input class="form-control text-sm width-100%" type="text" name="question_title" id="human_names" required>
           </div>
 
           <div class="col-6@md">
             <label class="form-label margin-bottom-xxs" for="emails">Почта</label>
-            <input class="form-control text-sm width-100%" type="email" name="emails" id="emails"
+            <input class="form-control text-sm width-100%" type="email" name="answer_email" id="emails"
                    placeholder="email@myemail.com" required>
           </div>
         </div>

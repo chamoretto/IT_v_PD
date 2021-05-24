@@ -227,7 +227,7 @@ class MyJinja2Templates:
                 response_data = {key: val for key, val in response_data.items() if val is not None and bool(val)}
 
                 if url is not None:
-                    data = code_to_resp[300](url=url, **response_data).dict()
+                    data = code_to_resp[300](url=url, **response_data)
                     return RedirectResponseWithBody(url, data, **template_response_params)
                 data = code_to_resp[status_code](**response_data).dict()
                 print(data)

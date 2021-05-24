@@ -814,7 +814,7 @@ class Question(db.Entity):
         :type answer_email: email
         :access answer: public dev admin
         :mod answer_email dev admin: create edit look
-        :mod answer_email public: look
+        :mod answer_email public: create look
 
         :param human: Человек, задавший вопрос
         :type human: select

@@ -37,7 +37,9 @@ db_route = APIRouter(
         Security(get_current_human_for_db)
     ],  #
     responses={404: {"description": "Not found------"},
-               401: {"description": "Пользователь не был авторизировани"}}, )
+               401: {"description": "Пользователь не был авторизировани"}},
+
+)
 
 
 # DynamicEnum = enum.Enum('DynamicEnum', {'foo':42, 'bar':24})

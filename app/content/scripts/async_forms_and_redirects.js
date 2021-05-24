@@ -14,7 +14,7 @@ function send_form_as_ajax() {
 
 
             let send_data = {};
-            let form_fields = $current_form.find("input, select").not('[type="submit"]');
+            let form_fields = $current_form.find("input, select, textarea").not('[type="submit"]');
 
 
 

@@ -375,6 +375,7 @@ class User(Human):
     about_program = Optional(str)  # Отзыв о программе
     direction = Optional(str)  # с каким направлением себя ассоциирует участник
     visible_about_program_field = Required(bool, default='false')
+
     # будет ли отзыв участника о программе
     # отображаться на главной странице
 
@@ -1814,7 +1815,7 @@ class Question(db.Entity):
         :type answer_email: email
         :access answer: public dev admin
         :mod answer_email dev admin: create edit look
-        :mod answer_email public: look
+        :mod answer_email public: create look
 
         :param human: Человек, задавший вопрос
         :type human: select
