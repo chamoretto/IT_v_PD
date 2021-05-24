@@ -25,6 +25,7 @@ from app.smmers.security import smmer as security_smmer
 from app.direction_experts.security import direction_expert as security_direction_expert
 from app.admins.security import admin as security_admin
 from app.developers.security import dev as security_dev
+from app.public_routers.security import public_security
 from app.utils.utils_of_security import security
 from app.utils.basic_utils import async_iterator_wrapper as aiwrap
 from app.utils.html_utils import Alert
@@ -34,9 +35,13 @@ from app.pydantic_models.standart_methhods_redefinition import BaseModel
 from app.db import models as m
 from app.utils.jinja2_utils import public_templates
 from app.utils.exceptions import ChildHTTPException as HTTPException
+from app.pydantic_models.response_models import GenResp, Ajax200Answer
+from app.utils.responses import RedirectResponseWithBody
+from app.pydantic_models.response_models import Ajax300Answer
 
-
-app = FastAPI()
+app = FastAPI(
+    tags=["public"],
+)
 # app.add_middleware(HTTPSRedirectMiddleware)  # Устанавливаем https
 # app.add_middleware(GZipMiddleware, minimum_size=1000)  # все файлы ответов больше 1000 байт сжимаются
 
@@ -73,6 +78,7 @@ app.include_router(admin)
 app.include_router(dev)
 app.include_router(db_route)
 
+app.include_router(public_security)
 app.include_router(security_user)
 app.include_router(security_smmer)
 app.include_router(security_direction_expert)
@@ -85,6 +91,11 @@ app.include_router(security)
 @app.get("/test", response_class=HTMLResponse)
 async def root():
     return FileResponse('index.html')
+
+
+@app.get("/test_new_sys")
+def test_new_sys(request: Request):
+    return GenResp(Ajax200Answer, request, ".html", public_templates, {}, alert=Alert, shell={})
 
 
 @app.exception_handler(StarletteHTTPException)
@@ -105,8 +116,22 @@ def custom_http_exception_handler(request: Request, exc: HTTPException):
                 },
                 status_code=401,
             )
-
+        elif exc.status_code == 403:
+            print(request.__dict__)
+            if hasattr(exc, "burning_request") and hasattr(exc.burning_request, "__dict__"):
+                request.__dict__.update(exc.burning_request.__dict__)
+            return error_templates.TemplateRedirectResponse("/log_in", "403.html", {
+                "request": request,
+                "alert": Alert("Вам необходимо авторизоваться, чтобы просматривать эту страницу", Alert.ERROR),
+            }, )
+            # return  RedirectResponseWithBody(f"/log_in", Ajax300Answer(
+            #     url=f"/log_in",
+            #     alert=Alert("Вам необходимо авторизоваться, чтобы просматривать эту страницу", Alert.ERROR),
+            #     request=request))
         elif exc.status_code == 404:
+            print(request.__dict__)
+            if hasattr(exc, "burning_request") and hasattr(exc.burning_request, "__dict__"):
+                request.__dict__.update(exc.burning_request.__dict__)
             return error_templates.TemplateResponse("404.html", {
                 "request": (exc.burning_request if hasattr(exc, "burning_request") else request),
                 "detail": exc.detail,
@@ -126,6 +151,8 @@ def custom_http_exception_handler(request: Request, exc: HTTPException):
 
 
 if __name__ == "__main__":
+    # list.__class_getitem__(*(1,))
+    # print(a[(2,)])
     try:
         create_pages()
     except TransactionIntegrityError:

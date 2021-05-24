@@ -2,7 +2,7 @@ import enum
 from typing import Any
 
 try:
-    from app.pydantic_models.gen import db_models_for_create as pd
+    from app.pydantic_models.gen import db_models as pd
     from app.pydantic_models.gen import unique_db_field_models as pk_pd
     from app.pydantic_models.gen import unique_db_field_models as pk_pd
     from app.pydantic_models.gen import input_ent as inp_pd
@@ -115,7 +115,11 @@ class Human(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
+    def get_entities_html(cls, *keys,
+                          db_mode: bool = True,
+                          access: list[str] = ["public"],
+                          filter_ent=lambda i: True,
+                          entities: list['db.Entity'] = None) -> dict[str, Any]:
         """
 
         :param cls:
@@ -141,8 +145,9 @@ class Human(db.Entity):
             print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return dict()
-        [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
-        entities = [ent for ent in cls.select()[:]]
+        # [i.get_entity_html(data) for i in select((ent for ent in cls if filter_ent(ent)))[:]]
+        if entities is None:
+            entities = [ent for ent in cls.select(filter_ent)[:]]
         return {
             "zip": zip,
             "table": [[TableCell(name=str(getattr(ent, i))) for i in data] for ent in entities],
@@ -239,7 +244,11 @@ class Admin(Human):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
+    def get_entities_html(cls, *keys,
+                          db_mode: bool = True,
+                          access: list[str] = ["public"],
+                          filter_ent=lambda i: True,
+                          entities: list['db.Entity'] = None) -> dict[str, Any]:
         """
 
         :param cls:
@@ -265,8 +274,9 @@ class Admin(Human):
             print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return dict()
-        [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
-        entities = [ent for ent in cls.select()[:]]
+        # [i.get_entity_html(data) for i in select((ent for ent in cls if filter_ent(ent)))[:]]
+        if entities is None:
+            entities = [ent for ent in cls.select(filter_ent)[:]]
         return {
             "zip": zip,
             "table": [[TableCell(name=str(getattr(ent, i))) for i in data] for ent in entities],
@@ -384,7 +394,11 @@ class User(Human):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
+    def get_entities_html(cls, *keys,
+                          db_mode: bool = True,
+                          access: list[str] = ["public"],
+                          filter_ent=lambda i: True,
+                          entities: list['db.Entity'] = None) -> dict[str, Any]:
         """
 
         :param cls:
@@ -410,8 +424,9 @@ class User(Human):
             print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return dict()
-        [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
-        entities = [ent for ent in cls.select()[:]]
+        # [i.get_entity_html(data) for i in select((ent for ent in cls if filter_ent(ent)))[:]]
+        if entities is None:
+            entities = [ent for ent in cls.select(filter_ent)[:]]
         return {
             "zip": zip,
             "table": [[TableCell(name=str(getattr(ent, i))) for i in data] for ent in entities],
@@ -489,7 +504,11 @@ class Smm(Human):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
+    def get_entities_html(cls, *keys,
+                          db_mode: bool = True,
+                          access: list[str] = ["public"],
+                          filter_ent=lambda i: True,
+                          entities: list['db.Entity'] = None) -> dict[str, Any]:
         """
 
         :param cls:
@@ -515,8 +534,9 @@ class Smm(Human):
             print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return dict()
-        [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
-        entities = [ent for ent in cls.select()[:]]
+        # [i.get_entity_html(data) for i in select((ent for ent in cls if filter_ent(ent)))[:]]
+        if entities is None:
+            entities = [ent for ent in cls.select(filter_ent)[:]]
         return {
             "zip": zip,
             "table": [[TableCell(name=str(getattr(ent, i))) for i in data] for ent in entities],
@@ -545,7 +565,7 @@ class Developer(Human):
         :mod username dev: look
         :mod username self: create edit look
 
-        :access password: dev
+        :access password: dev self
         :mod password dev: create
         :mod password self: create
 
@@ -604,7 +624,11 @@ class Developer(Human):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
+    def get_entities_html(cls, *keys,
+                          db_mode: bool = True,
+                          access: list[str] = ["public"],
+                          filter_ent=lambda i: True,
+                          entities: list['db.Entity'] = None) -> dict[str, Any]:
         """
 
         :param cls:
@@ -630,8 +654,9 @@ class Developer(Human):
             print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return dict()
-        [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
-        entities = [ent for ent in cls.select()[:]]
+        # [i.get_entity_html(data) for i in select((ent for ent in cls if filter_ent(ent)))[:]]
+        if entities is None:
+            entities = [ent for ent in cls.select(filter_ent)[:]]
         return {
             "zip": zip,
             "table": [[TableCell(name=str(getattr(ent, i))) for i in data] for ent in entities],
@@ -713,7 +738,11 @@ class HumanContacts(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
+    def get_entities_html(cls, *keys,
+                          db_mode: bool = True,
+                          access: list[str] = ["public"],
+                          filter_ent=lambda i: True,
+                          entities: list['db.Entity'] = None) -> dict[str, Any]:
         """
 
         :param cls:
@@ -739,8 +768,9 @@ class HumanContacts(db.Entity):
             print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return dict()
-        [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
-        entities = [ent for ent in cls.select()[:]]
+        # [i.get_entity_html(data) for i in select((ent for ent in cls if filter_ent(ent)))[:]]
+        if entities is None:
+            entities = [ent for ent in cls.select(filter_ent)[:]]
         return {
             "zip": zip,
             "table": [[TableCell(name=str(getattr(ent, i))) for i in data] for ent in entities],
@@ -816,7 +846,11 @@ class DirectionExpert(Human):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
+    def get_entities_html(cls, *keys,
+                          db_mode: bool = True,
+                          access: list[str] = ["public"],
+                          filter_ent=lambda i: True,
+                          entities: list['db.Entity'] = None) -> dict[str, Any]:
         """
 
         :param cls:
@@ -842,8 +876,9 @@ class DirectionExpert(Human):
             print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return dict()
-        [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
-        entities = [ent for ent in cls.select()[:]]
+        # [i.get_entity_html(data) for i in select((ent for ent in cls if filter_ent(ent)))[:]]
+        if entities is None:
+            entities = [ent for ent in cls.select(filter_ent)[:]]
         return {
             "zip": zip,
             "table": [[TableCell(name=str(getattr(ent, i))) for i in data] for ent in entities],
@@ -919,7 +954,11 @@ class Competition(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
+    def get_entities_html(cls, *keys,
+                          db_mode: bool = True,
+                          access: list[str] = ["public"],
+                          filter_ent=lambda i: True,
+                          entities: list['db.Entity'] = None) -> dict[str, Any]:
         """
 
         :param cls:
@@ -945,8 +984,9 @@ class Competition(db.Entity):
             print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return dict()
-        [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
-        entities = [ent for ent in cls.select()[:]]
+        # [i.get_entity_html(data) for i in select((ent for ent in cls if filter_ent(ent)))[:]]
+        if entities is None:
+            entities = [ent for ent in cls.select(filter_ent)[:]]
         return {
             "zip": zip,
             "table": [[TableCell(name=str(getattr(ent, i))) for i in data] for ent in entities],
@@ -1004,7 +1044,11 @@ class Direction(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
+    def get_entities_html(cls, *keys,
+                          db_mode: bool = True,
+                          access: list[str] = ["public"],
+                          filter_ent=lambda i: True,
+                          entities: list['db.Entity'] = None) -> dict[str, Any]:
         """
 
         :param cls:
@@ -1030,8 +1074,9 @@ class Direction(db.Entity):
             print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return dict()
-        [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
-        entities = [ent for ent in cls.select()[:]]
+        # [i.get_entity_html(data) for i in select((ent for ent in cls if filter_ent(ent)))[:]]
+        if entities is None:
+            entities = [ent for ent in cls.select(filter_ent)[:]]
         return {
             "zip": zip,
             "table": [[TableCell(name=str(getattr(ent, i))) for i in data] for ent in entities],
@@ -1090,7 +1135,11 @@ class CompetitionDirection(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
+    def get_entities_html(cls, *keys,
+                          db_mode: bool = True,
+                          access: list[str] = ["public"],
+                          filter_ent=lambda i: True,
+                          entities: list['db.Entity'] = None) -> dict[str, Any]:
         """
 
         :param cls:
@@ -1116,8 +1165,9 @@ class CompetitionDirection(db.Entity):
             print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return dict()
-        [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
-        entities = [ent for ent in cls.select()[:]]
+        # [i.get_entity_html(data) for i in select((ent for ent in cls if filter_ent(ent)))[:]]
+        if entities is None:
+            entities = [ent for ent in cls.select(filter_ent)[:]]
         return {
             "zip": zip,
             "table": [[TableCell(name=str(getattr(ent, i))) for i in data] for ent in entities],
@@ -1206,7 +1256,11 @@ class Task(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
+    def get_entities_html(cls, *keys,
+                          db_mode: bool = True,
+                          access: list[str] = ["public"],
+                          filter_ent=lambda i: True,
+                          entities: list['db.Entity'] = None) -> dict[str, Any]:
         """
 
         :param cls:
@@ -1232,8 +1286,9 @@ class Task(db.Entity):
             print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return dict()
-        [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
-        entities = [ent for ent in cls.select()[:]]
+        # [i.get_entity_html(data) for i in select((ent for ent in cls if filter_ent(ent)))[:]]
+        if entities is None:
+            entities = [ent for ent in cls.select(filter_ent)[:]]
         return {
             "zip": zip,
             "table": [[TableCell(name=str(getattr(ent, i))) for i in data] for ent in entities],
@@ -1318,7 +1373,11 @@ class UserWork(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
+    def get_entities_html(cls, *keys,
+                          db_mode: bool = True,
+                          access: list[str] = ["public"],
+                          filter_ent=lambda i: True,
+                          entities: list['db.Entity'] = None) -> dict[str, Any]:
         """
 
         :param cls:
@@ -1344,8 +1403,9 @@ class UserWork(db.Entity):
             print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return dict()
-        [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
-        entities = [ent for ent in cls.select()[:]]
+        # [i.get_entity_html(data) for i in select((ent for ent in cls if filter_ent(ent)))[:]]
+        if entities is None:
+            entities = [ent for ent in cls.select(filter_ent)[:]]
         return {
             "zip": zip,
             "table": [[TableCell(name=str(getattr(ent, i))) for i in data] for ent in entities],
@@ -1420,7 +1480,11 @@ class Criterion(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
+    def get_entities_html(cls, *keys,
+                          db_mode: bool = True,
+                          access: list[str] = ["public"],
+                          filter_ent=lambda i: True,
+                          entities: list['db.Entity'] = None) -> dict[str, Any]:
         """
 
         :param cls:
@@ -1446,8 +1510,9 @@ class Criterion(db.Entity):
             print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return dict()
-        [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
-        entities = [ent for ent in cls.select()[:]]
+        # [i.get_entity_html(data) for i in select((ent for ent in cls if filter_ent(ent)))[:]]
+        if entities is None:
+            entities = [ent for ent in cls.select(filter_ent)[:]]
         return {
             "zip": zip,
             "table": [[TableCell(name=str(getattr(ent, i))) for i in data] for ent in entities],
@@ -1508,7 +1573,11 @@ class MarkWork(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
+    def get_entities_html(cls, *keys,
+                          db_mode: bool = True,
+                          access: list[str] = ["public"],
+                          filter_ent=lambda i: True,
+                          entities: list['db.Entity'] = None) -> dict[str, Any]:
         """
 
         :param cls:
@@ -1534,8 +1603,9 @@ class MarkWork(db.Entity):
             print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return dict()
-        [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
-        entities = [ent for ent in cls.select()[:]]
+        # [i.get_entity_html(data) for i in select((ent for ent in cls if filter_ent(ent)))[:]]
+        if entities is None:
+            entities = [ent for ent in cls.select(filter_ent)[:]]
         return {
             "zip": zip,
             "table": [[TableCell(name=str(getattr(ent, i))) for i in data] for ent in entities],
@@ -1641,7 +1711,11 @@ class Page(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
+    def get_entities_html(cls, *keys,
+                          db_mode: bool = True,
+                          access: list[str] = ["public"],
+                          filter_ent=lambda i: True,
+                          entities: list['db.Entity'] = None) -> dict[str, Any]:
         """
 
         :param cls:
@@ -1667,8 +1741,9 @@ class Page(db.Entity):
             print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return dict()
-        [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
-        entities = [ent for ent in cls.select()[:]]
+        # [i.get_entity_html(data) for i in select((ent for ent in cls if filter_ent(ent)))[:]]
+        if entities is None:
+            entities = [ent for ent in cls.select(filter_ent)[:]]
         return {
             "zip": zip,
             "table": [[TableCell(name=str(getattr(ent, i))) for i in data] for ent in entities],
@@ -1795,7 +1870,11 @@ class Question(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
+    def get_entities_html(cls, *keys,
+                          db_mode: bool = True,
+                          access: list[str] = ["public"],
+                          filter_ent=lambda i: True,
+                          entities: list['db.Entity'] = None) -> dict[str, Any]:
         """
 
         :param cls:
@@ -1821,8 +1900,9 @@ class Question(db.Entity):
             print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return dict()
-        [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
-        entities = [ent for ent in cls.select()[:]]
+        # [i.get_entity_html(data) for i in select((ent for ent in cls if filter_ent(ent)))[:]]
+        if entities is None:
+            entities = [ent for ent in cls.select(filter_ent)[:]]
         return {
             "zip": zip,
             "table": [[TableCell(name=str(getattr(ent, i))) for i in data] for ent in entities],
@@ -1874,7 +1954,11 @@ class SimpleEntity(db.Entity):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
+    def get_entities_html(cls, *keys,
+                          db_mode: bool = True,
+                          access: list[str] = ["public"],
+                          filter_ent=lambda i: True,
+                          entities: list['db.Entity'] = None) -> dict[str, Any]:
         """
 
         :param cls:
@@ -1900,8 +1984,9 @@ class SimpleEntity(db.Entity):
             print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return dict()
-        [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
-        entities = [ent for ent in cls.select()[:]]
+        # [i.get_entity_html(data) for i in select((ent for ent in cls if filter_ent(ent)))[:]]
+        if entities is None:
+            entities = [ent for ent in cls.select(filter_ent)[:]]
         return {
             "zip": zip,
             "table": [[TableCell(name=str(getattr(ent, i))) for i in data] for ent in entities],
@@ -1964,7 +2049,11 @@ class News(Page):
         return data
 
     @classmethod
-    def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
+    def get_entities_html(cls, *keys,
+                          db_mode: bool = True,
+                          access: list[str] = ["public"],
+                          filter_ent=lambda i: True,
+                          entities: list['db.Entity'] = None) -> dict[str, Any]:
         """
 
         :param cls:
@@ -1990,8 +2079,9 @@ class News(Page):
             print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
             # language=HTML
             return dict()
-        [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
-        entities = [ent for ent in cls.select()[:]]
+        # [i.get_entity_html(data) for i in select((ent for ent in cls if filter_ent(ent)))[:]]
+        if entities is None:
+            entities = [ent for ent in cls.select(filter_ent)[:]]
         return {
             "zip": zip,
             "table": [[TableCell(name=str(getattr(ent, i))) for i in data] for ent in entities],

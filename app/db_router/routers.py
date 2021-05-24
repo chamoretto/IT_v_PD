@@ -197,9 +197,13 @@ def save_edited_entity(
         try:
             entity.set(**new_ent_data.dict(exclude_unset=True))
             commit()
-            return JSONResponse(
-                {"answer_for_user": "Объект базыданных отредактирован успешно!",
-                 "type": "success edit"}, status_code=201)
+            return RedirectResponseWithBody(f"/db/{name}", Ajax300Answer(
+                url=f"/db/{name}",
+                alert=Alert("Объект базы данных отредактирован успешно!", Alert.SUCCESS),
+                request=request))
+            # return JSONResponse(
+            #     {"answer_for_user": "Объект базы данных отредактирован успешно!",
+            #      "type": "success edit"}, status_code=201)
         except IntegrityError as e:
             print("Ошибка в save_edited_entity", __file__, e)
             if str(e).startswith("UNIQUE constraint failed:"):
@@ -278,7 +282,10 @@ def delete_entity(
         if getattr(only_pk, name)(**human.dict()).dict() == ent_model.dict():
             human.scopes += [AccessType.SELF]
         entity.delete()
-        return {"redirect": ""}
+        return RedirectResponseWithBody(f"/db/{name}", Ajax300Answer(
+            url=f"/db/{name}",
+            alert=Alert("Удаление произошло успешно!", Alert.SUCCESS),
+            request=request))
     raise HTTPException(
         request=request,
         status_code=status.HTTP_404_NOT_FOUND,

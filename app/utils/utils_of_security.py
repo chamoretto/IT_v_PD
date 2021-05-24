@@ -19,6 +19,9 @@ from app.utils.pydantic_security import TokenData, HumanInDB, Token, BaseModel
 from app.pydantic_models.standart_methhods_redefinition import AccessType, AccessMode
 from app.pydantic_models.gen import db_models as pd_db
 from app.utils.exceptions import ChildHTTPException as HTTPException
+from app.utils.responses import RedirectResponseWithBody
+from app.pydantic_models.response_models import Ajax300Answer, ResponseType
+from app.utils.html_utils import Alert
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -46,8 +49,6 @@ def basic_create_access_token(data: dict, expires_delta: Optional[timedelta] = N
     return encoded_jwt
 
 
-
-
 # scopes_to_db = {
 #     "user": m.User,
 #     "smmer": m.Smm,
@@ -56,7 +57,7 @@ def basic_create_access_token(data: dict, expires_delta: Optional[timedelta] = N
 #     "developer": m.Developer
 # }
 
-scopes_to_db: Dict[m.db.Entity, List[AccessType]] = {
+scopes_to_db: Dict[m.db.Entity, list] = {
     m.User: [AccessType.USER],
     m.Smm: [AccessType.SMMER],
     m.DirectionExpert: [AccessType.DIRECTION_EXPERT],
@@ -85,6 +86,7 @@ oauth2_scheme = OAuth2PasswordBearer(
         str(AccessType.ADMIN): "Управляющий сайтом",
         str(AccessType.DEVELOPER): "Разработчик сайта"
     },
+    auto_error=False
 )
 
 
@@ -129,7 +131,12 @@ def generate_security(entity, getter_human=None):
             token: str = Depends(oauth2_scheme)) -> pd_db.Human:
 
         """ Получение текущего пользователя"""
-
+        if token is None:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                request=request,
+                detail='Похоже, вы не авторизованы... попробуйте авторизоваться'
+            )
         try:
             print("from get_current_human", security_scopes.scopes, __file__)
             if security_scopes.scopes and bool(security_scopes.scopes):
@@ -191,31 +198,24 @@ def check_scopes(username: str, password: str, scopes: List[str]) \
         -> Tuple[Optional[m.db.Entity], Union[List[str], bool]]:
     if not m.Human.exists(username=username):
         return None, False
-    ent = m.Human.get(username=username)
-    scopes = [i for i in scopes_to_db[ent.__class__] if i in scopes]
+    ent: m.db.Entity = m.Human.get(username=username)
+
+    if bool(scopes):
+        scopes: list[str] = [i for i in scopes_to_db[ent.__class__] if i in scopes]
+    else:
+        scopes: list[str] = [i for i in ent.scopes]
     if verify_password(password, ent.hash_password):
         return ent, scopes
     return None, False
-    # print(username, password, "||", scopes)
-    # print(scopes_to_db.keys())
-    # for scope in scopes:
-    #     if scope in scopes_to_db:
-    #         if scopes_to_db[scope].exists(username=username):
-    #             ent = scopes_to_db[scope].get(username=username)
-    #             if not verify_password(password, ent.hash_password):
-    #                 print("error password")
-    #                 return False
-    #             roles.append(ent)
-    #         else:
-    #             return False
-    # return roles
 
 
-@security.post("/token", response_model=Token)
+@security.post("/token")
 @db_session
-def basic_login(form_data: OAuth2PasswordRequestForm = Depends(), access_token_time=0):
+def basic_login(request: Request,
+                form_data: OAuth2PasswordRequestForm = Depends(),
+                access_token_time=0):
     error = HTTPException(
-        request=None,
+        request=request,
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Incorrect username or password",
         headers={"WWW-Authenticate": 'Bearer Basic realm="Restricted Area"'},
@@ -236,4 +236,15 @@ def basic_login(form_data: OAuth2PasswordRequestForm = Depends(), access_token_t
         expires_delta=access_token_expires,
     )
     print(form_data.scopes, "access_token", access_token)
-    return {"access_token": access_token, "token_type": "bearer"}
+    print(ent.__class__.__name__.lower())
+    return RedirectResponseWithBody(
+        f"/{ent.__class__.__name__.lower()}/me",
+        Ajax300Answer(
+        url=f"/{ent.__class__.__name__.lower()}/me",
+        alert=Alert("Вы успешно авторизовались!"),
+        data={"access_token": access_token, "token_type": "bearer"},
+        my_response_type=str(ResponseType.AUTHORIZATION_REDIRECT),
+        request=request
+        )
+   )
+    # return {"access_token": access_token, "token_type": "bearer"}

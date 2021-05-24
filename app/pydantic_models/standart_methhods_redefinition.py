@@ -63,13 +63,13 @@ def as_form(cls: Type[BaseModel]):
 class PydanticValidators:
 
     @staticmethod
-    def datetime(cls: BaseModel, value):
+    def datetime(cls: Type[BaseModel], value):
         if value is None or not bool(value):
             return None
         return value
 
     @staticmethod
-    def date(cls: BaseModel, value):
+    def date(cls: Type[BaseModel], value):
         if value is None or not bool(value):
             return None
         return value

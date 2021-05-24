@@ -1,5 +1,5 @@
 import typing
-from typing import Union, Optional
+from typing import Union, Optional, Any, Type
 
 try:
     import jinja2
@@ -9,7 +9,7 @@ except ImportError:  # pragma: nocover
 from starlette.background import BackgroundTask
 from starlette.responses import Response
 from starlette.types import Receive, Scope, Send
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from pony.orm import db_session
 from fastapi.templating import Jinja2Templates
 from fastapi import Request
@@ -21,6 +21,8 @@ from app.pydantic_models.gen import output_ent as out_pd
 from app.db import models as m
 from app.pydantic_models.standart_methhods_redefinition import AccessType, AccessMode
 from app.utils.html_utils import _public_template, _skeleton_template, _alert_template, _admin_shell_template
+from app.utils.responses import RedirectResponseWithBody
+from app.pydantic_models.response_models import Ajax200Answer, BaseHTMLDataResponse, GenResp
 
 
 class _MyTemplateResponse(Response):
@@ -87,9 +89,27 @@ _admin_shell: dict[str, PdUrl] = {
     "Вопросы участников": PdUrl(href="/admin/look_question", is_ajax=True),
 }
 
+_smm_shell: dict[str, PdUrl] = {
+    "Мой профиль": PdUrl(href="/smm/me", is_ajax=True),
+    "Добавить страницу": PdUrl(href="/smm/add_event", is_ajax=True),
+    "Написать новость": PdUrl(href="/smm/add_news", is_ajax=True),
+    "Вопросы участников": PdUrl(href="/smm/look_question", is_ajax=True),
+}
+_user_shell: dict[str, PdUrl] = {
+    "Мой профиль": PdUrl(href="/user/me", is_ajax=True),
+    "Мои работы": PdUrl(href="/user/my_works", is_ajax=True)
+}
+_expert_shell: dict[str, PdUrl] = {
+    "Мой профиль": PdUrl(href="/direction_expert/me", is_ajax=True),
+    "Работы участников": PdUrl(href='/direction_expert/user_works', is_ajax=True)
+}
+
 _all_shells: dict[str, dict[str, PdUrl]] = {
     "Developer": _developer_shell,
     "Admin": _admin_shell,
+    "Smm": _smm_shell,
+    "User": _user_shell,
+    "DirectionExpert": _expert_shell,
 }
 
 
@@ -157,21 +177,21 @@ class MyJinja2Templates:
             headers: dict = None,
             media_type: str = None,
             background: BackgroundTask = None,
-            only_part: bool = False):
+            only_part: bool = False) -> Union[_MyTemplateResponse, JSONResponse, RedirectResponseWithBody, RedirectResponse]:
         return self.TemplateRedirectResponse(None, name, local_context, status_code=status_code, headers=headers, media_type=media_type,
                                              background=background, only_part=only_part)
 
     def TemplateRedirectResponse(
             self,
-            url: str,
+            url: Optional[str],
             name: str,
             local_context: dict,
-            status_code: int = 200,
+            status_code: int = 300,
             headers: dict = None,
             media_type: str = None,
             background: BackgroundTask = None,
             only_part: bool = False
-    ) -> Union[_MyTemplateResponse, JSONResponse]:
+    ) -> Union[_MyTemplateResponse, JSONResponse, RedirectResponseWithBody, RedirectResponse]:
 
         template_response_params = dict(
             status_code=status_code,
@@ -188,13 +208,19 @@ class MyJinja2Templates:
 
             if status_code in code_to_resp:
                 basic_data = {"request": local_context['request']}
+
                 response_data = dict(
                     basic_data=basic_data,
                     alert=_alert_template.render(basic_data | {"alert": local_context.pop('alert', None)}),
                     admin_shell=_admin_shell_template.render(basic_data | {"pages": local_context['admin_shell']}),
                     main=template.render(local_context),
                 )
+
                 response_data = {key: val for key, val in response_data.items() if val is not None and bool(val)}
+
+                if url is not None:
+                    data = code_to_resp[300](url=url, **response_data).dict()
+                    return RedirectResponseWithBody(url, data, **template_response_params)
                 data = code_to_resp[status_code](**response_data).dict()
                 print(data)
                 return JSONResponse(
@@ -206,6 +232,8 @@ class MyJinja2Templates:
             skeleton_template = template
 
         else:
+            if url is not None:
+                return RedirectResponse(url)
             # print('Генерируем весь сайт с нуля', admin_shell_template, )
             admin_shell_context = {"pages": local_context['admin_shell'], "request": local_context['request']}
             admin_shell_context = {key: val for key, val in admin_shell_context.items() if
@@ -235,6 +263,16 @@ class MyJinja2Templates:
             **template_response_params,
         )
 
+    # def SmartResponce(
+    #         self,
+    #         data: str,
+    #         status_code: int = 300,
+    #         headers: dict = None,
+    #         media_type: str = None,
+    #         background: BackgroundTask = None,
+    # ):
+    #     pass
+
 
 login_templates = MyJinja2Templates(directory="content/templates/login")
 error_templates = MyJinja2Templates(directory="content/templates/errors")
@@ -245,3 +283,52 @@ developer_templates = MyJinja2Templates(directory="content/templates/developers"
                                         access=[AccessType.DEVELOPER])
 admin_templates = MyJinja2Templates(directory="content/templates/admins", admin_shell=_admin_shell,
                                     access=[AccessType.ADMIN])
+smm_templates = MyJinja2Templates(directory="content/templates/smm", admin_shell=_smm_shell,
+                                        access=[AccessType.SMMER])
+expert_templates = MyJinja2Templates(directory="content/templates/expert", admin_shell=_expert_shell,
+                                        access=[AccessType.DIRECTION_EXPERT])
+user_templates = MyJinja2Templates(directory="content/templates/user", admin_shell=_user_shell,
+                                        access=[AccessType.USER])
+
+#
+# class BaseAnswer:
+#     ajax_answer_class: Type[BaseHTMLDataResponse] = BaseHTMLDataResponse
+#     check_params_model: Type[GenResp] = GenResp
+#
+#     def __init__(self, *args, **kwargs):
+#         self.request: Request = args[1]
+#         self.data, self.all_data = self.check_params_model(*args, **kwargs)
+#
+#     def __new__(cls, *args, **kwargs):
+#         obj = super(BaseAnswer, cls).__new__(*args, **kwargs)
+#         return obj.renderer()
+#
+#     def renderer(self) -> Response:
+#         if hasattr(self.data, "url"):
+#             return self.redirect_response()
+#         if dict(self.request.headers).get("x-part") == "basic-content":
+#             return self.ajax_response()
+#         return self.render_all_page()
+#
+#     def redirect_response(self):
+#         pass
+#
+#     def ajax_response(self):
+#         pass
+#
+#     def render_all_page(self):
+#         pass
+#
+#
+# class Ans200(BaseAnswer):
+#     ajax_answer_class = Ajax200Answer
+#
+#     def __init__(self, request: Request,
+#                  filepath: str,
+#                  template_class: type,
+#                  params: dict[str, Any],
+#                  *args, **kwargs):
+#         super(Ans200, self).__init__(self.ajax_answer_class,
+#                                      request, filepath,
+#                                      template_class, params,
+#                                      *args, **kwargs)

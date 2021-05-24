@@ -28,14 +28,14 @@ admin = APIRouter(
  ] = generate_security(m.Admin)
 
 
-@admin.post("/" + token_path, response_model=Token)
+@admin.post("/" + token_path)
 @db_session
-def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+def login_for_access_token(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
     if form_data.scopes:
         form_data.scopes = set(form_data.scopes.extend(scopes_to_db[m.Admin]))
     else:
         form_data.scopes = scopes_to_db[m.Admin]
-    return basic_login(form_data, access_token_time=ACCESS_TOKEN_TIME)
+    return basic_login(request, form_data, access_token_time=ACCESS_TOKEN_TIME)
 
 
 @admin.get("/admin", response_class=HTMLResponse)

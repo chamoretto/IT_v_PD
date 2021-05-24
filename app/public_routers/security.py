@@ -11,36 +11,32 @@ from app.db import models as m
 from app.utils.utils_of_security import generate_security, basic_login, scopes_to_db
 
 
-SECRET_KEY = cfg.get('keys', "user")
-ACCESS_TOKEN_TIME = int(cfg.get('keys', "user_time"))
-token_path = "user_token"
+# SECRET_KEY = cfg.get('keys', "user")
+# ACCESS_TOKEN_TIME = int(cfg.get('keys', "user_time"))
+token_path = "checking_login_data"
 # user_oauth2_scheme = OAuth2PasswordBearer(tokenUrl=token_path)
-[get_user,
- authenticate_user,
- get_current_user,
+[get_human,
+ _,
+ get_current_human,
  create_user_access_token
- ] = generate_security(m.User)
+ ] = generate_security(m.Human)
 
-user = APIRouter(
-    tags=["user"],
+public_security = APIRouter(
+    tags=["public"],
     responses={404: {"description": "Not found"}},
     # dependencies=[Depends(open_db_session)]
 )
 
 
-@user.post('/' + token_path, response_model=Token)
+@public_security.post('/' + token_path)
 @db_session
 def login_for_access_token(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
-    if form_data.scopes:
-        form_data.scopes = set(form_data.scopes.extend(scopes_to_db[m.User]))
-    else:
-        form_data.scopes = scopes_to_db[m.User]
-    return basic_login(request, form_data, access_token_time=ACCESS_TOKEN_TIME)
+    return basic_login(request, form_data, access_token_time=30)
 
 
-@user.get("/user")
+@public_security.get("/log_in")
 async def login_user(request: Request):
     return login_templates.TemplateResponse(
         "login.html",
-        {"request": request, "who": "участника", "auth_url": '/' + token_path})
+        {"request": request, "who": "", "auth_url": '/' + token_path})
 

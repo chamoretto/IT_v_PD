@@ -29,13 +29,13 @@ dev = APIRouter(
 
 @dev.post("/" + token_path, response_model=Token)
 @db_session
-def login_for_access_token_developer(form_data: OAuth2PasswordRequestForm = Depends()):
+def login_for_access_token_developer(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
     if form_data.scopes:
         form_data.scopes = set(form_data.scopes.extend(scopes_to_db[m.Developer]))
     else:
         form_data.scopes = scopes_to_db[m.Developer]
     form_data.scopes = scopes_to_db[m.Developer]
-    return basic_login(form_data, access_token_time=ACCESS_TOKEN_TIME)
+    return basic_login(request, form_data, access_token_time=ACCESS_TOKEN_TIME)
 
 
 @dev.get("/dev")

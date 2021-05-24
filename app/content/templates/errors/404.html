@@ -1,4 +1,9 @@
-
-<h1>404 Page not found</h1>
-<h3>{{detail if detail is defined else ""}}</h3>
-<img src="{{url_for('img', path='/404_john_travolta.gif')}}">
+<div class="_content my-4 margin-bottom-lg main_content">
+    <section class="margin-y-md">
+        <div class="padding-y-xl max-width-adaptive-lg margin-x-auto">
+            <h1>404 Page not found</h1>
+            <h3>{{detail if detail is defined else ""}}</h3>
+            <img src="{{url_for('img', path='/404_john_travolta.gif')}}">
+        </div>
+    </section>
+</div>

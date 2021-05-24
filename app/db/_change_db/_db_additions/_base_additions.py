@@ -68,7 +68,11 @@ def key_as_part_query(self) -> str:
 
 
 @classmethod
-def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["public"]) -> dict[str, Any]:
+def get_entities_html(cls, *keys,
+                      db_mode: bool = True,
+                      access: list[str] = ["public"],
+                      filter_ent=lambda i: True,
+                      entities: list['db.Entity'] = None) -> dict[str, Any]:
     """
 
     :param cls:
@@ -82,7 +86,8 @@ def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["pu
             keys = list(cls.important_field_for_print())
         if not bool(keys):
             keys = None
-        data: list[str] = list(select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
+        data: list[str] = list(
+            select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
         print('----', data)
         # data = data.to_dict(with_collections=False, only=keys).keys()
     except IndexError as e:
@@ -93,13 +98,14 @@ def get_entities_html(cls, *keys, db_mode: bool = True, access: list[str] = ["pu
         print("Произошла ошибка в классе", cls, "при генерации таблицы сущностей", e)
         # language=HTML
         return dict()
-    [i.get_entity_html(data) for i in select((ent for ent in cls))[:]]
-    entities = [ent for ent in cls.select()[:]]
+    # [i.get_entity_html(data) for i in select((ent for ent in cls if filter_ent(ent)))[:]]
+    if entities is None:
+        entities = [ent for ent in cls.select(filter_ent)[:]]
     return {
         "zip": zip,
         "table": [[TableCell(name=str(getattr(ent, i))) for i in data] for ent in entities],
         "table_header": [TableCell(name=str(i)) for i in data],
-        "keys_as_query": [ent.key_as_part_query() for ent in  entities],
+        "keys_as_query": [ent.key_as_part_query() for ent in entities],
         "entity_name": cls.__name__,
         "db_mode": db_mode,
         "access": access

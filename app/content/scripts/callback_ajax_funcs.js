@@ -29,6 +29,17 @@ function change_html_from_ajax(json_data){
         help_to_change_html_from_ajax("#alert", data.alert);
         help_to_change_html_from_ajax("#admin_shell", data.admin_shell);
     }
+    if (data.my_response_type === "authorization_redirect"){
+        console.log(data);
+        if (data['data']["access_token"]){
+            console.log('записываем токен');
+            localStorage.setItem('token', data['data']["access_token"]);
+            console.log('записывали токен');
+        }
+        help_to_change_html_from_ajax("#main", data.main);
+        help_to_change_html_from_ajax("#alert", data.alert);
+        help_to_change_html_from_ajax("#admin_shell", data.admin_shell);
+    }
 }
 
 function redirect_with_body_processing(json_data){
