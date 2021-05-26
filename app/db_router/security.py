@@ -69,10 +69,10 @@ def get_current_human_for_db(
         setattr(request, "current_human", human)
         return human
     except HTTPException as e:
-        print("---=== произошла ошибка при получении текущего пользователя в бд роуте", [e])
+        print("---=== произошла ошибка при получении текущего пользователя в бд роуте", [e], __file__)
         raise e
     except Exception as e:
-        print("Произошла ошибка в текущем пользователе!!! (бд роут)", [e])
+        print("Произошла ошибка в текущем пользователе!!! (бд роут)", [e], __file__)
         raise HTTPException(
             request=request,
             status_code=status.HTTP_401_UNAUTHORIZED,

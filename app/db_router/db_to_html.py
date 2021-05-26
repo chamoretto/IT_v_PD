@@ -122,6 +122,10 @@ def get_text_label(param: DbDocs, l_class="form-label margin-bottom-xxs") -> str
            f'{"""<span class="color-error">*</span>""" if param.required else ""}</label>\n'
 
 
+def _multiple_field(param: DbDocs) -> str:
+    return f'{"multiple" if param.is_set else ""}'
+
+
 def required_options_into_input(param: DbDocs, black_list=[]) -> str:
     _data = [
         _get_name,
@@ -129,7 +133,8 @@ def required_options_into_input(param: DbDocs, black_list=[]) -> str:
         _get_placeholder,
         _get_value_code,
         _required_field,
-        _disabled_field
+        _disabled_field,
+        _multiple_field,
     ]
     return " ".join([i(param) for i in _data if i not in black_list])
 
@@ -253,15 +258,18 @@ def html_bool(param: DbDocs):
 @field_decorator
 def html_select(param: DbDocs) -> str:
     # langu age=HTML
-    text = f'<label class="form-label margin-bottom-xxxs" for="{param.class_name}_{param.name}">{param.name} ' \
-           f'{"""<span class="color-error">*</span>""" if param.required else ""}</label>' \
+    text = f'{get_text_label(param)}' \
            f'<div class="select">' \
            f'<select class="select__input form-control text-sm"' \
-           f' name="{param.name}" id="{param.class_name}_{param.name}"' \
-           f'{" multiple" if param.is_set else ""}' \
-           f'{" required" if param.required else ""}' \
-           f'<option disabled {{"" if {param.class_name.lower()} is defined ' \
-           f' and bool({param.class_name.lower()}.{param.name}) else "selected"}}>{param.placeholder}</option>'
+           f' {required_options_into_input(param, black_list=[_get_value_code])}>' \
+           f'' \
+           f'<option disabled ' \
+           f'{"{#{"} "" if {param.class_name.lower()}.{param.name} in [{"{}"}, [], dict()] else "selected" {"}#}"}>' \
+           f'{param.name}</option>' \
+           f'{"{%"} for i in get_all_entities_from_ent_name("{param.class_name}", "{param.name}") {"%}"}' \
+           f'{"{%"} endfor {"%}"}' \
+           f'</select><i class="fa fa-angle-down icon select__icon"></i>' \
+           f'</div>'
     return text
 
 

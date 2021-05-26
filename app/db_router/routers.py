@@ -16,7 +16,7 @@ from app.pydantic_models.gen import db_models_for_create as pd
 from app.pydantic_models.gen import db_models as pd_db
 
 
-from app.pydantic_models.standart_methhods_redefinition import get_pd_class, AccessType, AccessMode
+from app.pydantic_models.standart_methhods_redefinition import get_pd_class, AccessType, AccessMode, BaseModel
 from app.utils.jinja2_utils import db_templates
 from app.developers.security import get_current_dev
 from app.utils.utils_of_security import get_password_hash
@@ -156,7 +156,7 @@ def edit_entity(
     class_entity = m.db.entities[name]
     if class_entity.exists(**dict(ent_model)):
         entity = class_entity.get(**dict(ent_model))
-        pd_entity = get_pd_class(name, request, human.scopes, AccessMode.EDIT).from_pony_orm(entity)
+        pd_entity: BaseModel = get_pd_class(name, request, human.scopes, AccessMode.EDIT).from_pony_orm(entity)
         if getattr(only_pk, name)(**human.dict()).dict() == ent_model.dict():
             human.scopes += [AccessType.SELF]
         return db_templates.TemplateResponse(

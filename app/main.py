@@ -38,6 +38,7 @@ from app.utils.exceptions import ChildHTTPException as HTTPException
 from app.pydantic_models.response_models import GenResp, Ajax200Answer
 from app.utils.responses import RedirectResponseWithBody
 from app.pydantic_models.response_models import Ajax300Answer
+from app.pydantic_models.gen import output_ent as out_pd
 
 app = FastAPI(
     tags=["public"],
@@ -152,6 +153,11 @@ def custom_http_exception_handler(request: Request, exc: HTTPException):
 
 
 if __name__ == "__main__":
+    # from typing import ForwardRef
+    # print([i.__forward_arg__ for i in out_pd.Admin.__fields__['questions'].type_.__dict__['__args__'] if type(i) == ForwardRef])
+    # # import typing
+
+    # typing._UnionGenericAlias
     # list.__class_getitem__(*(1,))
     # print(a[(2,)])
     try:

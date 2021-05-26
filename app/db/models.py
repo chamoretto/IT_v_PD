@@ -375,7 +375,6 @@ class User(Human):
     about_program = Optional(str)  # Отзыв о программе
     direction = Optional(str)  # с каким направлением себя ассоциирует участник
     visible_about_program_field = Required(bool, default='false')
-
     # будет ли отзыв участника о программе
     # отображаться на главной странице
 

@@ -108,5 +108,3 @@ def shell_renderer(shell: dict[str, 'PdUrl'], request: Request = None, basic_dat
 
 
 Alert.alert_renderer = alert_renderer
-
-

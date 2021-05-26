@@ -72,6 +72,9 @@ class Admin(BaseModel):
 		orm_mode = True
 
 
+
+
+
 class User(BaseModel):
 	id: int
 	username: str

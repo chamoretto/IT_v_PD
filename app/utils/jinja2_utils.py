@@ -22,7 +22,8 @@ from app.db import models as m
 from app.pydantic_models.standart_methhods_redefinition import AccessType, AccessMode
 from app.utils.html_utils import _public_template, _skeleton_template, _alert_template, _admin_shell_template
 from app.utils.responses import RedirectResponseWithBody
-from app.pydantic_models.response_models import Ajax200Answer, BaseHTMLDataResponse, GenResp
+from app.pydantic_models.response_models import Ajax200Answer, BaseHTMLDataResponse, GenResp, Ajax300Answer
+from app.pydantic_models.standart_methhods_redefinition import BaseModel
 
 
 class _MyTemplateResponse(Response):
@@ -121,6 +122,15 @@ _roles_to_home_urls: dict[str, str] = {
 }
 
 
+def get_all_entities_from_ent_name(ent_name: str, param_name: str) -> list[BaseModel]:
+    from typing import ForwardRef
+    ent_names = [i.__forward_arg__ for i in getattr(out_pd, ent_name).__fields__[param_name].type_.__dict__['__args__'] if
+           type(i) == ForwardRef]
+
+    models = [getattr(out_pd, i) for i in ent_names]
+    return [model.from_pony_orm(i) for ent_name, model in zip(ent_names, models) for i in m.db[ent_name].select()[:]]
+
+
 class MyJinja2Templates:
     """
     templates = Jinja2Templates("templates")
@@ -215,19 +225,20 @@ class MyJinja2Templates:
         if dict(local_context['request'].headers).get("x-part") == "basic-content":
 
             if status_code in code_to_resp:
-                basic_data = {"request": local_context['request']}
+                basic_data = {"request": local_context['request'],
+                              "get_all_entities_from_ent_name": get_all_entities_from_ent_name}
 
                 response_data = dict(
                     basic_data=basic_data,
                     alert=_alert_template.render(basic_data | {"alert": local_context.pop('alert', None)}),
                     admin_shell=_admin_shell_template.render(basic_data | {"pages": local_context['admin_shell']}),
-                    main=template.render(local_context),
+                    main=template.render(basic_data | local_context),
                 )
 
                 response_data = {key: val for key, val in response_data.items() if val is not None and bool(val)}
 
                 if url is not None:
-                    data = code_to_resp[300](url=url, **response_data)
+                    data = Ajax300Answer(url=url, **response_data)
                     return RedirectResponseWithBody(url, data, **template_response_params)
                 data = code_to_resp[status_code](**response_data).dict()
                 print(data)
@@ -236,6 +247,7 @@ class MyJinja2Templates:
                 )
             context = local_context | {
                 "response_status_code": status_code,
+                "get_all_entities_from_ent_name": get_all_entities_from_ent_name
             }
             skeleton_template = template
 
@@ -264,6 +276,7 @@ class MyJinja2Templates:
                              dict(m.SimpleEntity['socials'].data).items()],
                     header_pages=[i.get_header_menu_html_code() for i in m.Page.select(lambda i: i.is_header)[:]],
                     roles_to_home_urls=_roles_to_home_urls,
+                    get_all_entities_from_ent_name=get_all_entities_from_ent_name,
 
                 )
         return _MyTemplateResponse(
