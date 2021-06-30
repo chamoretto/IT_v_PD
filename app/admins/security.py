@@ -12,8 +12,8 @@ from app.utils.utils_of_security import generate_security, basic_login, scopes_t
 from app.utils.jinja2_utils import _roles_to_home_urls
 
 
-SECRET_KEY = cfg.get('keys', "admin")
-ACCESS_TOKEN_TIME = int(cfg.get('keys', "admin_time"))
+SECRET_KEY = cfg.get("keys", "admin")
+ACCESS_TOKEN_TIME = int(cfg.get("keys", "admin_time"))
 token_path = "admin_token"
 # admin_oauth2_scheme = OAuth2PasswordBearer(tokenUrl=token_path)
 
@@ -23,11 +23,7 @@ admin = APIRouter(
     # dependencies=[Depends(open_db_session)]
 )
 
-[get_admin,
- authenticate_admin,
- get_current_admin,
- create_admin_access_token
- ] = generate_security(m.Admin)
+[get_admin, authenticate_admin, get_current_admin, create_admin_access_token] = generate_security(m.Admin)
 
 
 @admin.post("/" + token_path)
@@ -44,4 +40,5 @@ def login_for_access_token(request: Request, form_data: OAuth2PasswordRequestFor
 async def login_admin(request: Request):
     return login_templates.TemplateResponse(
         "login.html",
-        {"request": request, "who": "Админа", "auth_url": "/" + token_path, "roles_to_home_urls": _roles_to_home_urls})
+        {"request": request, "who": "Админа", "auth_url": "/" + token_path, "roles_to_home_urls": _roles_to_home_urls},
+    )

@@ -21,5 +21,7 @@ class RedirectResponseWithBody(JSONResponse):
         print("-------------------------", type(content), "----------")
         content = content.dict(exclude_none=True)
         print(content)
-        super().__init__(content=content, status_code=status_code, media_type=media_type, headers=headers, background=background)
+        super().__init__(
+            content=content, status_code=status_code, media_type=media_type, headers=headers, background=background
+        )
         self.headers["location"] = quote_plus(str(url), safe=":/%#?&=@[]!$&'()*+,;")

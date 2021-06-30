@@ -44,6 +44,7 @@ class HumanInDB(Human):
     class Config:
         from_orm = True
 
+
 # class AdminInDB(HumanInDB):
 #
 #     class Config:

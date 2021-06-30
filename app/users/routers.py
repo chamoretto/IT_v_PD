@@ -13,7 +13,7 @@ from pony.orm import db_session
 
 from app.admins.security import get_current_admin
 from app.utils.pydantic_security import HumanInDB
-from app.utils.jinja2_utils import  db_templates, user_templates
+from app.utils.jinja2_utils import db_templates, user_templates
 from app.pydantic_models.gen import output_ent as out_pd
 from app.db import models as m
 from app.pydantic_models.gen import db_models as pd_db
@@ -32,38 +32,49 @@ user = APIRouter(
 
 @user.get("/me")
 @db_session
-def read_users_me(response: Response,
-                  request: Request,
-                  current_user: pd_db.User = Security(get_current_user,
-                                                      scopes=[str(AccessType.USER)])):
+def read_users_me(
+    response: Response,
+    request: Request,
+    current_user: pd_db.User = Security(get_current_user, scopes=[str(AccessType.USER)]),
+):
     print("current_user.dict^ ", type(current_user), current_user)
     print(dict(current_user))
     current_user.scopes += [str(AccessType.SELF)]
     return user_templates.TemplateResponse(
-        "personal_page.html", {
+        "personal_page.html",
+        {
             "request": request,
             "personal_data": db_templates.get_cooked_template(
-                "User_form.html", {"request": request,
-                                   "user": out_pd.User(**(dict(current_user))),
-                                   "access": current_user.scopes,
-                                   'access_mode': AccessMode.LOOK,
-                                   "db_mode": False})
-        })
+                "User_form.html",
+                {
+                    "request": request,
+                    "user": out_pd.User(**(dict(current_user))),
+                    "access": current_user.scopes,
+                    "access_mode": AccessMode.LOOK,
+                    "db_mode": False,
+                },
+            ),
+        },
+    )
 
 
 @user.get("/my_works")
 @db_session
-def user_works(response: Response,
-               request: Request,
-               current_user: pd_db.User = Security(get_current_user,
-                                                   scopes=[str(AccessType.USER)])
-               ):
+def user_works(
+    response: Response,
+    request: Request,
+    current_user: pd_db.User = Security(get_current_user, scopes=[str(AccessType.USER)]),
+):
     return user_templates.TemplateResponse(
-        "personal_page.html", {
+        "personal_page.html",
+        {
             "request": request,
             "personal_data": db_templates.get_cooked_template(
                 "show_entity.html",
-                {"request": request,
-                 **m.UserWork.get_entities_html(db_mode=False, access=current_user.scopes),
-                 })
-        })
+                {
+                    "request": request,
+                    **m.UserWork.get_entities_html(db_mode=False, access=current_user.scopes),
+                },
+            ),
+        },
+    )

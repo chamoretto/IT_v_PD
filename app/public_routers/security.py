@@ -16,11 +16,7 @@ from app.utils.jinja2_utils import _roles_to_home_urls
 # ACCESS_TOKEN_TIME = int(cfg.get('keys', "user_time"))
 token_path = "checking_login_data"
 # user_oauth2_scheme = OAuth2PasswordBearer(tokenUrl=token_path)
-[get_human,
- _,
- get_current_human,
- create_user_access_token
- ] = generate_security(m.Human)
+[get_human, _, get_current_human, create_user_access_token] = generate_security(m.Human)
 
 public_security = APIRouter(
     tags=["public"],
@@ -29,7 +25,7 @@ public_security = APIRouter(
 )
 
 
-@public_security.post('/' + token_path)
+@public_security.post("/" + token_path)
 @db_session
 def login_for_access_token(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
     return basic_login(request, form_data, access_token_time=30)
@@ -39,6 +35,5 @@ def login_for_access_token(request: Request, form_data: OAuth2PasswordRequestFor
 async def login_user(request: Request):
     return login_templates.TemplateResponse(
         "login.html",
-        {"request": request, "who": "", "auth_url": '/' + token_path,
-         "roles_to_home_urls": _roles_to_home_urls})
-
+        {"request": request, "who": "", "auth_url": "/" + token_path, "roles_to_home_urls": _roles_to_home_urls},
+    )

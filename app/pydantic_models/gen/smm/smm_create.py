@@ -38,57 +38,55 @@ Page = ForwardRef("Page")
 News = ForwardRef("News")
 
 
-
 class Smm(BaseModel):
-	username: str
-	password: Optional[str] = None
-	name: str
-	surname: str
-	email: str
-	human_contacts: Union[int, HumanContacts, None] = None
-	photo: Optional[str] = ''
-	status: Optional[str] = ''
-	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict, list]] = []
-	questions: Set[Union[int, Question]] = []
+    username: str
+    password: Optional[str] = None
+    name: str
+    surname: str
+    email: str
+    human_contacts: Union[int, HumanContacts, None] = None
+    photo: Optional[str] = ""
+    status: Optional[str] = ""
+    description: Optional[str] = ""
+    scopes: Optional[Union[Json, dict, list]] = []
+    questions: Set[Union[int, Question]] = []
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class Page(BaseModel):
-	page_url: Optional[str] = ''
-	page_path: Optional[str] = ''
-	visible: bool = False
-	root_page: Union[int, Page, None] = None
-	title: Optional[str] = ''
-	questions: Set[Union[int, Question]] = []
-	page_type: Optional[str] = ''
+    page_url: Optional[str] = ""
+    page_path: Optional[str] = ""
+    visible: bool = False
+    root_page: Union[int, Page, None] = None
+    title: Optional[str] = ""
+    questions: Set[Union[int, Question]] = []
+    page_type: Optional[str] = ""
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class News(BaseModel):
-	page_url: Optional[str] = ''
-	page_path: Optional[str] = ''
-	visible: bool = False
-	root_page: Union[int, Page, None] = None
-	title: Optional[str] = ''
-	questions: Set[Union[int, Question]] = []
-	page_type: Optional[str] = ''
-	auto_publish: Optional[datetime] = None
-	image: Optional[str] = None
-	author: Optional[str] = None
-	description: Optional[str] = None
+    page_url: Optional[str] = ""
+    page_path: Optional[str] = ""
+    visible: bool = False
+    root_page: Union[int, Page, None] = None
+    title: Optional[str] = ""
+    questions: Set[Union[int, Question]] = []
+    page_type: Optional[str] = ""
+    auto_publish: Optional[datetime] = None
+    image: Optional[str] = None
+    author: Optional[str] = None
+    description: Optional[str] = None
 
+    @validator("auto_publish", pre=True, always=True)
+    def auto_publish_to_datetime_validator(cls, value):
+        return PydanticValidators.datetime(cls, value)
 
-	@validator("auto_publish", pre=True, always=True)
-	def auto_publish_to_datetime_validator(cls, value):
-		return PydanticValidators.datetime(cls, value)
-
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 Smm.update_forward_refs()
@@ -96,7 +94,7 @@ Page.update_forward_refs()
 News.update_forward_refs()
 
 
-if __name__ == '__main__':
-	from os import chdir
+if __name__ == "__main__":
+    from os import chdir
 
-	chdir(HOME_DIR)
+    chdir(HOME_DIR)

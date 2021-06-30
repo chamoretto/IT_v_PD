@@ -38,45 +38,43 @@ User = ForwardRef("User")
 UserWork = ForwardRef("UserWork")
 
 
-
 class User(BaseModel):
-	username: str
-	password: Optional[str] = None
-	name: str
-	surname: str
-	email: str
-	human_contacts: Union[int, HumanContacts, None] = None
-	photo: Optional[str] = ''
-	status: Optional[str] = ''
-	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict, list]] = []
-	questions: Set[Union[int, Question]] = []
-	date_of_birth: date
-	about_program: Optional[str] = None
-	direction: Optional[str] = None
+    username: str
+    password: Optional[str] = None
+    name: str
+    surname: str
+    email: str
+    human_contacts: Union[int, HumanContacts, None] = None
+    photo: Optional[str] = ""
+    status: Optional[str] = ""
+    description: Optional[str] = ""
+    scopes: Optional[Union[Json, dict, list]] = []
+    questions: Set[Union[int, Question]] = []
+    date_of_birth: date
+    about_program: Optional[str] = None
+    direction: Optional[str] = None
 
+    @validator("date_of_birth", pre=True, always=True)
+    def date_of_birth_to_date_validator(cls, value):
+        return PydanticValidators.date(cls, value)
 
-	@validator("date_of_birth", pre=True, always=True)
-	def date_of_birth_to_date_validator(cls, value):
-		return PydanticValidators.date(cls, value)
-
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class UserWork(BaseModel):
-	task: Union[int, Task]
-	work: Optional[str] = ''
+    task: Union[int, Task]
+    work: Optional[str] = ""
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 User.update_forward_refs()
 UserWork.update_forward_refs()
 
 
-if __name__ == '__main__':
-	from os import chdir
+if __name__ == "__main__":
+    from os import chdir
 
-	chdir(HOME_DIR)
+    chdir(HOME_DIR)

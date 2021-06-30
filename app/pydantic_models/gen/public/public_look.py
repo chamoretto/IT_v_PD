@@ -38,24 +38,23 @@ from app.settings.config import HOME_DIR
 Question = ForwardRef("Question")
 
 
-
 class Question(BaseModel):
-	question_title: Optional[str] = ''
-	question: str
-	pages: Set[Union[int, Page]] = []
-	answer_email: Optional[str] = ''
-	human: Union[int, Human, None] = None
-	was_read: bool = False
-	was_answered: bool = False
+    question_title: Optional[str] = ""
+    question: str
+    pages: Set[Union[int, Page]] = []
+    answer_email: Optional[str] = ""
+    human: Union[int, Human, None] = None
+    was_read: bool = False
+    was_answered: bool = False
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 Question.update_forward_refs()
 
 
-if __name__ == '__main__':
-	from os import chdir
+if __name__ == "__main__":
+    from os import chdir
 
-	chdir(HOME_DIR)
+    chdir(HOME_DIR)

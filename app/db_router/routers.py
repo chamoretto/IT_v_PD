@@ -36,9 +36,7 @@ db_route = APIRouter(
         # Depends(open_db_session),
         Security(get_current_human_for_db)
     ],  #
-    responses={404: {"description": "Not found------"},
-               401: {"description": "Пользователь не был авторизировани"}},
-
+    responses={404: {"description": "Not found------"}, 401: {"description": "Пользователь не был авторизировани"}},
 )
 
 
@@ -46,18 +44,19 @@ db_route = APIRouter(
 # DynamicEnum = enum.Enum('DynamicEnum', {key: key for key, val in m.db.entities.items()})
 
 
-@db_route.get('/')
+@db_route.get("/")
 @db_session
 def all_entities(request: Request, me=Security(get_current_dev, scopes=[str(AccessType.DEVELOPER)])):
-    return db_templates.TemplateResponse(
-        "main_db.html", {"request": request, "entities": m.db.entities})
+    return db_templates.TemplateResponse("main_db.html", {"request": request, "entities": m.db.entities})
 
 
-@db_route.get('/{entity}')
+@db_route.get("/{entity}")
 @db_session
-def entity_screen(request: Request,
-                  me=Security(get_current_dev, scopes=[str(AccessType.DEVELOPER)]),
-                  entity: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")):
+def entity_screen(
+    request: Request,
+    me=Security(get_current_dev, scopes=[str(AccessType.DEVELOPER)]),
+    entity: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных"),
+):
     # print("---ESMg mf k", x_part)
     if entity.value not in m.db.entities and type(m.db.entities[entity.value]) == m.db.Entity:
         raise HTTPException(
@@ -68,49 +67,56 @@ def entity_screen(request: Request,
         )
 
     return db_templates.TemplateResponse(
-        "show_entity.html", {"request": request, **m.db.entities[entity.value].get_entities_html()})
+        "show_entity.html", {"request": request, **m.db.entities[entity.value].get_entities_html()}
+    )
 
 
 # enum.Enum('DynamicEnum', {key: key for key, val in m.db.entities.items()})
 
 
-@db_route.get('/{class_entity_name}/new')
+@db_route.get("/{class_entity_name}/new")
 @db_session
-def entity_screen(request: Request,
-                  human=Security(get_current_human_for_db),
-                  class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")):
+def entity_screen(
+    request: Request,
+    human=Security(get_current_human_for_db),
+    class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных"),
+):
 
-    return db_templates.TemplateResponse(f"{class_entity_name.value}_form.html", {
-        "request": request,
-        'access_mode': str(AccessMode.CREATE),
-        "access": human.scopes
-    })
+    return db_templates.TemplateResponse(
+        f"{class_entity_name.value}_form.html",
+        {"request": request, "access_mode": str(AccessMode.CREATE), "access": human.scopes},
+    )
 
 
-@db_route.post('/{class_entity_name}/new')
+@db_route.post("/{class_entity_name}/new")
 @db_session
-def create_entity(request: Request,
-                  new_ent_data: dict[str, Any] = Body(..., title="Данные нового объекта в базе данных"),
-                  human=Security(get_current_human_for_db),
-                  class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")
-                  ):
+def create_entity(
+    request: Request,
+    new_ent_data: dict[str, Any] = Body(..., title="Данные нового объекта в базе данных"),
+    human=Security(get_current_human_for_db),
+    class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных"),
+):
     name = class_entity_name.value
     new_ent_data = get_pd_class(name, request, human.scopes, AccessMode.CREATE)(**new_ent_data)
     ent = m.db.entities[name]
     try:
         data = dict(getattr(pk_pd, name)(**dict(new_ent_data)))
     except ImportError as e:
-        print('ошибка в create_entity', __file__, "при сохранении созданной сущноси", e)
+        print("ошибка в create_entity", __file__, "при сохранении созданной сущноси", e)
         raise e
     chek_unique = {key: val for key, val in data.items() if ent.exists(**{key: val})}
-    print('chek_unique', chek_unique)
+    print("chek_unique", chek_unique)
     if bool(chek_unique):
         return JSONResponse(
-            {"answer_for_user": "следующие поля уже существуют",
-             "type": "fields_no_unique",
-             "errors": {name + "_" + key + "_error": "Введите другое значение в это поле. Это занято" for key in
-                        chek_unique}
-             }, status_code=400)
+            {
+                "answer_for_user": "следующие поля уже существуют",
+                "type": "fields_no_unique",
+                "errors": {
+                    name + "_" + key + "_error": "Введите другое значение в это поле. Это занято" for key in chek_unique
+                },
+            },
+            status_code=400,
+        )
     password = dict(new_ent_data).get("password")
     if password:
         password = get_password_hash(password)
@@ -118,38 +124,43 @@ def create_entity(request: Request,
     try:
         ent(**dict(new_ent_data))
         commit()
-        return RedirectResponseWithBody(f"/db/{name}", Ajax300Answer(
-            url=f"/db/{name}",
-            alert=Alert("Новый объект успешно создан!"),
-            request=request))
+        return RedirectResponseWithBody(
+            f"/db/{name}",
+            Ajax300Answer(url=f"/db/{name}", alert=Alert("Новый объект успешно создан!"), request=request),
+        )
 
     except IntegrityError as e:
         print(e)
         if str(e).startswith("UNIQUE constraint failed:"):
-            param = str(e).split()[-1].strip('.')[-1]
-            return JSONResponse({"answer_for_user": "следующие поля уже существуют",
-                                 "type": "fields_no_unique",
-                                 "errors": {name + "_" + param + "_error": "этот параметр должен быть уникальным"}
-                                 }, status_code=400)
+            param = str(e).split()[-1].strip(".")[-1]
+            return JSONResponse(
+                {
+                    "answer_for_user": "следующие поля уже существуют",
+                    "type": "fields_no_unique",
+                    "errors": {name + "_" + param + "_error": "этот параметр должен быть уникальным"},
+                },
+                status_code=400,
+            )
     except Exception as e:
         print("возникла непредвиденная ошибка в", __file__, "create_entity", e, [e])
         return JSONResponse(
-            {"answer_for_user": "Возникла непонятная ошибка, попробуйте еще раз",
-             "type": "fields_create_entity"}, status_code=400)
+            {"answer_for_user": "Возникла непонятная ошибка, попробуйте еще раз", "type": "fields_create_entity"},
+            status_code=400,
+        )
 
 
-@db_route.post('/{class_entity_name}/edit')
+@db_route.post("/{class_entity_name}/edit")
 @db_session
 def edit_entity(
-        request: Request,
-        human: pd_db.Human = Security(get_current_human_for_db),
-        ent_model: dict[str, Any] = Body(
-            ...,
-            title="словарь, однозначно определяющий объект в БД, через задание всех primaryKey"
-                  " (если их несколько)",
-            description="словарь из пар <key, value> где key - имя primaryKey объекта в БД,"
-                        "а value - значение primaryKey конкретной сущности"),
-        class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")
+    request: Request,
+    human: pd_db.Human = Security(get_current_human_for_db),
+    ent_model: dict[str, Any] = Body(
+        ...,
+        title="словарь, однозначно определяющий объект в БД, через задание всех primaryKey" " (если их несколько)",
+        description="словарь из пар <key, value> где key - имя primaryKey объекта в БД,"
+        "а value - значение primaryKey конкретной сущности",
+    ),
+    class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных"),
 ):
     name = class_entity_name.value
     ent_model = getattr(only_pk, name)(**ent_model)
@@ -160,28 +171,31 @@ def edit_entity(
         if getattr(only_pk, name)(**human.dict()).dict() == ent_model.dict():
             human.scopes += [AccessType.SELF]
         return db_templates.TemplateResponse(
-            f"{name}_form.html", {"request": request,
-                                  name.lower(): pd_entity,
-                                  "action_url": f"/db/{name}/edit/save?{entity.key_as_part_query()}",
-                                  "send_method": "POST",
-                                  'access_mode': 'edit',
-                                  "access": human.scopes,
-                                  # "entity_primary_keys":
-                                  })
+            f"{name}_form.html",
+            {
+                "request": request,
+                name.lower(): pd_entity,
+                "action_url": f"/db/{name}/edit/save?{entity.key_as_part_query()}",
+                "send_method": "POST",
+                "access_mode": "edit",
+                "access": human.scopes,
+                # "entity_primary_keys":
+            },
+        )
     raise HTTPException(
         request=request,
         status_code=status.HTTP_404_NOT_FOUND,
-        detail="Сущность для редактирования в базе данных не найдена..."
+        detail="Сущность для редактирования в базе данных не найдена...",
     )
 
 
-@db_route.post('/{class_entity_name}/edit/save')
+@db_route.post("/{class_entity_name}/edit/save")
 @db_session
 def save_edited_entity(
-        request: Request,
-        human=Security(get_current_human_for_db),
-        new_ent_data: dict[str, Any] = Body(..., title="данные, которые требуется изменить в объектк базы данных"),
-        class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")
+    request: Request,
+    human=Security(get_current_human_for_db),
+    new_ent_data: dict[str, Any] = Body(..., title="данные, которые требуется изменить в объектк базы данных"),
+    class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных"),
 ):
     # print("query", dict(request.query_params))
     print(human.scopes)
@@ -199,46 +213,55 @@ def save_edited_entity(
         try:
             entity.set(**new_ent_data.dict(exclude_unset=True))
             commit()
-            return RedirectResponseWithBody(f"/db/{name}", Ajax300Answer(
-                url=f"/db/{name}",
-                alert=Alert("Объект базы данных отредактирован успешно!", Alert.SUCCESS),
-                request=request))
+            return RedirectResponseWithBody(
+                f"/db/{name}",
+                Ajax300Answer(
+                    url=f"/db/{name}",
+                    alert=Alert("Объект базы данных отредактирован успешно!", Alert.SUCCESS),
+                    request=request,
+                ),
+            )
             # return JSONResponse(
             #     {"answer_for_user": "Объект базы данных отредактирован успешно!",
             #      "type": "success edit"}, status_code=201)
         except IntegrityError as e:
             print("Ошибка в save_edited_entity", __file__, e)
             if str(e).startswith("UNIQUE constraint failed:"):
-                param = str(e).split()[-1].strip('.')[-1]
-                return JSONResponse({"answer_for_user": "следующие поля уже существуют",
-                                     "type": "fields_no_unique",
-                                     "errors": {name + "_" + param + "_error": "этот параметр должен быть уникальным"}
-                                     }, status_code=400)
+                param = str(e).split()[-1].strip(".")[-1]
+                return JSONResponse(
+                    {
+                        "answer_for_user": "следующие поля уже существуют",
+                        "type": "fields_no_unique",
+                        "errors": {name + "_" + param + "_error": "этот параметр должен быть уникальным"},
+                    },
+                    status_code=400,
+                )
         except Exception as e:
             print("возникла непредвиденная ошибка в", __file__, "save_edited_entity", e)
             return JSONResponse(
-                {"answer_for_user": "Возникла непонятная ошибка, попробуйте еще раз",
-                 "type": "fields_create_entity"}, status_code=400)
+                {"answer_for_user": "Возникла непонятная ошибка, попробуйте еще раз", "type": "fields_create_entity"},
+                status_code=400,
+            )
 
     raise HTTPException(
         request=request,
         status_code=status.HTTP_404_NOT_FOUND,
-        detail="Сущность для редактирования в базе данных не найдена..."
+        detail="Сущность для редактирования в базе данных не найдена...",
     )
 
 
-@db_route.post('/{class_entity_name}/look')
+@db_route.post("/{class_entity_name}/look")
 @db_session
 def look_entity(
-        request: Request,
-        human=Security(get_current_human_for_db),
-        ent_model: dict[str, Any] = Body(
-            ...,
-            title="словарь, однозначно определяющий объект в БД, через задание всех primaryKey"
-                  " (если их несколько)",
-            description="словарь из пар <key, value> где key - имя primaryKey объекта в БД,"
-                        "а value - значение primaryKey конкретной сущности"),
-        class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")
+    request: Request,
+    human=Security(get_current_human_for_db),
+    ent_model: dict[str, Any] = Body(
+        ...,
+        title="словарь, однозначно определяющий объект в БД, через задание всех primaryKey" " (если их несколько)",
+        description="словарь из пар <key, value> где key - имя primaryKey объекта в БД,"
+        "а value - значение primaryKey конкретной сущности",
+    ),
+    class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных"),
 ):
     name = class_entity_name.value
     ent_model = getattr(only_pk, name)(**ent_model)
@@ -249,32 +272,36 @@ def look_entity(
         if getattr(only_pk, name)(**human.dict()).dict() == ent_model.dict():
             human.scopes += [AccessType.SELF]
         return db_templates.TemplateResponse(
-            f"{name}_form.html", {"request": request, name.lower(): pd_entity,
-                                  # "action_url": f"/db/{name}/look/",
-                                  # "send_method": "POST",
-                                  # "disabled": True,
-                                  'access_mode': 'look',
-                                  "access": human.scopes,
-                                  })
+            f"{name}_form.html",
+            {
+                "request": request,
+                name.lower(): pd_entity,
+                # "action_url": f"/db/{name}/look/",
+                # "send_method": "POST",
+                # "disabled": True,
+                "access_mode": "look",
+                "access": human.scopes,
+            },
+        )
     raise HTTPException(
         request=request,
         status_code=status.HTTP_404_NOT_FOUND,
-        detail="Сущность для редактирования в базе данных не найдена..."
+        detail="Сущность для редактирования в базе данных не найдена...",
     )
 
 
-@db_route.post('/{class_entity_name}/delete')
+@db_route.post("/{class_entity_name}/delete")
 @db_session
 def delete_entity(
-        request: Request,
-        human=Security(get_current_human_for_db),
-        ent_model: dict[str, Any] = Body(
-            ...,
-            title="словарь, однозначно определяющий объект в БД, через задание всех primaryKey"
-                  " (если их несколько)",
-            description="словарь из пар <key, value> где key - имя primaryKey объекта в БД,"
-                        "а value - значение primaryKey конкретной сущности"),
-        class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных")
+    request: Request,
+    human=Security(get_current_human_for_db),
+    ent_model: dict[str, Any] = Body(
+        ...,
+        title="словарь, однозначно определяющий объект в БД, через задание всех primaryKey" " (если их несколько)",
+        description="словарь из пар <key, value> где key - имя primaryKey объекта в БД,"
+        "а value - значение primaryKey конкретной сущности",
+    ),
+    class_entity_name: m.db.EntitiesEnum = Path(..., title="Название сущности в базе данных"),
 ):
     name = class_entity_name.value
     ent_model = getattr(only_pk, name)(**ent_model)
@@ -284,13 +311,14 @@ def delete_entity(
         if getattr(only_pk, name)(**human.dict()).dict() == ent_model.dict():
             human.scopes += [AccessType.SELF]
         entity.delete()
-        return RedirectResponseWithBody(f"/db/{name}", Ajax300Answer(
-            url=f"/db/{name}",
-            alert=Alert("Удаление произошло успешно!", Alert.SUCCESS),
-            request=request))
+        return RedirectResponseWithBody(
+            f"/db/{name}",
+            Ajax300Answer(
+                url=f"/db/{name}", alert=Alert("Удаление произошло успешно!", Alert.SUCCESS), request=request
+            ),
+        )
     raise HTTPException(
         request=request,
         status_code=status.HTTP_404_NOT_FOUND,
-        detail="Сущность для редактирования в базе данных не найдена..."
-
+        detail="Сущность для редактирования в базе данных не найдена...",
     )

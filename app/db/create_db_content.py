@@ -5,36 +5,39 @@ from app.utils.utils_of_security import get_password_hash
 @db_session
 def create_pages():
 
-    SimpleEntity(key="partner", data={
-        1: dict(name="Минестерство промышленности, транспорта и иннавационной политики Пензенской области",
-                image="img/partners/MinesterstvoPromPO.jpg"),
-        2: dict(name="Минестерство образования Пензенской области", image="img/partners/MinesterstvoPromPO.jpg"),
-        3: dict(name="ГКУ “Пензенское региональное объеденение бизнес-инкубаторов”",
-                image="img/partners/BisnesIncubatorGroup.jpg"),
-        4: dict(name="Молодежный отряд “Новатор”", image="img/partners/MO_Novator.jpg")
-    })
+    SimpleEntity(
+        key="partner",
+        data={
+            1: dict(
+                name="Минестерство промышленности, транспорта и иннавационной политики Пензенской области",
+                image="img/partners/MinesterstvoPromPO.jpg",
+            ),
+            2: dict(name="Минестерство образования Пензенской области", image="img/partners/MinesterstvoPromPO.jpg"),
+            3: dict(
+                name="ГКУ “Пензенское региональное объеденение бизнес-инкубаторов”",
+                image="img/partners/BisnesIncubatorGroup.jpg",
+            ),
+            4: dict(name="Молодежный отряд “Новатор”", image="img/partners/MO_Novator.jpg"),
+        },
+    )
 
-    SimpleEntity(key="socials", data={
-        1: dict(name="facebook", icon="img/socials/f_book.png", link="https://www.facebook.com/1000listnick/"),
-        2: dict(name="instagram", icon="img/socials/insta.png", link="https://www.instagram.com/1000listnick/"),
-        3: dict(name="youtube", icon="img/socials/youtube.png",
-                link="https://www.youtube.com/channel/UC21S9sVTzKc0__CgifzJlow"),
-        4: dict(name="Вконтакте", icon="img/socials/Vk.png", link="https://vk.com/official1000listnick"),
-    })
+    SimpleEntity(
+        key="socials",
+        data={
+            1: dict(name="facebook", icon="img/socials/f_book.png", link="https://www.facebook.com/1000listnick/"),
+            2: dict(name="instagram", icon="img/socials/insta.png", link="https://www.instagram.com/1000listnick/"),
+            3: dict(
+                name="youtube",
+                icon="img/socials/youtube.png",
+                link="https://www.youtube.com/channel/UC21S9sVTzKc0__CgifzJlow",
+            ),
+            4: dict(name="Вконтакте", icon="img/socials/Vk.png", link="https://vk.com/official1000listnick"),
+        },
+    )
     commit()
 
-    main = Page(
-        page_url="/",
-        page_path="main.html",
-        visible=True,
-        title="Главная"
-    )
-    event_main = Page(
-        page_url="/events",
-        page_path="events/event_main.html",
-        is_header=True,
-        title="События"
-    )
+    main = Page(page_url="/", page_path="main.html", visible=True, title="Главная")
+    event_main = Page(page_url="/events", page_path="events/event_main.html", is_header=True, title="События")
     commit()
     teengrad = Page(
         page_url="/events/teengrad",
@@ -42,7 +45,7 @@ def create_pages():
         visible=True,
         is_header=False,
         title="TeenГрад",
-        root_page=event_main
+        root_page=event_main,
     )
     dominno = Page(
         page_url="/events/dominno",
@@ -50,7 +53,7 @@ def create_pages():
         visible=True,
         is_header=False,
         title="ДомInno",
-        root_page=event_main
+        root_page=event_main,
     )
     brainstorm = Page(
         page_url="/events/brainstorm",
@@ -58,7 +61,7 @@ def create_pages():
         visible=True,
         is_header=False,
         title="brainstorm",
-        root_page=event_main
+        root_page=event_main,
     )
     innovatorium = Page(
         page_url="/events/innovatorium",
@@ -66,7 +69,7 @@ def create_pages():
         visible=True,
         is_header=False,
         title="innovatorium",
-        root_page=event_main
+        root_page=event_main,
     )
     season_start = Page(
         page_url="/events/season_start",
@@ -74,7 +77,7 @@ def create_pages():
         visible=True,
         is_header=False,
         title="season_start",
-        root_page=event_main
+        root_page=event_main,
     )
     success_factor = Page(
         page_url="/events/success_factor",
@@ -82,7 +85,7 @@ def create_pages():
         visible=True,
         is_header=False,
         title="success_factor",
-        root_page=event_main
+        root_page=event_main,
     )
     news_main = Page(
         page_url="/news",
@@ -140,7 +143,7 @@ def create_pages():
         title="Старт сезону дан!",
         root_page=news_main,
         image="img/news/start_2019.jfif",
-        description="11 октября 2019 года в рамках работы программы «1000-list-nick» стартует комплекс интернет- конкурсов «Новатор_Web». Победители и призеры комплекса получат... "
+        description="11 октября 2019 года в рамках работы программы «1000-list-nick» стартует комплекс интернет- конкурсов «Новатор_Web». Победители и призеры комплекса получат... ",
     )
     News(
         page_url="/news/seminar",
@@ -162,8 +165,8 @@ def create_pages():
             2: "https://video.wixstatic.com/video/9a5d54_65b0e4979a5442f88d6a38f15c606853/1080p/mp4/file.mp4",
             3: "https://video.wixstatic.com/video/9a5d54_d8a2689feb914605879819c35d74290b/1080p/mp4/file.mp4",
             4: "https://video.wixstatic.com/video/9a5d54_875262dbd5d443e58cb11c9b54be1806/1080p/mp4/file.mp4",
-            5: "https://video.wixstatic.com/video/9a5d54_086a98241c6845319cf5781f5ddc5825/1080p/mp4/file.mp4"
-        }
+            5: "https://video.wixstatic.com/video/9a5d54_086a98241c6845319cf5781f5ddc5825/1080p/mp4/file.mp4",
+        },
     )
     Direction(
         name="3D",
@@ -174,7 +177,7 @@ def create_pages():
             3: "https://video.wixstatic.com/video/9a5d54_583b19a059a149aa9a73f66d7fe7d439/1080p/mp4/file.mp4",
             4: "https://video.wixstatic.com/video/9a5d54_9dca029c88474fc1a20ed8a9d06c4ea9/1080p/mp4/file.mp4",
             5: "https://video.wixstatic.com/video/9a5d54_3e1e4460d8ee4187a098652fcb6307a4/1080p/mp4/file.mp4",
-        }
+        },
     )
     Direction(
         name="Engineer",
@@ -184,8 +187,8 @@ def create_pages():
             2: "https://video.wixstatic.com/video/9a5d54_2a592617b02346d7a0c97ca2121d0fdf/1080p/mp4/file.mp4",
             3: "https://video.wixstatic.com/video/9a5d54_281e619df1db4ffeb734d4e39be30226/1080p/mp4/file.mp4",
             4: "https://video.wixstatic.com/video/9a5d54_e8fbca8b1af340468732d507627c47b3/1080p/mp4/file.mp4",
-            5: "https://video.wixstatic.com/video/9a5d54_7f57a8ef545a4c3fa30e2c9026a64fed/1080p/mp4/file.mp4"
-        }
+            5: "https://video.wixstatic.com/video/9a5d54_7f57a8ef545a4c3fa30e2c9026a64fed/1080p/mp4/file.mp4",
+        },
     )
     Direction(
         name="Design",
@@ -195,8 +198,8 @@ def create_pages():
             2: "https://video.wixstatic.com/video/9a5d54_e116b6a6f2794bc5b13291bca556f642/1080p/mp4/file.mp4",
             3: "https://video.wixstatic.com/video/9a5d54_47059379f4434744bb0c09f702dd3381/1080p/mp4/file.mp4",
             4: "https://video.wixstatic.com/video/9a5d54_8d13ea570a8d420ca7bef30221a5b38f/1080p/mp4/file.mp4",
-            5: "https://video.wixstatic.com/video/9a5d54_5fc5e01f7d224ed193007537938505fd/1080p/mp4/file.mp4"
-        }
+            5: "https://video.wixstatic.com/video/9a5d54_5fc5e01f7d224ed193007537938505fd/1080p/mp4/file.mp4",
+        },
     )
     Direction(
         name="PM",
@@ -206,8 +209,8 @@ def create_pages():
             2: "https://video.wixstatic.com/video/9a5d54_0efb8386339d4ebd8fb92bf6a656b6b6/1080p/mp4/file.mp4",
             3: "https://video.wixstatic.com/video/9a5d54_869af7c8e18142abb5482a81bf32759f/1080p/mp4/file.mp4",
             4: "https://video.wixstatic.com/video/9a5d54_48505e745ed94027954aec9bf5e2124a/1080p/mp4/file.mp4",
-            5: "https://video.wixstatic.com/video/9a5d54_78ce211f9bb94e4c8e71a3c09b0753d3/1080p/mp4/file.mp4"
-        }
+            5: "https://video.wixstatic.com/video/9a5d54_78ce211f9bb94e4c8e71a3c09b0753d3/1080p/mp4/file.mp4",
+        },
     )
     Direction(
         name="SMM",
@@ -217,8 +220,8 @@ def create_pages():
             2: "https://video.wixstatic.com/video/9a5d54_573978293eb74120b30c7a3efdbda4d4/1080p/mp4/file.mp4",
             3: "https://video.wixstatic.com/video/9a5d54_59e17b3b8398426e8b127df69e116cff/1080p/mp4/file.mp4",
             4: "https://video.wixstatic.com/video/9a5d54_11a8bd0fd65b4fc3a570308f9c193460/1080p/mp4/file.mp4",
-            5: "https://video.wixstatic.com/video/9a5d54_9bb1b8455ce44e34bc5c8c5505fe9cf6/1080p/mp4/file.mp4"
-        }
+            5: "https://video.wixstatic.com/video/9a5d54_9bb1b8455ce44e34bc5c8c5505fe9cf6/1080p/mp4/file.mp4",
+        },
     )
     Direction(
         name="Video",
@@ -228,9 +231,8 @@ def create_pages():
             2: "https://video.wixstatic.com/video/9a5d54_f57c2eef03e84de0920e3114ca38017c/1080p/mp4/file.mp4",
             3: "https://video.wixstatic.com/video/9a5d54_2037abccbf9140e9af6dfcfde0411ef9/1080p/mp4/file.mp4",
             4: "https://video.wixstatic.com/video/9a5d54_adfb55c613ef4971ae03a4d2ee86edf7/1080p/mp4/file.mp4",
-            5: "https://video.wixstatic.com/video/9a5d54_834a9ce6af104b94803d624b2ffa4386/1080p/mp4/file.mp4"
-        }
-
+            5: "https://video.wixstatic.com/video/9a5d54_834a9ce6af104b94803d624b2ffa4386/1080p/mp4/file.mp4",
+        },
     )
     Direction(
         name="Hardware",
@@ -240,8 +242,8 @@ def create_pages():
             2: "https://video.wixstatic.com/video/9a5d54_cdc5f9d5795c417792d68dfc8b3e3ba4/1080p/mp4/file.mp4",
             3: "https://video.wixstatic.com/video/9a5d54_cf94349966d348418832f8cc4486c241/1080p/mp4/file.mp4",
             4: "https://video.wixstatic.com/video/9a5d54_85fff24458b141439c6ab7a95461b856/1080p/mp4/file.mp4",
-            5: "https://video.wixstatic.com/video/9a5d54_b8c6230d450949d2be2b6b102b0336d2/1080p/mp4/file.mp4"
-        }
+            5: "https://video.wixstatic.com/video/9a5d54_b8c6230d450949d2be2b6b102b0336d2/1080p/mp4/file.mp4",
+        },
     )
     commit()
     qu_ans = {
@@ -263,7 +265,7 @@ def create_pages():
                                                                             Именно эти ребята дарят вам незабываемые впечатления и создают теплую атмосферу 1000-list-nick. """,
         "Что такое МИП?": """МИП - малое инновационное предприятие, или если проще - то команда
                                                  перспективных молодых людей, знатоков своего дела, которые объединились
-                                                  для разработки общего проекта."""
+                                                  для разработки общего проекта.""",
     }
 
     for key, val in qu_ans.items():
@@ -275,17 +277,17 @@ def create_pages():
             was_answered=True,
         )
     qu_ans1 = {
-        "Где проходит ДомInno?": ''' ГАОУ по училище олимпийского резерва Пензенской области, г. Пенза, улица Пугачёва, 93.
+        "Где проходит ДомInno?": """ ГАОУ по училище олимпийского резерва Пензенской области, г. Пенза, улица Пугачёва, 93.
                     <a class="no-effect" href="https://goo.gl/maps/LvsGwqqYVjTaSDnBA"> <i class="fas fa-map-marked-alt"></i>
-                    </a>''',
-        "Как попасть в ДомInno?": '''Необходимо принять участие в осеннем этапе интернет-конкурса
+                    </a>""",
+        "Как попасть в ДомInno?": """Необходимо принять участие в осеннем этапе интернет-конкурса
                       «Новатор_Web», 10 победителей в каждом направлении получают
-                      путевки в зимнюю школу.''',
-        "Есть ли возрастные ограничения?": ''' Ты можешь принять участие в зимней школе, если тебе от 14 до 18 лет.''',
-        "Участие в зимней школе бесплатное": ''' Все мероприятия 1000-list-nick абсолютно бесплатные''',
-        "Что если у меня нет опыта участия в подобных конкурсах?": ''' Все когда-то делают первый шаг. Если ты только начинаешь свой путь к профессии мечты, заходи
+                      путевки в зимнюю школу.""",
+        "Есть ли возрастные ограничения?": """ Ты можешь принять участие в зимней школе, если тебе от 14 до 18 лет.""",
+        "Участие в зимней школе бесплатное": """ Все мероприятия 1000-list-nick абсолютно бесплатные""",
+        "Что если у меня нет опыта участия в подобных конкурсах?": """ Все когда-то делают первый шаг. Если ты только начинаешь свой путь к профессии мечты, заходи
                       в раздел VideoStudy и изучай видео-уроки от наших специалистов, они помогут тебе справиться с
-                      заданием. Мы в тебя вери''',
+                      заданием. Мы в тебя вери""",
     }
     for key, val in qu_ans1.items():
         Question(
@@ -306,8 +308,7 @@ def create_pages():
         about_program="Знания которые дают в программе невозможно получить в школе. Тут каждый хочет чем-то делиться и узнавать в ответ",
         direction="SMM",
         visible_about_program_field=True,
-        photo="img/humans/KalekinDaniil.png"
-
+        photo="img/humans/KalekinDaniil.png",
     )
     User(
         username="DmitriyShelahaev",
@@ -316,12 +317,11 @@ def create_pages():
         surname="Шелахаев",
         email="Dmitriy.Shelahaev@mail.ru",
         date_of_birth=date(2000, 2, 4),
-        about_program='''Программа "1000-list-nick" - необъятная тема. Дала мне она очень и очень много. В первую очередь - 
-                          знакомства с огромным количеством людей, умение работать в команде, кучу положительных эмоций.''',
+        about_program="""Программа "1000-list-nick" - необъятная тема. Дала мне она очень и очень много. В первую очередь - 
+                          знакомства с огромным количеством людей, умение работать в команде, кучу положительных эмоций.""",
         direction="Engeneer",
         visible_about_program_field=True,
-        photo="img/humans/DmitriyShelahaev.png"
-
+        photo="img/humans/DmitriyShelahaev.png",
     )
     User(
         username="DmitriyGirkin",
@@ -333,8 +333,5 @@ def create_pages():
         about_program="1000-list-nick дал развитие моим способностям, дал мне возможность найти дело по душе, подарил мне много друзей и знакомых,",
         direction="IT",
         visible_about_program_field=True,
-        photo="img/humans/DmitriyGirkin.png"
-
+        photo="img/humans/DmitriyGirkin.png",
     )
-
-

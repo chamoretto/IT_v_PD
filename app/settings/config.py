@@ -14,8 +14,8 @@ from os import chdir
 from app.settings.config_control import create_cfg
 
 
-SETTINGS_DIR = 'settings'
-SETTINGS_FILE = 'settings.ini'
+SETTINGS_DIR = "settings"
+SETTINGS_FILE = "settings.ini"
 
 HOME_DIR = split(dirname(abspath(__file__)))[0]
 
@@ -26,13 +26,13 @@ EXAMPLE_SETTINGS_FILE = join(HOME_DIR, SETTINGS_DIR, EXAMPLE_SETTINGS_FILE)
 
 cfg = create_cfg(SETTINGS_FILE, EXAMPLE_SETTINGS_FILE)
 
-DB_PATH = str(Path(HOME_DIR, cfg.get('paths', "db_path"), cfg.get('db', "name")))
-MIGRATIONS_DIR = str(Path(HOME_DIR, cfg.get('paths', "migration_dir")))
-TEST_DB = str(Path(HOME_DIR, cfg.get('paths', "test_db"), cfg.get('db', "test_db_name")))
-DB_BACKUPS = str(Path(HOME_DIR, cfg.get('paths', "db_backups")))
-AUTO_PYDANTIC_MODELS = str(Path(HOME_DIR, cfg.get('paths', 'auto_pydantic_models')))
+DB_PATH = str(Path(HOME_DIR, cfg.get("paths", "db_path"), cfg.get("db", "name")))
+MIGRATIONS_DIR = str(Path(HOME_DIR, cfg.get("paths", "migration_dir")))
+TEST_DB = str(Path(HOME_DIR, cfg.get("paths", "test_db"), cfg.get("db", "test_db_name")))
+DB_BACKUPS = str(Path(HOME_DIR, cfg.get("paths", "db_backups")))
+AUTO_PYDANTIC_MODELS = str(Path(HOME_DIR, cfg.get("paths", "auto_pydantic_models")))
 
 print(DB_PATH)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     chdir(HOME_DIR)

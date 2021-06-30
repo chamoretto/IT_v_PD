@@ -26,8 +26,8 @@ from app.utils.jinja2_utils import _roles_to_home_urls
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-ALGORITHM = cfg.get('db', "hash_algorithm")
-SECRET_KEY = cfg.get('keys', "basic")
+ALGORITHM = cfg.get("db", "hash_algorithm")
+SECRET_KEY = cfg.get("keys", "basic")
 
 
 def verify_password(plain_password, hashed_password):
@@ -63,20 +63,26 @@ scopes_to_db: Dict[m.db.Entity, list] = {
     m.Smm: [AccessType.SMMER],
     m.DirectionExpert: [AccessType.DIRECTION_EXPERT],
     m.Admin: [AccessType.ADMIN, AccessType.SMMER],
-    m.Developer: [AccessType.DEVELOPER, AccessType.USER,
-                  AccessType.DIRECTION_EXPERT, AccessType.ADMIN,
-                  AccessType.SMMER]
+    m.Developer: [
+        AccessType.DEVELOPER,
+        AccessType.USER,
+        AccessType.DIRECTION_EXPERT,
+        AccessType.ADMIN,
+        AccessType.SMMER,
+    ],
 }
 scopes_to_db: Dict[m.db.Entity, List[str]] = {key: [i.value for i in val] for key, val in scopes_to_db.items()}
 app_routers_to_scopes: dict[str, list[str]] = defaultdict(lambda i: [])
-app_routers_to_scopes.update({
-    "admin": scopes_to_db[m.Admin],
-    "public_router": [],
-    "user": scopes_to_db[m.User],
-    "smm": scopes_to_db[m.Smm],
-    "dev": scopes_to_db[m.Developer],
-    "direction_expert": scopes_to_db[m.DirectionExpert],
-})
+app_routers_to_scopes.update(
+    {
+        "admin": scopes_to_db[m.Admin],
+        "public_router": [],
+        "user": scopes_to_db[m.User],
+        "smm": scopes_to_db[m.Smm],
+        "dev": scopes_to_db[m.Developer],
+        "direction_expert": scopes_to_db[m.DirectionExpert],
+    }
+)
 
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="token",
@@ -85,9 +91,9 @@ oauth2_scheme = OAuth2PasswordBearer(
         str(AccessType.SMMER): "Редактор различного контента на сайте",
         str(AccessType.DIRECTION_EXPERT): "Проверяющий работы на конкурсе",
         str(AccessType.ADMIN): "Управляющий сайтом",
-        str(AccessType.DEVELOPER): "Разработчик сайта"
+        str(AccessType.DEVELOPER): "Разработчик сайта",
     },
-    auto_error=False
+    auto_error=False,
 )
 
 
@@ -127,16 +133,15 @@ def generate_security(entity, getter_human=None):
         pass
 
     def get_current_human(
-            request: Request,
-            security_scopes: SecurityScopes = PassScopes(),
-            token: str = Depends(oauth2_scheme)) -> pd_db.Human:
+        request: Request, security_scopes: SecurityScopes = PassScopes(), token: str = Depends(oauth2_scheme)
+    ) -> pd_db.Human:
 
         """ Получение текущего пользователя"""
         if token is None:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 request=request,
-                detail='Похоже, вы не авторизованы... попробуйте авторизоваться'
+                detail="Похоже, вы не авторизованы... попробуйте авторизоваться",
             )
         try:
             print("from get_current_human", security_scopes.scopes, __file__)
@@ -195,8 +200,9 @@ security = APIRouter(
 )
 
 
-def check_scopes(username: str, password: str, scopes: List[str]) \
-        -> Tuple[Optional[m.db.Entity], Union[List[str], bool]]:
+def check_scopes(
+    username: str, password: str, scopes: List[str]
+) -> Tuple[Optional[m.db.Entity], Union[List[str], bool]]:
     if not m.Human.exists(username=username):
         return None, False
     ent: m.db.Entity = m.Human.get(username=username)
@@ -210,14 +216,9 @@ def check_scopes(username: str, password: str, scopes: List[str]) \
     return None, False
 
 
-
-
-
 @security.post("/token")
 @db_session
-def basic_login(request: Request,
-                form_data: OAuth2PasswordRequestForm = Depends(),
-                access_token_time=0):
+def basic_login(request: Request, form_data: OAuth2PasswordRequestForm = Depends(), access_token_time=0):
     error = HTTPException(
         request=request,
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -248,7 +249,7 @@ def basic_login(request: Request,
             alert=Alert("Вы успешно авторизовались!"),
             data={"access_token": access_token, "token_type": "bearer"},
             my_response_type=str(ResponseType.AUTHORIZATION_REDIRECT),
-            request=request
-        )
+            request=request,
+        ),
     )
     # return {"access_token": access_token, "token_type": "bearer"}

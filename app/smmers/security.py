@@ -12,15 +12,11 @@ from app.utils.utils_of_security import generate_security, basic_login, scopes_t
 from app.utils.jinja2_utils import _roles_to_home_urls
 
 
-SECRET_KEY = cfg.get('keys', "smmer")
-ACCESS_TOKEN_TIME = int(cfg.get('keys', "smmer_time"))
+SECRET_KEY = cfg.get("keys", "smmer")
+ACCESS_TOKEN_TIME = int(cfg.get("keys", "smmer_time"))
 token_path = "smmer_token"
 # smmer_oauth2_scheme = OAuth2PasswordBearer(tokenUrl=token_path)
-[get_smmer,
- authenticate_smmer,
- get_current_smmer,
- create_smmer_access_token
- ] = generate_security(m.Smm)
+[get_smmer, authenticate_smmer, get_current_smmer, create_smmer_access_token] = generate_security(m.Smm)
 
 smmer = APIRouter(
     tags=["smm"],
@@ -29,7 +25,7 @@ smmer = APIRouter(
 )
 
 
-@smmer.post('/' + token_path, response_model=Token)
+@smmer.post("/" + token_path, response_model=Token)
 @db_session
 def login_for_access_token(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
     if form_data.scopes:
@@ -43,4 +39,10 @@ def login_for_access_token(request: Request, form_data: OAuth2PasswordRequestFor
 async def login_smmer(request: Request):
     return login_templates.TemplateResponse(
         "login.html",
-        {"request": request, "who": "Редактора", "auth_url": '/' + token_path, "roles_to_home_urls": _roles_to_home_urls})
+        {
+            "request": request,
+            "who": "Редактора",
+            "auth_url": "/" + token_path,
+            "roles_to_home_urls": _roles_to_home_urls,
+        },
+    )

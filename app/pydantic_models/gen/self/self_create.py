@@ -38,51 +38,50 @@ Developer = ForwardRef("Developer")
 HumanContacts = ForwardRef("HumanContacts")
 
 
-
 class Admin(BaseModel):
-	username: str
-	password: Optional[str] = None
-	name: str
-	surname: str
-	email: str
-	human_contacts: Union[int, HumanContacts, None] = None
-	photo: Optional[str] = ''
-	status: Optional[str] = ''
-	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict, list]] = []
-	questions: Set[Union[int, Question]] = []
+    username: str
+    password: Optional[str] = None
+    name: str
+    surname: str
+    email: str
+    human_contacts: Union[int, HumanContacts, None] = None
+    photo: Optional[str] = ""
+    status: Optional[str] = ""
+    description: Optional[str] = ""
+    scopes: Optional[Union[Json, dict, list]] = []
+    questions: Set[Union[int, Question]] = []
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class Developer(BaseModel):
-	username: str
-	password: Optional[str] = None
-	name: str
-	surname: str
-	email: str
-	human_contacts: Union[int, HumanContacts, None] = None
-	photo: Optional[str] = ''
-	status: Optional[str] = ''
-	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict, list]] = []
-	questions: Set[Union[int, Question]] = []
+    username: str
+    password: Optional[str] = None
+    name: str
+    surname: str
+    email: str
+    human_contacts: Union[int, HumanContacts, None] = None
+    photo: Optional[str] = ""
+    status: Optional[str] = ""
+    description: Optional[str] = ""
+    scopes: Optional[Union[Json, dict, list]] = []
+    questions: Set[Union[int, Question]] = []
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class HumanContacts(BaseModel):
-	phone: Optional[str] = ''
-	vk: Optional[str] = ''
-	insagramm: Optional[str] = ''
-	facebook: Optional[str] = ''
-	telegram: Optional[str] = ''
-	home_adress: Optional[str] = ''
+    phone: Optional[str] = ""
+    vk: Optional[str] = ""
+    insagramm: Optional[str] = ""
+    facebook: Optional[str] = ""
+    telegram: Optional[str] = ""
+    home_adress: Optional[str] = ""
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 Admin.update_forward_refs()
@@ -90,7 +89,7 @@ Developer.update_forward_refs()
 HumanContacts.update_forward_refs()
 
 
-if __name__ == '__main__':
-	from os import chdir
+if __name__ == "__main__":
+    from os import chdir
 
-	chdir(HOME_DIR)
+    chdir(HOME_DIR)

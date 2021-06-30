@@ -47,7 +47,7 @@ class PdUrl(BaseModel):
         return ""
 
     def print_url_data(self) -> str:
-        return ' '.join([self.print_ajax_class(), self.download()])
+        return " ".join([self.print_ajax_class(), self.download()])
 
 
 class BaseResponse(BaseModel):
@@ -68,13 +68,13 @@ class BaseHTMLDataResponse(BaseResponse):
 
     @root_validator(pre=True)
     def alert_validator(cls, values):
-        if type(values.get('alert')) == Alert:
-            values['alert'] = values['alert'].alert_renderer(values.get('request'))
-        if type(values.get('admin_shell')) == dict:
-            values['admin_shell'] = shell_renderer(values['admin_shell'], values.get('request'))
+        if type(values.get("alert")) == Alert:
+            values["alert"] = values["alert"].alert_renderer(values.get("request"))
+        if type(values.get("admin_shell")) == dict:
+            values["admin_shell"] = shell_renderer(values["admin_shell"], values.get("request"))
         return values
 
-    @validator('my_response_type', pre=True)
+    @validator("my_response_type", pre=True)
     def my_response_type_validator(cls, value):
         if type(value) == ResponseType:
             return str(value)
@@ -84,13 +84,8 @@ class BaseHTMLDataResponse(BaseResponse):
     def args_to_kwargs(cls, filepath: str, template_class: type, params: dict[str, Any], *args) -> dict[str, Any]:
         return dict(m_filepath=filepath, m_template=template_class, m_params=params)
 
-
     @classmethod
-    def create(
-            cls,
-            my_response_type: ResponseType = None,
-            alert: str = ""
-    ):
+    def create(cls, my_response_type: ResponseType = None, alert: str = ""):
         pass
 
 
@@ -111,16 +106,12 @@ class GenResp(BaseModel):
     access: list[AccessType] = []
     access_mode: list[AccessMode] = []
 
-
     class Config:
         arbitrary_types_allowed = True
 
-
     def create_main(self) -> Optional[str]:
         if self.m_filepath and self.m_template and self.m_params:
-            return self.m_template.get_template(self.m_filepath).render(
-                {"request": self.request} | self.m_params
-            )
+            return self.m_template.get_template(self.m_filepath).render({"request": self.request} | self.m_params)
         return None
 
     def create_alert(self) -> Optional[str]:
@@ -131,9 +122,7 @@ class GenResp(BaseModel):
         if type(self.shell) == dict:
             return shell_renderer(self.shell, self.request)
 
-    def __init__(self, model: Type[BaseHTMLDataResponse],
-                 request: Request,
-                 *args, **kwargs):
+    def __init__(self, model: Type[BaseHTMLDataResponse], request: Request, *args, **kwargs):
         kwargs |= {"model": model, "request": request}
         kwargs |= model.args_to_kwargs(*args)
         super(GenResp, self).__init__(**kwargs)
@@ -141,16 +130,17 @@ class GenResp(BaseModel):
     def __new__(cls, *args, **kwargs) -> BaseHTMLDataResponse:
         generate_response_obj = super(GenResp, cls).__new__(cls, *args, **kwargs)
         # return generate_response_obj
-        return (generate_response_obj.model(
-            main=generate_response_obj.create_main(),
-            alert=generate_response_obj.create_alert(),
-            admin_shell=generate_response_obj.create_shell(),
-            my_response_type=generate_response_obj.my_response_type or str(generate_response_obj.my_response_type),
-            url=generate_response_obj.url,
-            method=generate_response_obj.method,
-        ), generate_response_obj)
-
-
+        return (
+            generate_response_obj.model(
+                main=generate_response_obj.create_main(),
+                alert=generate_response_obj.create_alert(),
+                admin_shell=generate_response_obj.create_shell(),
+                my_response_type=generate_response_obj.my_response_type or str(generate_response_obj.my_response_type),
+                url=generate_response_obj.url,
+                method=generate_response_obj.method,
+            ),
+            generate_response_obj,
+        )
 
 
 class Ajax200Answer(BaseHTMLDataResponse):
@@ -176,7 +166,9 @@ class Ajax300Answer(BaseHTMLDataResponse):
     admin_shell: Optional[str] = None  # '<aside id="admin_shell"></aside>'
     url: str
     method: str = "GET"
-    send_redirect_data: dict = dict()  # данные, которые клиент должен будет отправить на сервер по указанному редиректом адресу
+    send_redirect_data: dict = (
+        dict()
+    )  # данные, которые клиент должен будет отправить на сервер по указанному редиректом адресу
     data: dict = dict()  # данные, которые сервер будет должен обработать при получении редиректа
 
     @classmethod

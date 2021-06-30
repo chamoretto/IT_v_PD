@@ -12,14 +12,11 @@ from app.utils.utils_of_security import generate_security, basic_login, scopes_t
 from app.utils.jinja2_utils import _roles_to_home_urls
 
 
-SECRET_KEY = cfg.get('keys', "developer")
-ACCESS_TOKEN_TIME = int(cfg.get('keys', "developer_time"))
+SECRET_KEY = cfg.get("keys", "developer")
+ACCESS_TOKEN_TIME = int(cfg.get("keys", "developer_time"))
 token_path = "developer_token"
 # dev_oauth2_scheme = OAuth2PasswordBearer(tokenUrl=token_path)
-[get_dev,
- authenticate_dev,
- get_current_dev,
- create_dev_access_token] = generate_security(m.Developer)
+[get_dev, authenticate_dev, get_current_dev, create_dev_access_token] = generate_security(m.Developer)
 
 dev = APIRouter(
     tags=["developer"],
@@ -44,5 +41,10 @@ async def login_dev(request: Request):
     print(request.headers)
     return login_templates.TemplateResponse(
         "login.html",
-        {"request": request, "who": "Разработчика", "auth_url": "/" + token_path, "roles_to_home_urls": _roles_to_home_urls})
-
+        {
+            "request": request,
+            "who": "Разработчика",
+            "auth_url": "/" + token_path,
+            "roles_to_home_urls": _roles_to_home_urls,
+        },
+    )

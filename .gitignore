@@ -7,3 +7,5 @@
 *.sqlite
 /**/logs/**/*
 /**/.deta/**/*
+
+/venv

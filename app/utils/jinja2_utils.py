@@ -30,14 +30,13 @@ class _MyTemplateResponse(Response):
     media_type = "text/html"
 
     def __init__(
-            self,
-            template: typing.Any,
-            context: dict,
-            status_code: int = 200,
-            headers: dict = None,
-            media_type: str = None,
-            background: BackgroundTask = None,
-
+        self,
+        template: typing.Any,
+        context: dict,
+        status_code: int = 200,
+        headers: dict = None,
+        media_type: str = None,
+        background: BackgroundTask = None,
     ):
         self.template = template
         self.context = context
@@ -60,19 +59,22 @@ class _MyTemplateResponse(Response):
         await super().__call__(scope, receive, send)
 
 
-
 # event_box_template = _public_template.get_template("/events_box.html")
 
 
 def _get_event_box_params():
-    return {"events_box": _public_template.get_template("events/events_box.html"),
-            "events_context": {"events": [getattr(out_pd, e.__class__.__name__).from_pony_orm(e) for e in
-                                          m.Page.select(lambda i: i.page_type == "event")]}}
+    return {
+        "events_box": _public_template.get_template("events/events_box.html"),
+        "events_context": {
+            "events": [
+                getattr(out_pd, e.__class__.__name__).from_pony_orm(e)
+                for e in m.Page.select(lambda i: i.page_type == "event")
+            ]
+        },
+    }
 
 
-includes = {
-    "events": _get_event_box_params
-}
+includes = {"events": _get_event_box_params}
 
 _developer_shell: dict[str, PdUrl] = {
     "Управление БД": PdUrl(href="/db", is_ajax=True),
@@ -98,11 +100,11 @@ _smm_shell: dict[str, PdUrl] = {
 }
 _user_shell: dict[str, PdUrl] = {
     "Мой профиль": PdUrl(href="/user/me", is_ajax=True),
-    "Мои работы": PdUrl(href="/user/my_works", is_ajax=True)
+    "Мои работы": PdUrl(href="/user/my_works", is_ajax=True),
 }
 _expert_shell: dict[str, PdUrl] = {
     "Мой профиль": PdUrl(href="/direction_expert/me", is_ajax=True),
-    "Работы участников": PdUrl(href='/direction_expert/user_works', is_ajax=True)
+    "Работы участников": PdUrl(href="/direction_expert/user_works", is_ajax=True),
 }
 
 _all_shells: dict[str, dict[str, PdUrl]] = {
@@ -118,14 +120,18 @@ _roles_to_home_urls: dict[str, str] = {
     m.Smm.__name__: "smm",
     m.Developer.__name__: "dev",
     m.User.__name__: "user",
-    m.DirectionExpert.__name__: "direction_expert"
+    m.DirectionExpert.__name__: "direction_expert",
 }
 
 
 def get_all_entities_from_ent_name(ent_name: str, param_name: str) -> list[BaseModel]:
     from typing import ForwardRef
-    ent_names = [i.__forward_arg__ for i in getattr(out_pd, ent_name).__fields__[param_name].type_.__dict__['__args__'] if
-           type(i) == ForwardRef]
+
+    ent_names = [
+        i.__forward_arg__
+        for i in getattr(out_pd, ent_name).__fields__[param_name].type_.__dict__["__args__"]
+        if type(i) == ForwardRef
+    ]
 
     models = [getattr(out_pd, i) for i in ent_names]
     return [model.from_pony_orm(i) for ent_name, model in zip(ent_names, models) for i in m.db[ent_name].select()[:]]
@@ -138,8 +144,9 @@ class MyJinja2Templates:
     return templates.TemplateResponse("index.html", {"request": request})
     """
 
-    def __init__(self, directory: str, admin_shell: dict[str, PdUrl] = dict(),
-                 access: Optional[list[AccessType]] = None) -> None:
+    def __init__(
+        self, directory: str, admin_shell: dict[str, PdUrl] = dict(), access: Optional[list[AccessType]] = None
+    ) -> None:
         assert jinja2 is not None, "jinja2 must be installed to use Jinja2Templates"
         self.env = self.get_env(directory)
         self.admin_shell = admin_shell
@@ -166,72 +173,81 @@ class MyJinja2Templates:
     def _params_addition(self, params: dict):
         if "request" not in params:
             raise ValueError('context must include a "request" key')
-        print('Есть ли человек в request-е', hasattr(params["request"], "current_human"))
+        print("Есть ли человек в request-е", hasattr(params["request"], "current_human"))
         if hasattr(params["request"], "current_human"):
             human = getattr(params["request"], "current_human")
-            params['access'] = params.get('access') or human.scopes or self.access or [AccessType.PUBLIC]
-            params['access_mode'] = params.get('access_mode', "")
-            params['admin_shell'] = params.get('admin_shell') or _all_shells.get(
-                human.__class__.__name__) or self.admin_shell
+            params["access"] = params.get("access") or human.scopes or self.access or [AccessType.PUBLIC]
+            params["access_mode"] = params.get("access_mode", "")
+            params["admin_shell"] = (
+                params.get("admin_shell") or _all_shells.get(human.__class__.__name__) or self.admin_shell
+            )
         else:
-            params['access'] = params.get('access') or self.access or [AccessType.PUBLIC]
-            params['access_mode'] = params.get('access_mode', "")
-            params['admin_shell'] = params.get('admin_shell', self.admin_shell)
+            params["access"] = params.get("access") or self.access or [AccessType.PUBLIC]
+            params["access_mode"] = params.get("access_mode", "")
+            params["admin_shell"] = params.get("admin_shell", self.admin_shell)
 
             # params['access_mode'] = params.get('access_mode') or AccessMode.LOOK
-        if type(params['access']) == str:
-            params['access'] = [params['access']]
+        if type(params["access"]) == str:
+            params["access"] = [params["access"]]
         # params['access'] += ['self']
-        params['access'] = [str(i) for i in params['access']]
-        params['access_mode'] = str(params['access_mode'])
+        params["access"] = [str(i) for i in params["access"]]
+        params["access_mode"] = str(params["access_mode"])
 
         return params
 
     def TemplateResponse(
-            self,
-            name: str,
-            local_context: dict,
-            status_code: int = 200,
-            headers: dict = None,
-            media_type: str = None,
-            background: BackgroundTask = None,
-            only_part: bool = False) -> Union[_MyTemplateResponse, JSONResponse, RedirectResponseWithBody, RedirectResponse]:
-        return self.TemplateRedirectResponse(None, name, local_context, status_code=status_code, headers=headers, media_type=media_type,
-                                             background=background, only_part=only_part)
-
-    def TemplateRedirectResponse(
-            self,
-            url: Optional[str],
-            name: str,
-            local_context: dict,
-            status_code: int = 300,
-            headers: dict = None,
-            media_type: str = None,
-            background: BackgroundTask = None,
-            only_part: bool = False
+        self,
+        name: str,
+        local_context: dict,
+        status_code: int = 200,
+        headers: dict = None,
+        media_type: str = None,
+        background: BackgroundTask = None,
+        only_part: bool = False,
     ) -> Union[_MyTemplateResponse, JSONResponse, RedirectResponseWithBody, RedirectResponse]:
-
-        template_response_params = dict(
+        return self.TemplateRedirectResponse(
+            None,
+            name,
+            local_context,
             status_code=status_code,
             headers=headers,
             media_type=media_type,
-            background=background
+            background=background,
+            only_part=only_part,
+        )
+
+    def TemplateRedirectResponse(
+        self,
+        url: Optional[str],
+        name: str,
+        local_context: dict,
+        status_code: int = 300,
+        headers: dict = None,
+        media_type: str = None,
+        background: BackgroundTask = None,
+        only_part: bool = False,
+    ) -> Union[_MyTemplateResponse, JSONResponse, RedirectResponseWithBody, RedirectResponse]:
+
+        template_response_params = dict(
+            status_code=status_code, headers=headers, media_type=media_type, background=background
         )
 
         local_context = self._params_addition(local_context)
         skeleton_template = _skeleton_template
         template = self.get_template(name)
 
-        if dict(local_context['request'].headers).get("x-part") == "basic-content":
+        if dict(local_context["request"].headers).get("x-part") == "basic-content":
 
             if status_code in code_to_resp:
-                basic_data = {"request": local_context['request'],
-                              "get_all_entities_from_ent_name": get_all_entities_from_ent_name}
+                basic_data = {
+                    "request": local_context["request"],
+                    "get_all_entities_from_ent_name": get_all_entities_from_ent_name,
+                }
 
                 response_data = dict(
                     basic_data=basic_data,
-                    alert=_alert_template.render(basic_data | {"alert": local_context.pop('alert', None)}),
-                    admin_shell=_admin_shell_template.render(basic_data | {"pages": local_context['admin_shell']}),
+                    alert=_alert_template.render(basic_data | {"alert": local_context.pop("alert", None)}),
+                    admin_shell=_admin_shell_template.render(basic_data | {"pages": local_context["admin_shell"]}),
                     main=template.render(basic_data | local_context),
                 )
 
@@ -242,12 +258,10 @@ class MyJinja2Templates:
                     return RedirectResponseWithBody(url, data, **template_response_params)
                 data = code_to_resp[status_code](**response_data).dict()
                 print(data)
-                return JSONResponse(
-                    data, **template_response_params
-                )
+                return JSONResponse(data, **template_response_params)
             context = local_context | {
                 "response_status_code": status_code,
-                "get_all_entities_from_ent_name": get_all_entities_from_ent_name
+                "get_all_entities_from_ent_name": get_all_entities_from_ent_name,
             }
             skeleton_template = template
 
@@ -255,29 +269,30 @@ class MyJinja2Templates:
             if url is not None:
                 return RedirectResponse(url)
             # print('Генерируем весь сайт с нуля', admin_shell_template, )
-            admin_shell_context = {"pages": local_context['admin_shell'], "request": local_context['request']}
-            admin_shell_context = {key: val for key, val in admin_shell_context.items() if
-                                   val is not None and bool(val)}
+            admin_shell_context = {"pages": local_context["admin_shell"], "request": local_context["request"]}
+            admin_shell_context = {
+                key: val for key, val in admin_shell_context.items() if val is not None and bool(val)
+            }
             # print(admin_shell_context)
             with db_session:
                 context = dict(
-                    alert=_alert_template if local_context.get('alert') else None,
-                    alert_context=dict(alert=local_context.pop('alert', None)),
+                    alert=_alert_template if local_context.get("alert") else None,
+                    alert_context=dict(alert=local_context.pop("alert", None)),
                     current_page=template,
                     current_page_context=local_context,
                     admin_shell=_admin_shell_template,
                     admin_shell_context=admin_shell_context,
-                    request=local_context['request'],
+                    request=local_context["request"],
                     # header=[SitePageMenu(name=i) for i in ["Новатор_WEB", "События", "Новости", "Результы"]],
-                    title=local_context.get('title', None),
+                    title=local_context.get("title", None),
                     response_status_code=status_code,
                     current_method="POST",
-                    socials=[easy_ent_pd.Socials(id=key, **val) for key, val in
-                             dict(m.SimpleEntity['socials'].data).items()],
+                    socials=[
+                        easy_ent_pd.Socials(id=key, **val) for key, val in dict(m.SimpleEntity["socials"].data).items()
+                    ],
                     header_pages=[i.get_header_menu_html_code() for i in m.Page.select(lambda i: i.is_header)[:]],
                     roles_to_home_urls=_roles_to_home_urls,
                     get_all_entities_from_ent_name=get_all_entities_from_ent_name,
-
                 )
         return _MyTemplateResponse(
             skeleton_template,
@@ -296,21 +311,28 @@ class MyJinja2Templates:
     #     pass
 
 
-login_templates = MyJinja2Templates(directory="content/templates/login")
-error_templates = MyJinja2Templates(directory="content/templates/errors")
-db_templates = MyJinja2Templates(directory="content/templates/database", admin_shell=_developer_shell, access=[AccessType.DEVELOPER])
-public_templates = MyJinja2Templates(directory="content/templates/public_temp")
+login_templates = MyJinja2Templates(directory="app/content/templates/login")
+error_templates = MyJinja2Templates(directory="app/content/templates/errors")
+db_templates = MyJinja2Templates(
+    directory="app/content/templates/database", admin_shell=_developer_shell, access=[AccessType.DEVELOPER]
+)
+public_templates = MyJinja2Templates(directory="app/content/templates/public_temp")
 
-developer_templates = MyJinja2Templates(directory="content/templates/developers", admin_shell=_developer_shell,
-                                        access=[AccessType.DEVELOPER])
-admin_templates = MyJinja2Templates(directory="content/templates/admins", admin_shell=_admin_shell,
-                                    access=[AccessType.ADMIN])
-smm_templates = MyJinja2Templates(directory="content/templates/smm", admin_shell=_smm_shell,
-                                        access=[AccessType.SMMER])
-expert_templates = MyJinja2Templates(directory="content/templates/expert", admin_shell=_expert_shell,
-                                        access=[AccessType.DIRECTION_EXPERT])
-user_templates = MyJinja2Templates(directory="content/templates/user", admin_shell=_user_shell,
-                                        access=[AccessType.USER])
+developer_templates = MyJinja2Templates(
+    directory="app/content/templates/developers", admin_shell=_developer_shell, access=[AccessType.DEVELOPER]
+)
+admin_templates = MyJinja2Templates(
+    directory="app/content/templates/admins", admin_shell=_admin_shell, access=[AccessType.ADMIN]
+)
+smm_templates = MyJinja2Templates(
+    directory="app/content/templates/smm", admin_shell=_smm_shell, access=[AccessType.SMMER]
+)
+expert_templates = MyJinja2Templates(
+    directory="app/content/templates/expert", admin_shell=_expert_shell, access=[AccessType.DIRECTION_EXPERT]
+)
+user_templates = MyJinja2Templates(
+    directory="app/content/templates/user", admin_shell=_user_shell, access=[AccessType.USER]
+)
 
 #
 # class BaseAnswer:

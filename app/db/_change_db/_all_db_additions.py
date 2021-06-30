@@ -10,8 +10,8 @@ from app.db._change_db._db_additions._base_additions import _raw_m, AddArrtInDbC
 from app.db._change_db._db_additions._human_addition import _raw_m
 from app.db._change_db._db_additions._admin_addition import _raw_m
 from app.db._change_db._db_additions._user_addition import _raw_m
-from app.db._change_db._db_additions._smm_addition  import _raw_m
-from app.db._change_db._db_additions._direction_expert_addition  import _raw_m
+from app.db._change_db._db_additions._smm_addition import _raw_m
+from app.db._change_db._db_additions._direction_expert_addition import _raw_m
 from app.db._change_db._db_additions._developer_addition import _raw_m
 
 from app.db._change_db._db_additions._competition_direction_addition import _raw_m

@@ -24,16 +24,23 @@ dev = APIRouter(
 @db_session
 def personal_page(request: Request, me=Security(get_current_dev, scopes=[str(AccessType.DEVELOPER)])):
     me.scopes += [str(AccessType.SELF)]
-    return developer_templates.TemplateResponse("personal_page.html", {
-        "request": request,
-        "alert": Alert("Вы вошли в личный кабинет!", Alert.SUCCESS),
-        "personal_data": db_templates.get_cooked_template(
-            "Developer_form.html", {"request": request,
-                                    "developer": out_pd.Developer(**dict(me)),
-                                    "access": me.scopes,
-                                    'access_mode': AccessMode.LOOK,
-                                    "db_mode": False}),
-    })
+    return developer_templates.TemplateResponse(
+        "personal_page.html",
+        {
+            "request": request,
+            "alert": Alert("Вы вошли в личный кабинет!", Alert.SUCCESS),
+            "personal_data": db_templates.get_cooked_template(
+                "Developer_form.html",
+                {
+                    "request": request,
+                    "developer": out_pd.Developer(**dict(me)),
+                    "access": me.scopes,
+                    "access_mode": AccessMode.LOOK,
+                    "db_mode": False,
+                },
+            ),
+        },
+    )
 
 
 @dev.get("/logs", response_class=FileResponse)
@@ -45,12 +52,13 @@ async def get_logs():
 def get_logs():
     from os import execl
     from sys import argv, executable
+
     # _io.TextIOWrapper
 
     # stdout
     changed_args = argv
     python = executable
-    print('Restarting program. Arguments {}'.format(changed_args), python)
+    print("Restarting program. Arguments {}".format(changed_args), python)
     yield {"answer": "Сервер будет остановлен"}
     execl(python, python, *changed_args)
 

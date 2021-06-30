@@ -15,7 +15,7 @@ def create_new_settings(config_path, example_settings_filename):
     Эта функция не должна вызываться за пределами этого файла
     """
 
-    example_cfg = ConfigParser(allow_no_value=True, converters={'list': lambda x: [i.strip() for i in x.split(',')]})
+    example_cfg = ConfigParser(allow_no_value=True, converters={"list": lambda x: [i.strip() for i in x.split(",")]})
     example_cfg.read(example_settings_filename)
     user_input_tag = example_cfg.get("settings_ini_file", "user_input_tag")
     print("Config file not found!")
@@ -25,7 +25,7 @@ def create_new_settings(config_path, example_settings_filename):
     # =======! Получение данных от пользователя !=======
     with open(f"{example_settings_filename}", "r", encoding="utf-8") as file:
         data = []
-        for string in iter(file.read().split('\n')):
+        for string in iter(file.read().split("\n")):
             if user_input_tag in string and not string.startswith("user_input_tag"):
                 user_data = input(f"\nВведите пожалуйста {string.replace('=', '').strip()} для своей программы:\n")
                 user_data = string.replace(user_input_tag, user_data.strip())
@@ -34,8 +34,8 @@ def create_new_settings(config_path, example_settings_filename):
                 data.append(string)
 
     # =======! Запись данных в файл !=======
-    with open(config_path, 'w', encoding='utf-8') as writen_file:
-        data = '\n'.join(data)
+    with open(config_path, "w", encoding="utf-8") as writen_file:
+        data = "\n".join(data)
         print(data, file=writen_file)
 
 
@@ -48,13 +48,14 @@ def create_cfg(config_file: str, example_settings_filename: str) -> ConfigParser
     if not exists(config_file):
         create_new_settings(config_file, example_settings_filename)
 
-    cfg = ConfigParser(allow_no_value=True, converters={'list': lambda x: [i.strip() for i in x.split(',')]})
+    cfg = ConfigParser(allow_no_value=True, converters={"list": lambda x: [i.strip() for i in x.split(",")]})
     cfg.read(config_file)
     return cfg
 
 
-def save_change_in_config_file(config_file: str, example_settings_filename: str,
-                               config: ConfigParser = None) -> ConfigParser:
+def save_change_in_config_file(
+    config_file: str, example_settings_filename: str, config: ConfigParser = None
+) -> ConfigParser:
     """ Сохраняет изменения в конфиг-файле"""
 
     if not config:

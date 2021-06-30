@@ -38,27 +38,26 @@ User = ForwardRef("User")
 Question = ForwardRef("Question")
 
 
-
 class User(BaseModel):
-	questions: Set[Union[int, Question]] = []
+    questions: Set[Union[int, Question]] = []
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class Question(BaseModel):
-	question_title: Optional[str] = ''
-	question: str
+    question_title: Optional[str] = ""
+    question: str
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 User.update_forward_refs()
 Question.update_forward_refs()
 
 
-if __name__ == '__main__':
-	from os import chdir
+if __name__ == "__main__":
+    from os import chdir
 
-	chdir(HOME_DIR)
+    chdir(HOME_DIR)

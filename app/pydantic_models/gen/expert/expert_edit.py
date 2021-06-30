@@ -38,75 +38,71 @@ Criterion = ForwardRef("Criterion")
 MarkWork = ForwardRef("MarkWork")
 
 
-
 class DirectionExpert(BaseModel):
-	id: int
-	username: str
-	name: str
-	surname: str
-	email: str
-	human_contacts: Union[int, HumanContacts, None] = None
-	photo: Optional[str] = ''
-	status: Optional[str] = ''
-	description: Optional[str] = ''
-	scopes: Optional[Union[Json, dict, list]] = []
-	questions: Set[Union[int, Question]] = []
+    id: int
+    username: str
+    name: str
+    surname: str
+    email: str
+    human_contacts: Union[int, HumanContacts, None] = None
+    photo: Optional[str] = ""
+    status: Optional[str] = ""
+    description: Optional[str] = ""
+    scopes: Optional[Union[Json, dict, list]] = []
+    questions: Set[Union[int, Question]] = []
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class Task(BaseModel):
-	competition_direction: Union[Tuple[str, int], CompetitionDirection]
-	task_document: Optional[str] = ''
-	description: Optional[str] = ''
-	start: datetime
-	end: datetime
+    competition_direction: Union[Tuple[str, int], CompetitionDirection]
+    task_document: Optional[str] = ""
+    description: Optional[str] = ""
+    start: datetime
+    end: datetime
 
+    @validator("start", pre=True, always=True)
+    def start_to_datetime_validator(cls, value):
+        return PydanticValidators.datetime(cls, value)
 
-	@validator("start", pre=True, always=True)
-	def start_to_datetime_validator(cls, value):
-		return PydanticValidators.datetime(cls, value)
+    @validator("end", pre=True, always=True)
+    def end_to_datetime_validator(cls, value):
+        return PydanticValidators.datetime(cls, value)
 
-
-	@validator("end", pre=True, always=True)
-	def end_to_datetime_validator(cls, value):
-		return PydanticValidators.datetime(cls, value)
-
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class UserWork(BaseModel):
-	mark_works: Set[Union[Tuple[int, int, int], MarkWork]] = []
-	upload_date: datetime
+    mark_works: Set[Union[Tuple[int, int, int], MarkWork]] = []
+    upload_date: datetime
 
+    @validator("upload_date", pre=True, always=True)
+    def upload_date_to_datetime_validator(cls, value):
+        return PydanticValidators.datetime(cls, value)
 
-	@validator("upload_date", pre=True, always=True)
-	def upload_date_to_datetime_validator(cls, value):
-		return PydanticValidators.datetime(cls, value)
-
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class Criterion(BaseModel):
-	task: Union[int, Task]
-	name: str
-	description: Optional[str] = ''
-	max_value: Optional[float] = None
+    task: Union[int, Task]
+    name: str
+    description: Optional[str] = ""
+    max_value: Optional[float] = None
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class MarkWork(BaseModel):
-	criterion: Union[int, Criterion]
-	user_work: Union[Tuple[int, int], UserWork]
-	value: int
+    criterion: Union[int, Criterion]
+    user_work: Union[Tuple[int, int], UserWork]
+    value: int
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 DirectionExpert.update_forward_refs()
@@ -116,7 +112,7 @@ Criterion.update_forward_refs()
 MarkWork.update_forward_refs()
 
 
-if __name__ == '__main__':
-	from os import chdir
+if __name__ == "__main__":
+    from os import chdir
 
-	chdir(HOME_DIR)
+    chdir(HOME_DIR)

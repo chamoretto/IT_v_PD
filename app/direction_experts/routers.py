@@ -26,7 +26,8 @@ direction_expert = APIRouter(
     tags=["direction_expert"],
     dependencies=[
         # Depends(open_db_session),
-        Security(get_current_direction_expert, scopes=[str(AccessType.DIRECTION_EXPERT)])],  #
+        Security(get_current_direction_expert, scopes=[str(AccessType.DIRECTION_EXPERT)])
+    ],  #
     # responses={404: {"description": "Not found"}},
     # default_response_class=FileResponse
 )
@@ -34,37 +35,51 @@ direction_expert = APIRouter(
 
 @direction_expert.get("/me")
 @db_session
-def read_users_me(response: Response,
-                  request: Request,
-                  current_user: pd_db.Human = Security(get_current_direction_expert, scopes=[str(AccessType.DIRECTION_EXPERT)])):
+def read_users_me(
+    response: Response,
+    request: Request,
+    current_user: pd_db.Human = Security(get_current_direction_expert, scopes=[str(AccessType.DIRECTION_EXPERT)]),
+):
     print("current_user.dict^ ", type(current_user), current_user)
     print(dict(current_user))
     current_user.scopes += [str(AccessType.SELF)]
     return expert_templates.TemplateResponse(
-        "personal_page.html", {
+        "personal_page.html",
+        {
             "request": request,
             "personal_data": db_templates.get_cooked_template(
-                "DirectionExpert_form.html", {"request": request,
-                                    "directionexpert": out_pd.DirectionExpert(**(dict(current_user))),
-                                    "access": current_user.scopes,
-                                    'access_mode': AccessMode.LOOK,
-                                    "db_mode": False})
-        })
+                "DirectionExpert_form.html",
+                {
+                    "request": request,
+                    "directionexpert": out_pd.DirectionExpert(**(dict(current_user))),
+                    "access": current_user.scopes,
+                    "access_mode": AccessMode.LOOK,
+                    "db_mode": False,
+                },
+            ),
+        },
+    )
 
 
 @direction_expert.get("/user_works")
 @db_session
-def get_user_works(response: Response,
-                  request: Request,
-                  current_user: pd_db.DirectionExpert = Security(get_current_direction_expert, scopes=[str(AccessType.DIRECTION_EXPERT)])):
+def get_user_works(
+    response: Response,
+    request: Request,
+    current_user: pd_db.DirectionExpert = Security(
+        get_current_direction_expert, scopes=[str(AccessType.DIRECTION_EXPERT)]
+    ),
+):
     return expert_templates.TemplateResponse(
-        "personal_page.html", {
+        "personal_page.html",
+        {
             "request": request,
             "personal_data": db_templates.get_cooked_template(
                 "show_entity.html",
-                {"request": request,
-                 **m.UserWork.get_entities_html(db_mode=False, access=current_user.scopes),
-                 }
-            )
-        }
+                {
+                    "request": request,
+                    **m.UserWork.get_entities_html(db_mode=False, access=current_user.scopes),
+                },
+            ),
+        },
     )

@@ -18,16 +18,22 @@ from app.utils.exceptions import ChildHTTPException as HTTPException
 
 
 DictStrAny = dict[str, Any]
-Model = TypeVar('Model', bound='BaseModel')
+Model = TypeVar("Model", bound="BaseModel")
 
 
 def pydantic_from_orm(cls, db_ent, all_obj=False):
     data: dict = db_ent.to_dict(related_objects=all_obj or False, with_collections=True)
     if all_obj:
-        data |= {key: val.to_dict(related_objects=False, with_collections=True)
-                 for key, val in data.items() if hasattr(val, "to_dict")}
-        data |= {key: [i.to_dict(related_objects=False, with_collections=True) for i in val]
-                 for key, val in data.items() if type(val) in [list, set, frozenset]}
+        data |= {
+            key: val.to_dict(related_objects=False, with_collections=True)
+            for key, val in data.items()
+            if hasattr(val, "to_dict")
+        }
+        data |= {
+            key: [i.to_dict(related_objects=False, with_collections=True) for i in val]
+            for key, val in data.items()
+            if type(val) in [list, set, frozenset]
+        }
     print(data)
     return cls(**data)
 
@@ -61,7 +67,6 @@ def as_form(cls: Type[BaseModel]):
 
 
 class PydanticValidators:
-
     @staticmethod
     def datetime(cls: Type[BaseModel], value):
         if value is None or not bool(value):
@@ -74,12 +79,14 @@ class PydanticValidators:
             return None
         return value
 
-    def __class_getitem__(cls, code: 'AllInfoStr') -> str:
-        print('----------------', code.html_type or [str(code.html_type)])
+    def __class_getitem__(cls, code: "AllInfoStr") -> str:
+        print("----------------", code.html_type or [str(code.html_type)])
         if hasattr(PydanticValidators, str(code.html_type)):
-            return f'\n\n\t@validator("{code.name}", pre=True, always=True)\n' \
-                   f'\tdef {code.name}_to_{code.html_type}_validator(cls, value):\n' \
-                   f'\t\treturn PydanticValidators.{code.html_type}(cls, value)\n'
+            return (
+                f'\n\n\t@validator("{code.name}", pre=True, always=True)\n'
+                f"\tdef {code.name}_to_{code.html_type}_validator(cls, value):\n"
+                f"\t\treturn PydanticValidators.{code.html_type}(cls, value)\n"
+            )
         return ""
 
 
@@ -122,14 +129,14 @@ class AccessMode(enum.Enum):
 
 
 def create_model(
-        __model_name: str,
-        *,
-        __config__: Type[BaseConfig] = None,
-        __base__: Union[Type['Model'], list[Type['Model']]] = None,
-        __module__: str = __name__,
-        __validators__: Dict[str, classmethod] = None,
-        **field_definitions: Any,
-) -> Type['Model']:
+    __model_name: str,
+    *,
+    __config__: Type[BaseConfig] = None,
+    __base__: Union[Type["Model"], list[Type["Model"]]] = None,
+    __module__: str = __name__,
+    __validators__: Dict[str, classmethod] = None,
+    **field_definitions: Any,
+) -> Type["Model"]:
     """
     Dynamically create a model.
     :param __model_name: name of the created model
@@ -145,9 +152,9 @@ def create_model(
 
     if __base__ is not None:
         if __config__ is not None:
-            raise ConfigError('to avoid confusion __config__ and __base__ cannot be used together')
+            raise ConfigError("to avoid confusion __config__ and __base__ cannot be used together")
     else:
-        __base__ = cast(Type['Model'], BaseModel)
+        __base__ = cast(Type["Model"], BaseModel)
 
     fields = {}
     annotations = {}
@@ -160,9 +167,9 @@ def create_model(
                 f_annotation, f_value = f_def
             except ValueError as e:
                 raise ConfigError(
-                    'field definitions should either be a tuple of (<type>, <default>) or just a '
-                    'default value, unfortunately this means tuples as '
-                    'default values are not allowed'
+                    "field definitions should either be a tuple of (<type>, <default>) or just a "
+                    "default value, unfortunately this means tuples as "
+                    "default values are not allowed"
                 ) from e
         else:
             f_annotation, f_value = None, f_def
@@ -171,20 +178,20 @@ def create_model(
             annotations[f_name] = f_annotation
         fields[f_name] = f_value
 
-    namespace: 'DictStrAny' = {'__annotations__': annotations, '__module__': __module__}
+    namespace: "DictStrAny" = {"__annotations__": annotations, "__module__": __module__}
     if __validators__:
         namespace.update(__validators__)
     namespace.update(fields)
     if __config__:
-        namespace['Config'] = inherit_config(__config__, BaseConfig)
+        namespace["Config"] = inherit_config(__config__, BaseConfig)
     if type(__base__) not in [tuple, set, list, frozenset, tuple]:
-        __base__: tuple[Type['Model']] = (__base__,)
-        print('rfwef')
+        __base__: tuple[Type["Model"]] = (__base__,)
+        print("rfwef")
     else:
-        print('sdf')
-        __base__: tuple[Type['Model']] = tuple(__base__)
-    print('5778346', [__base__])
-    return cast(Type['Model'], type(__model_name, __base__, namespace))
+        print("sdf")
+        __base__: tuple[Type["Model"]] = tuple(__base__)
+    print("5778346", [__base__])
+    return cast(Type["Model"], type(__model_name, __base__, namespace))
 
 
 _roles = [i.value for i in AccessType]
@@ -195,12 +202,14 @@ _access_level = [(str(role), str(mode)) for role in _roles for mode in _modes]
 # print(_access_level)
 
 
-def get_pd_class(ent_name: str, request: Request,
-                 roles: Union[AccessType, str, list[Union[AccessType, str]]],
-                 modes: Union[AccessMode, str, list[Union[AccessMode, str]]]
-                 ) -> Type[BaseModel]:
+def get_pd_class(
+    ent_name: str,
+    request: Request,
+    roles: Union[AccessType, str, list[Union[AccessType, str]]],
+    modes: Union[AccessMode, str, list[Union[AccessMode, str]]],
+) -> Type[BaseModel]:
     print("roles", roles)
-    print('modes', modes)
+    print("modes", modes)
     if (type(roles) in [str, AccessType] or len(roles) == 1) and (type(modes) in [str, AccessMode] or len(modes) == 1):
         if type(roles) not in [str, AccessType]:
             roles: str = roles[0]
@@ -232,13 +241,14 @@ def get_pd_class(ent_name: str, request: Request,
             print(f"ошибка при импорте модуля {role}_{mode}, {ent_name}", __file__, e)
     # print(bases)
     if bool(bases):
-        return create_model('ModelForDb', __base__=bases)
+        return create_model("ModelForDb", __base__=bases)
     raise HTTPException(
         request=request,
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Вы не обладаете домтаточными правами доступа для совершения данного действия",
         headers={"WWW-Authenticate": "Bearer"},
     )
+
 
 # from app.pydantic_models import gen
 

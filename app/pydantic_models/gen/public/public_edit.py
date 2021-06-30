@@ -36,12 +36,7 @@ from app.pydantic_models.gen.output_ent import Developer
 from app.settings.config import HOME_DIR
 
 
+if __name__ == "__main__":
+    from os import chdir
 
-
-
-
-
-if __name__ == '__main__':
-	from os import chdir
-
-	chdir(HOME_DIR)
+    chdir(HOME_DIR)

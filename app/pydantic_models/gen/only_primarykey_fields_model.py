@@ -38,128 +38,124 @@ SimpleEntity = ForwardRef("SimpleEntity")
 News = ForwardRef("News")
 
 
-
 class Human(BaseModel):
-	id: int
+    id: int
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class Admin(BaseModel):
-	id: int
+    id: int
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class User(BaseModel):
-	id: int
+    id: int
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class Smm(BaseModel):
-	id: int
+    id: int
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class Developer(BaseModel):
-	id: int
+    id: int
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class HumanContacts(BaseModel):
-	human: Union[int, Human]
+    human: Union[int, Human]
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class DirectionExpert(BaseModel):
-	id: int
+    id: int
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class Competition(BaseModel):
-	id: int
+    id: int
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class Direction(BaseModel):
-	name: str
+    name: str
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class CompetitionDirection(BaseModel):
-
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class Task(BaseModel):
-	id: int
+    id: int
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class UserWork(BaseModel):
-
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class Criterion(BaseModel):
-	id: int
+    id: int
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class MarkWork(BaseModel):
-
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class Page(BaseModel):
-	id: int
+    id: int
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class Question(BaseModel):
-	id: int
+    id: int
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class SimpleEntity(BaseModel):
-	key: str
+    key: str
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class News(BaseModel):
-	id: int
+    id: int
 
-	class Config:
-		orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 Human.update_forward_refs()
@@ -182,7 +178,7 @@ SimpleEntity.update_forward_refs()
 News.update_forward_refs()
 
 
-if __name__ == '__main__':
-	from os import chdir
+if __name__ == "__main__":
+    from os import chdir
 
-	chdir(HOME_DIR)
+    chdir(HOME_DIR)

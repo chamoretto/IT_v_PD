@@ -17,12 +17,14 @@ def important_field_for_print(cls) -> list[str]:
 
 def get_entity_html(self, keys: list[str]) -> str:
     # language=H TML
-    data = f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}' \
-           f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>' \
-           f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error url_as_ajax">' \
-           f'<i class="far fa-trash-alt"></i></a>' \
-           f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}" class="url_as_ajax">' \
-           f'<i class="far fa-eye-slash"></i></a></td></tr>'
+    data = (
+        f'<tr>{"".join(["<td>" + str(getattr(self, key)) + "</td>" for key in keys])}'
+        f'<td><a href="/db/{self.__class__.__name__}/edit?{self.key_as_part_query()}" class="url_as_ajax" ><i class="far fa-edit"></i></a>'
+        f'<a href="/db/{self.__class__.__name__}/delete?{self.key_as_part_query()}" class="color-error url_as_ajax">'
+        f'<i class="far fa-trash-alt"></i></a>'
+        f'<a href="/db/{self.__class__.__name__}/look?{self.key_as_part_query()}" class="url_as_ajax">'
+        f'<i class="far fa-eye-slash"></i></a></td></tr>'
+    )
     # print(data)
     return data
 
@@ -68,11 +70,14 @@ def key_as_part_query(self) -> str:
 
 
 @classmethod
-def get_entities_html(cls, *keys,
-                      db_mode: bool = True,
-                      access: list[str] = ["public"],
-                      filter_ent=lambda i: True,
-                      entities: list['db.Entity'] = None) -> dict[str, Any]:
+def get_entities_html(
+    cls,
+    *keys,
+    db_mode: bool = True,
+    access: list[str] = ["public"],
+    filter_ent=lambda i: True,
+    entities: list["db.Entity"] = None,
+) -> dict[str, Any]:
     """
 
     :param cls:
@@ -87,8 +92,9 @@ def get_entities_html(cls, *keys,
         if not bool(keys):
             keys = None
         data: list[str] = list(
-            select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys())
-        print('----', data)
+            select(ent for ent in cls).random(limit=1)[:1][0].to_dict(with_collections=False, only=keys).keys()
+        )
+        print("----", data)
         # data = data.to_dict(with_collections=False, only=keys).keys()
     except IndexError as e:
         print("Произошла ошибка IndexError в классе", cls, "при генерации таблицы сущностей", e)
@@ -108,24 +114,21 @@ def get_entities_html(cls, *keys,
         "keys_as_query": [ent.key_as_part_query() for ent in entities],
         "entity_name": cls.__name__,
         "db_mode": db_mode,
-        "access": access
+        "access": access,
     }
 
 
 added_params = set(globals()) - _start - {"_start"}
 
-new_funcs = {
-    "important_field_for_print": "",
-    "get_entity_html": "",
-    "get_entities_html": "",
-    "key_as_part_query": ""
-}
+new_funcs = {"important_field_for_print": "", "get_entity_html": "", "get_entities_html": "", "key_as_part_query": ""}
 
 entities_code = {}  # Тут будет находиться код сущностей БД в удобном виде
 for name, ent in _raw_m.db.entities.items():
-    ent.__bases__ = (tuple(list(ent.__bases__) + [AddArrtInDbClass])
-                     if AddArrtInDbClass not in list(ent.__bases__)
-                     else tuple(list(ent.__bases__)))
+    ent.__bases__ = (
+        tuple(list(ent.__bases__) + [AddArrtInDbClass])
+        if AddArrtInDbClass not in list(ent.__bases__)
+        else tuple(list(ent.__bases__))
+    )
     # entities_code[ent] = db_ent_to_dict(ent)
     # entities_code[name] = entities_code[ent]
 

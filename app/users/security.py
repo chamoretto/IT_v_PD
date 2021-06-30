@@ -12,15 +12,11 @@ from app.utils.utils_of_security import generate_security, basic_login, scopes_t
 from app.utils.jinja2_utils import _roles_to_home_urls
 
 
-SECRET_KEY = cfg.get('keys', "user")
-ACCESS_TOKEN_TIME = int(cfg.get('keys', "user_time"))
+SECRET_KEY = cfg.get("keys", "user")
+ACCESS_TOKEN_TIME = int(cfg.get("keys", "user_time"))
 token_path = "user_token"
 # user_oauth2_scheme = OAuth2PasswordBearer(tokenUrl=token_path)
-[get_user,
- authenticate_user,
- get_current_user,
- create_user_access_token
- ] = generate_security(m.User)
+[get_user, authenticate_user, get_current_user, create_user_access_token] = generate_security(m.User)
 
 user = APIRouter(
     tags=["user"],
@@ -29,7 +25,7 @@ user = APIRouter(
 )
 
 
-@user.post('/' + token_path, response_model=Token)
+@user.post("/" + token_path, response_model=Token)
 @db_session
 def login_for_access_token(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
     if form_data.scopes:
@@ -43,5 +39,10 @@ def login_for_access_token(request: Request, form_data: OAuth2PasswordRequestFor
 async def login_user(request: Request):
     return login_templates.TemplateResponse(
         "login.html",
-        {"request": request, "who": "участника", "auth_url": '/' + token_path, "roles_to_home_urls": _roles_to_home_urls})
-
+        {
+            "request": request,
+            "who": "участника",
+            "auth_url": "/" + token_path,
+            "roles_to_home_urls": _roles_to_home_urls,
+        },
+    )

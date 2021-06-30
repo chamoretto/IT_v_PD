@@ -13,15 +13,16 @@ from app.utils.utils_of_security import generate_security, basic_login, scopes_t
 from app.utils.jinja2_utils import _roles_to_home_urls
 
 
-SECRET_KEY = cfg.get('keys', "direction_expert")
-ACCESS_TOKEN_TIME = int(cfg.get('keys', "direction_expert_time"))
+SECRET_KEY = cfg.get("keys", "direction_expert")
+ACCESS_TOKEN_TIME = int(cfg.get("keys", "direction_expert_time"))
 token_path = "direction_expert_token"
 direction_expert_oauth2_scheme = OAuth2PasswordBearer(tokenUrl=token_path)
-[get_direction_expert,
- authenticate_direction_expert,
- get_current_direction_expert,
- create_direction_expert_access_token
- ] = generate_security(m.DirectionExpert)
+[
+    get_direction_expert,
+    authenticate_direction_expert,
+    get_current_direction_expert,
+    create_direction_expert_access_token,
+] = generate_security(m.DirectionExpert)
 
 direction_expert = APIRouter(
     tags=["direction_expert"],
@@ -43,4 +44,6 @@ def login_for_access_token(request: Request, form_data: OAuth2PasswordRequestFor
 @direction_expert.get("/direction_expert", response_class=HTMLResponse)
 async def login_direction_expert(request: Request):
     return login_templates.TemplateResponse(
-        "login.html", {"request": request, "who": "Админа", "auth_url": "/" + token_path, "roles_to_home_urls": _roles_to_home_urls})
+        "login.html",
+        {"request": request, "who": "Админа", "auth_url": "/" + token_path, "roles_to_home_urls": _roles_to_home_urls},
+    )

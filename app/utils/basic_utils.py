@@ -1,7 +1,4 @@
-
-
 class async_iterator_wrapper:
-
     def __init__(self, obj):
         self._it = iter(obj)
 
